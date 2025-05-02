@@ -1,0 +1,251 @@
+<div class="flex flex-col sm:flex-row items-center md:items-start sm:justify-center md:justify-start flex-auto min-w-0">
+    <div class="md:flex md:items-center md:justify-end w-full sm:w-auto md:h-full md:w-1/2 py-8 px-4 sm:p-12 md:p-16 sm:rounded-2xl md:rounded-none sm:shadow md:shadow-none sm:bg-card">
+        <div class="w-full max-w-80 sm:w-80 mx-auto sm:mx-0">
+            <!-- Logo -->
+            <div class="w-12">
+                <img src="assets/images/logo/logo.svg">
+            </div>
+
+            <!-- Title -->
+            <div class="mt-8 text-4xl font-extrabold tracking-tight leading-tight">Connexion</div>
+            <div class="flex items-baseline mt-0.5 font-medium">
+                <div>Vous n'avez pas de compte?</div>
+                <a
+                    class="ml-1 text-primary-500 hover:underline"
+                    [routerLink]="['/sign-up']">S'inscrire
+                </a>
+            </div>
+
+            <!-- Alert -->
+            <fuse-alert
+                class="mt-8"
+                *ngIf="showAlert"
+                [appearance]="'outline'"
+                [showIcon]="false"
+                [type]="alert.type"
+                [@shake]="alert.type === 'error'">
+                {{alert.message}}
+            </fuse-alert>
+
+            <div *ngIf="!emailFP && !codeFP && !passwordFP">
+            <!-- Sign in form -->
+            <form
+                class="mt-8"
+                [formGroup]="signInForm"
+                    #signInNgForm="ngForm"
+                    (ngSubmit)="signIn()">
+
+                <!-- Email field -->
+                <mat-form-field class="w-full">
+                        <mat-label>Adresse email</mat-label>
+                    <input
+                        id="email"
+                        matInput
+                        [formControlName]="'email'">
+                    <mat-error *ngIf="signInForm.get('email').hasError('required')">
+                            L'adresse email est requise
+                    </mat-error>
+                    <mat-error *ngIf="signInForm.get('email').hasError('email')">
+                            Veuillez entrer une adresse email valide
+                    </mat-error>
+                </mat-form-field>
+
+                <!-- Password field -->
+                <mat-form-field class="w-full">
+                        <mat-label>Mot de passe</mat-label>
+                    <input
+                        id="password"
+                        matInput
+                        type="password"
+                        [formControlName]="'password'"
+                        #passwordField>
+                    <button
+                        mat-icon-button
+                        type="button"
+                        (click)="passwordField.type === 'password' ? passwordField.type = 'text' : passwordField.type = 'password'"
+                        matSuffix>
+                        <mat-icon
+                            class="icon-size-5"
+                            *ngIf="passwordField.type === 'password'"
+                            [svgIcon]="'heroicons_solid:eye'"></mat-icon>
+                        <mat-icon
+                            class="icon-size-5"
+                            *ngIf="passwordField.type === 'text'"
+                            [svgIcon]="'heroicons_solid:eye-slash'"></mat-icon>
+                    </button>
+                    <mat-error>
+                            Le mot de passe est requis
+                    </mat-error>
+                </mat-form-field>
+
+                <!-- Actions -->
+                <div class="inline-flex items-center justify-between w-full mt-1.5">
+                    <mat-checkbox
+                        class="-ml-2"
+                        [color]="'primary'"
+                        [formControlName]="'rememberMe'">
+                            Se souvenir de moi
+                    </mat-checkbox>
+                    <a
+                        class="text-md font-medium text-primary-500 hover:underline"
+                            (click)="forgetPassword()">Mot de passe oublié?
+                    </a>
+                </div>
+
+                <!-- Submit button -->
+                <button
+                    class="fuse-mat-button-large w-full mt-6"
+                    mat-flat-button
+                        type="submit"
+                    [color]="'primary'"
+                        [disabled]="signInForm.disabled">
+                    <span *ngIf="!signInForm.disabled">
+                            Se connecter
+                    </span>
+                    <mat-progress-spinner
+                        *ngIf="signInForm.disabled"
+                        [diameter]="24"
+                        [mode]="'indeterminate'"></mat-progress-spinner>
+                </button>
+
+                <!-- Separator -->
+                <div class="flex items-center mt-8">
+                    <div class="flex-auto mt-px border-t"></div>
+                        <div class="mx-2 text-secondary">Ou continuer avec</div>
+                    <div class="flex-auto mt-px border-t"></div>
+                </div>
+
+                    <!-- Google sign-in button -->
+                    <div class="flex justify-center mt-8">
+                    <button
+                        class="flex-auto"
+                        type="button"
+                            mat-stroked-button
+                            (click)="googleSignin($event.target)">
+                        <mat-icon
+                            class="icon-size-5"
+                                [svgIcon]="'feather:github'"></mat-icon>
+                            <span class="ml-2">Google</span>
+                    </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Forgot password form -->
+            <div *ngIf="emailFP || codeFP || passwordFP">
+                <div class="mt-8 text-2xl font-semibold tracking-tight">Réinitialisation du mot de passe</div>
+                
+                <form
+                    class="mt-8"
+                    [formGroup]="forgetPForm"
+                    #forgetPNgForm="ngForm">
+
+                    <!-- Email field for password reset -->
+                    <mat-form-field class="w-full" *ngIf="emailFP">
+                        <mat-label>Adresse email</mat-label>
+                        <input
+                            id="emailP"
+                            matInput
+                            [formControlName]="'emailP'">
+                        <mat-error *ngIf="forgetPForm.get('emailP').hasError('required')">
+                            L'adresse email est requise
+                        </mat-error>
+                        <mat-error *ngIf="forgetPForm.get('emailP').hasError('email')">
+                            Veuillez entrer une adresse email valide
+                        </mat-error>
+                    </mat-form-field>
+
+                    <!-- Code field for password reset -->
+                    <mat-form-field class="w-full" *ngIf="codeFP">
+                        <mat-label>Code de vérification</mat-label>
+                        <input
+                            id="codeP"
+                            matInput
+                            [formControlName]="'codeP'">
+                        <mat-error *ngIf="forgetPForm.get('codeP').hasError('required')">
+                            Le code de vérification est requis
+                        </mat-error>
+                    </mat-form-field>
+
+                    <!-- New password field -->
+                    <mat-form-field class="w-full" *ngIf="passwordFP">
+                        <mat-label>Nouveau mot de passe</mat-label>
+                        <input
+                            id="passwordN"
+                            matInput
+                            type="password"
+                            [formControlName]="'passwordN'"
+                            #passwordFieldN>
+                    <button
+                            mat-icon-button
+                        type="button"
+                            (click)="passwordFieldN.type === 'password' ? passwordFieldN.type = 'text' : passwordFieldN.type = 'password'"
+                            matSuffix>
+                            <mat-icon
+                                class="icon-size-5"
+                                *ngIf="passwordFieldN.type === 'password'"
+                                [svgIcon]="'heroicons_solid:eye'"></mat-icon>
+                        <mat-icon
+                            class="icon-size-5"
+                                *ngIf="passwordFieldN.type === 'text'"
+                                [svgIcon]="'heroicons_solid:eye-slash'"></mat-icon>
+                        </button>
+                        <mat-error>
+                            Le nouveau mot de passe est requis
+                        </mat-error>
+                    </mat-form-field>
+
+                    <!-- Submit button -->
+                    <div class="flex items-center justify-end">
+                        <button
+                            class="ml-4"
+                            mat-flat-button
+                            [color]="'warn'"
+                            (click)="emailFP = false; codeFP = false; passwordFP = false;">
+                            Annuler
+                    </button>
+                    <button
+                            class="ml-4"
+                            mat-flat-button
+                            [color]="'primary'"
+                            (click)="changePassword()">
+                            Continuer
+                    </button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+    <div class="relative hidden md:flex flex-auto items-center justify-center w-1/2 h-full p-16 lg:px-28 overflow-hidden bg-gray-800 dark:border-l">
+        <!-- Background - @formatter:off -->
+        <!-- Rings -->
+        <svg class="absolute inset-0 pointer-events-none"
+             viewBox="0 0 960 540" width="100%" height="100%" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+            <g class="text-gray-700 opacity-25" fill="none" stroke="currentColor" stroke-width="100">
+                <circle r="234" cx="196" cy="23"></circle>
+                <circle r="234" cx="790" cy="491"></circle>
+            </g>
+        </svg>
+        <!-- Dots -->
+        <svg class="absolute -top-16 -right-16 text-gray-700"
+             viewBox="0 0 220 192" width="220" height="192" fill="none">
+            <defs>
+                <pattern id="837c3e70-6c3a-44e6-8854-cc48c737b659" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <rect x="0" y="0" width="4" height="4" fill="currentColor"></rect>
+                </pattern>
+            </defs>
+            <rect width="220" height="192" fill="url(#837c3e70-6c3a-44e6-8854-cc48c737b659)"></rect>
+        </svg>
+        <!-- @formatter:on -->
+        <!-- Content -->
+        <div class="z-10 relative w-full max-w-2xl">
+            <div class="text-7xl font-bold leading-none text-gray-100">
+                <div>Bienvenue dans</div>
+                <div>Comptinov</div>
+            </div>
+            <div class="mt-6 text-lg tracking-tight leading-6 text-gray-400">
+                Notre application de gestion comptable vous aide à gérer vos finances et votre comptabilité de manière efficace et intuitive.
+            </div>
+        </div>
+    </div>
+</div>

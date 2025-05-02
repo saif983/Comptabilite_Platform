@@ -1,0 +1,70 @@
+
+<div class="pricing-table">
+  <div  class="pricing-card free" [class.current-subscription]="currentSubscriptionType === 'Free'">
+    <div class="pricing-header">
+      <div class="price-circle">0 DT</div>
+      <div class="plan-name">GRATUIT</div>
+    </div>
+    <ul class="features">
+      <li>✔ Accès limité</li>
+      <li>✖ Prevesion Financiere</li>
+      <li>✔ Sauvegarde manuelle</li>
+      <li>✖ Importation Factures</li>
+      <li>✔ Creation Factures</li>
+      <li>✔ Tableau de bord</li>
+    </ul>
+    <button (click)="choisirAbonnement('Free')" [disabled]="isLoading">SÉLECTIONNER</button>
+  </div>
+
+  <div class="pricing-card monthly" [class.current-subscription]="currentSubscriptionType === 'Mensuel'">
+    <div class="pricing-header">
+      <div class="price-circle">30 DT</div>
+      <div class="plan-name">MENSUEL</div>
+    </div>
+    <ul class="features">
+      <li>✔ Accès complet</li>
+      <li>✔ Support client</li>
+      <li>✖ Prevesion Financiere</li>
+      <li>✔ Importation Factures</li>
+      <li>✔ Creation Factures</li>
+      <li>✔ Tableau de bord</li>
+      <li>✔ Sauvegarde auto</li>
+      <li>✖ Exportation avancée</li>
+      <li>✔ Statistiques</li>
+    </ul>
+    <button (click)="choisirAbonnement('Mensuel')" [disabled]="isLoading">SÉLECTIONNER</button>
+  </div>
+
+  <div class="pricing-card yearly" [class.current-subscription]="currentSubscriptionType === 'Annuel'">
+    <div class="pricing-header">
+      <div class="price-circle">300 DT</div>
+      <div class="plan-name">ANNUEL</div>
+    </div>
+    <ul class="features">
+      <li>✔ Accès total</li>
+      <li>✔ Support prioritaire</li>
+      <li>✔ Sauvegarde auto</li>
+      <li>✔ Exportation avancée</li>
+      <li>✔ Prevesion Financiere</li>
+      <li>✔ Importation Factures</li>
+      <li>✔ Creation Factures</li>
+      <li>✔ Tableau de bord</li>
+      <li>✔ Analytics Pro</li>
+      
+    </ul>
+    <button (click)="choisirAbonnement('Annuel')" [disabled]="isLoading">SÉLECTIONNER</button>
+  </div>
+</div>
+
+<div *ngIf="currentAbonnement" class="abonnement-details">
+  <h3>Détails de votre abonnement</h3>
+  <p><strong>Type:</strong> {{ currentAbonnement.type }}</p>
+  <p><strong>Prix:</strong> {{ currentAbonnement.prix }} DT</p>
+  <p><strong>Date de début:</strong> {{ currentAbonnement.dateDebut | date:'medium' }}</p>
+  <p><strong>Date de fin:</strong> {{ currentAbonnement.dateFin | date:'medium' }}</p>
+</div>
+
+<div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alert.type">
+  {{ alert.message }}
+  <button (click)="showAlert = false">×</button>
+</div>

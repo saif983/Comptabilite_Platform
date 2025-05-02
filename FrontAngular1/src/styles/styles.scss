@@ -1,0 +1,54 @@
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ Import/write your custom styles here.
+/*  @ Styles from this file will override 'vendors.scss' and Fuse's base styles.
+/* ----------------------------------------------------------------------------------------------------- */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* INVEEP Theme Styles */
+.theme-inveep {
+  /* Custom header styles for INVEEP theme */
+  .bg-card {
+    background: linear-gradient(to right, #00E676, #1B5E20) !important;
+  }
+  
+  /* Header text color in the INVEEP theme */
+  .relative.flex.flex-0.items-center.w-full.h-16.px-4.md\:px-6.z-49.shadow {
+    color: white !important;
+  }
+  
+  /* Navigation toggle button color */
+  .relative.flex.flex-0.items-center.w-full.h-16 button mat-icon {
+    color: white !important;
+  }
+  
+  /* Change icon colors in the header for better visibility */
+  .flex.items-center.pl-2.ml-auto {
+    color: white !important;
+    
+    mat-icon {
+      color: white !important;
+    }
+  }
+  
+  /* Custom button styles */
+  .mat-mdc-raised-button.mat-primary {
+    background-color: #00E676 !important;
+  }
+  
+  /* Primary color text */
+  .text-primary {
+    color: #00E676 !important;
+  }
+  
+  /* Primary color backgrounds */
+  .bg-primary {
+    background-color: #00E676 !important;
+  }
+  
+  /* Vertical navigation brand color enhancement */
+  fuse-vertical-navigation.dark.bg-gray-900 {
+    background: linear-gradient(to bottom, #1B5E20, #041007) !important;
+  }
+}

@@ -1,0 +1,735 @@
+/* Variables SCSS */
+$primary-color: #4ade80; /* Vert clair */
+$primary-light: #dcfce7; /* Vert clair très pâle */
+$primary-dark: #22c55e; /* Vert moyen */
+$success-color: #10b981; /* Vert émeraude */
+$success-light: #ecfdf5;
+$warning-color: #f59e0b;
+$warning-light: #fffbeb;
+$danger-color: #ef4444;
+$text-dark: #1f2937;
+$text-medium: #4b5563;
+$text-light: #9ca3af;
+$bg-white: #ffffff;
+$bg-light: #f9fafb;
+$bg-lighter: #f3f4f6;
+$bg-green-light: #f0fdf4; /* Fond vert très pâle */
+$border-color: #e5e7eb;
+$border-green: #86efac; /* Bordure vert clair */
+$shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+$shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+$radius-sm: 0.2rem;
+$radius-md: 0.375rem;
+$radius-lg: 0.5rem;
+
+/* Styles généraux pour les éléments verts */
+.green-input,
+.green-select {
+  border: 2px solid $border-green !important;
+  background-color: $bg-green-light !important;
+  transition: all 0.2s ease;
+  
+  &:focus {
+    border-color: $primary-color !important;
+    box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.2) !important;
+    outline: none;
+  }
+}
+
+.green-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2322c55e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1em;
+  padding-right: 2rem;
+}
+
+.green-btn {
+  background-color: $primary-color !important;
+  color: white !important;
+  border: none !important;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  
+  &:hover:not(:disabled) {
+    background-color: $primary-dark !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(74, 222, 128, 0.2);
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.green-outline-btn {
+  background-color: $bg-green-light !important;
+  color: $primary-dark !important;
+  border: 2px dashed $primary-color !important;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: $primary-light !important;
+    border-style: solid !important;
+  }
+}
+
+.green-icon-btn {
+  color: $primary-dark !important;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: scale(1.2);
+  }
+}
+
+.green-page-btn {
+  background-color: $bg-green-light !important;
+  border: 1px solid $border-green !important;
+  color: $primary-dark !important;
+  
+  &:hover:not(:disabled) {
+    background-color: $primary-light !important;
+    border-color: $primary-color !important;
+  }
+}
+
+.green-checkbox {
+  appearance: none;
+  width: 1.2rem;
+  height: 1.2rem;
+  border: 2px solid $border-green;
+  border-radius: 4px;
+  margin-right: 0.5rem;
+  position: relative;
+  
+  &:checked {
+    background-color: $primary-color;
+    border-color: $primary-color;
+  }
+  
+  &:checked::after {
+    content: '✓';
+    position: absolute;
+    color: white;
+    font-size: 0.8rem;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.2);
+  }
+}
+
+/* Styles de la barre de recherche */
+.search-input {
+  border: 2px solid $border-green !important;
+  background-color: $bg-green-light !important;
+  border-radius: $radius-md;
+  padding-left: 2.5rem !important;
+  transition: all 0.2s ease;
+  
+  &:focus {
+    border-color: $primary-color !important;
+    box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.2) !important;
+  }
+}
+
+/* Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: $bg-light;
+  color: $text-dark;
+}
+
+.factures-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  background-color: $bg-green-light;
+}
+
+/* Header Styles */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: $bg-white;
+  border-bottom: 1px solid $border-green;
+  box-shadow: $shadow-sm;
+  
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: $primary-dark;
+  }
+  
+  .user-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .search-box {
+    position: relative;
+    
+    input {
+      padding: 0.5rem 1rem 0.5rem 2.5rem;
+      border: 1px solid $border-green;
+      border-radius: $radius-md;
+      width: 300px;
+      font-size: 0.875rem;
+      background-color: $bg-green-light;
+      
+      &:focus {
+        outline: none;
+        border-color: $primary-color;
+        box-shadow: 0 0 0 1px $primary-light;
+      }
+    }
+    
+    .search-icon {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: $primary-dark;
+    }
+  }
+  
+  .new-facture-btn {
+    background-color: $primary-color;
+    color: white;
+    border: none;
+    border-radius: $radius-md;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    
+    &:hover {
+      background-color: $primary-dark;
+    }
+  }
+}
+
+/* Create Facture Panel */
+.create-facture-panel {
+  background-color: $bg-white;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-md;
+  margin: 1rem 2rem;
+  overflow: hidden;
+  border: 1px solid $border-green;
+  
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid $border-green;
+    background-color: $primary-light;
+    
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: $primary-dark;
+    }
+    
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: $text-light;
+      cursor: pointer;
+      
+      &:hover {
+        color: $primary-dark;
+      }
+    }
+  }
+  
+  .facture-form {
+    padding: 1.5rem;
+    
+    .form-section {
+      margin-bottom: 2rem;
+      
+      h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: $primary-dark;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid $border-green;
+      }
+    }
+    
+    .form-row {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      
+      .form-group {
+        flex: 1;
+      }
+    }
+    
+    .form-group {
+      margin-bottom: 1rem;
+      
+      label {
+        display: block;
+        font-size: 0.875rem;
+        color: $text-medium;
+        margin-bottom: 0.5rem;
+      }
+      
+      input, select {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid $border-green;
+        border-radius: $radius-sm;
+        font-size: 0.875rem;
+        background-color: $bg-green-light;
+        
+        &:focus {
+          outline: none;
+          border-color: $primary-color;
+          box-shadow: 0 0 0 1px $primary-light;
+        }
+      }
+    }
+    
+    .produits-list {
+      .produit-item {
+        background-color: $primary-light;
+        border-radius: $radius-sm;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border: 1px solid $border-green;
+        
+        .produit-select {
+          flex: 2;
+        }
+        
+        .quantite-input {
+          flex: 1;
+        }
+        
+        .remove-btn {
+          background: none;
+          border: none;
+          color: $danger-color;
+          font-size: 1.25rem;
+          cursor: pointer;
+          margin-top: 1.5rem;
+        }
+      }
+    }
+    
+    .add-product-btn {
+      background-color: $primary-light;
+      border: 1px dashed $primary-color;
+      color: $primary-dark;
+      padding: 0.5rem 1rem;
+      width: 100%;
+      text-align: center;
+      border-radius: $radius-sm;
+      cursor: pointer;
+      transition: all 0.2s;
+      
+      &:hover {
+        background-color: $primary-light;
+        border-color: $primary-dark;
+      }
+    }
+    
+    .payment-options {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      
+      .payment-status {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        
+        input {
+          margin-right: 0.5rem;
+        }
+      }
+      
+      .payment-mode {
+        margin-bottom: 0;
+      }
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      margin-top: 2rem;
+      
+      button {
+        padding: 0.5rem 1.5rem;
+        border-radius: $radius-md;
+        font-weight: 500;
+        cursor: pointer;
+      }
+      
+      .cancel-btn {
+        background-color: $bg-lighter;
+        border: 1px solid $border-color;
+        color: $text-medium;
+        
+        &:hover {
+          background-color: $border-color;
+        }
+      }
+      
+      .submit-btn {
+        background-color: $primary-color;
+        border: none;
+        color: white;
+        
+        &:hover {
+          background-color: $primary-dark;
+        }
+        
+        &:disabled {
+          background-color: $text-light;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+}
+
+/* List Factures Panel */
+.list-factures-panel {
+  display: flex;
+  flex-direction: column;
+  margin: 1rem 2rem;
+  
+  .filters-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    background-color: $bg-white;
+    padding: 1rem;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-sm;
+    border: 1px solid $border-green;
+    
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      
+      label {
+        font-size: 0.75rem;
+        color: $primary-dark;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 500;
+      }
+      
+      .filter-control {
+        position: relative;
+        
+        span {
+          position: absolute;
+          left: 0.5rem;
+          top: 50%;
+          transform: translateY(-50%);
+          color: $primary-dark;
+          font-size: 0.875rem;
+        }
+        
+        input, select {
+          padding: 0.5rem 0.5rem 0.5rem 2rem;
+          border: 1px solid $border-green;
+          border-radius: $radius-md;
+          font-size: 0.875rem;
+          background-color: $bg-green-light;
+          
+          &:focus {
+            outline: none;
+            border-color: $primary-color;
+            box-shadow: 0 0 0 1px $primary-light;
+          }
+        }
+        
+        input {
+          width: 140px;
+        }
+        
+        select {
+          width: 140px;
+          appearance: none;
+          background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2322c55e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+          background-repeat: no-repeat;
+          background-position: right 0.5rem center;
+          background-size: 1em;
+        }
+      }
+      
+      &.enterprise-filter {
+        flex-grow: 1;
+        
+        .filter-control select {
+          width: 100%;
+        }
+      }
+    }
+  }
+  
+  .factures-table-wrapper {
+    background-color: $bg-white;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-sm;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    border: 1px solid $border-green;
+    
+    .factures-table {
+      width: 100%;
+      border-collapse: collapse;
+      
+      th, td {
+        padding: 0.75rem 1rem;
+        text-align: left;
+      }
+      
+      th {
+        background-color: $primary-light;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: $primary-dark;
+        border-bottom: 1px solid $border-green;
+        white-space: nowrap;
+        
+        &.sortable {
+          cursor: pointer;
+          
+          &:hover {
+            background-color: $primary-color;
+            color: white;
+          }
+          
+          .sort-icon {
+            font-size: 0.75rem;
+            margin-left: 0.25rem;
+            color: $text-light;
+          }
+        }
+      }
+      
+      .empty-table {
+        text-align: center;
+        color: $text-light;
+        padding: 2rem;
+      }
+      
+      .facture-row {
+        border-bottom: 1px solid $border-green;
+        transition: background-color 0.2s;
+        
+        &:hover {
+          background-color: $bg-green-light;
+        }
+        
+        td {
+          font-size: 0.875rem;
+          color: $text-medium;
+          
+          &.date-cell {
+            white-space: nowrap;
+          }
+          
+          &.numero-cell {
+            font-weight: 500;
+            color: $text-dark;
+            
+            .facture-icon {
+              color: $primary-color;
+              margin-right: 0.5rem;
+            }
+          }
+          
+          &.client-cell {
+            font-weight: 500;
+          }
+          
+          &.montant-cell {
+            text-align: right;
+            font-weight: 500;
+          }
+          
+          &.statut-cell {
+            .status-badge {
+              display: inline-block;
+              padding: 0.25rem 0.5rem;
+              border-radius: 9999px;
+              font-size: 0.75rem;
+              font-weight: 500;
+              
+              &.paid {
+                background-color: $primary-light;
+                color: $primary-dark;
+              }
+              
+              &.unpaid {
+                background-color: $warning-light;
+                color: $warning-color;
+              }
+            }
+          }
+          
+          &.actions-cell {
+            white-space: nowrap;
+            
+            .action-btn {
+              background: none;
+              border: none;
+              cursor: pointer;
+              margin-right: 0.5rem;
+              color: $text-light;
+              transition: color 0.2s;
+              
+              &:hover {
+                color: $primary-color;
+              }
+              
+              &.view-btn:hover {
+                color: $primary-color;
+              }
+              
+              &.print-btn:hover {
+                color: $success-color;
+              }
+              
+              &.more-btn:hover {
+                color: $text-dark;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    
+    .pagination-btn {
+      background-color: $bg-white;
+      border: 1px solid $border-green;
+      color: $primary-dark;
+      width: 2rem;
+      height: 2rem;
+      border-radius: $radius-md;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      
+      &:hover:not(:disabled) {
+        border-color: $primary-color;
+        color: $primary-color;
+        background-color: $primary-light;
+      }
+      
+      &:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+    }
+    
+    .page-info {
+      font-size: 0.875rem;
+      color: $primary-dark;
+    }
+  }
+}
+
+/* Responsive Media Queries */
+@media (max-width: 1024px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    
+    .user-section {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+  
+  .filters-bar {
+    flex-direction: column;
+    
+    .filter-group {
+      width: 100%;
+      
+      .filter-control {
+        input, select {
+          width: 100% !important;
+        }
+      }
+    }
+  }
+  
+  .facture-form {
+    .form-row {
+      flex-direction: column;
+      gap: 0;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 1rem;
+    
+    .search-box input {
+      width: 200px;
+    }
+  }
+  
+  .list-factures-panel, .create-facture-panel {
+    margin: 1rem;
+  }
+  
+  .factures-table-wrapper {
+    overflow-x: auto;
+    
+    .factures-table {
+      min-width: 800px;
+    }
+  }
+}
