@@ -4,6 +4,8 @@ using ComptabiliteAPI.Data;
 using ComptabiliteAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using ComptabiliteAPI.Utils;
+using System.Diagnostics;
 
 namespace ComptabiliteAPI.Controllers
 {
@@ -41,10 +43,23 @@ namespace ComptabiliteAPI.Controllers
 
             if (entreprise == null)
                 return Forbid("Cette entreprise ne vous appartient pas ou n'existe pas.");
+            // Récupère le dernier numéro de facture pour cette entreprise
+            var dernierNumFacture = await _context.Factures
+                .Where(f => f.EntrepriseId == entreprise.Id)
+                .OrderByDescending(f => f.Id)
+                .Select(f => f.NumFacture)
+                .FirstOrDefaultAsync();
+
+            // Vérifie si aucune facture n'existe pour cette entreprise
+            int nouveauNumero = 1;
+            if (!string.IsNullOrEmpty(dernierNumFacture) && int.TryParse(dernierNumFacture, out var num))
+            {
+                nouveauNumero = num + 1;
+            }
 
             var facture = new Facture
             {
-                NumFacture = dto.NumFacture,
+                NumFacture = nouveauNumero.ToString(),
                 Date = dto.Date,
                 EstPayee = dto.EstPayee,
                 EntrepriseId = entreprise.Id,
@@ -54,6 +69,7 @@ namespace ComptabiliteAPI.Controllers
                 TelClient = dto.TelClient,
                 CinClient = dto.CinClient
             };
+
 
             _context.Factures.Add(facture);
             await _context.SaveChangesAsync();
@@ -154,12 +170,68 @@ namespace ComptabiliteAPI.Controllers
 
             return Ok(factures);
         }
+        [HttpPost("importer-pdf")]
+        public async Task<IActionResult> ImporterFactureDepuisPdf(IFormFile file)
+        {
+            // Declare and initialize utilisateurId early
+            var utilisateurId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(utilisateurId))
+                return Unauthorized("Utilisateur non identifié.");
+
+            var compte = await _context.ComptesBancaires
+                .FirstOrDefaultAsync(c => c.UtilisateurId == int.Parse(utilisateurId));
+
+            if (file == null || file.Length == 0)
+                return BadRequest("Aucun fichier n'a été envoyé.");
+
+            try
+            {
+                var scriptPath = Path.Combine("Scripts", "import_facture.py");
+
+                var psi = new ProcessStartInfo
+                {
+                    FileName = "python", // ou "python3" selon ton environnement
+                    Arguments = $"\"{scriptPath}\"",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                psi.Environment["UTILISATEUR_ID"] = utilisateurId;
+                var tempPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.pdf");
+                using (var stream = new FileStream(tempPath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                psi.Arguments = $"\"{scriptPath}\" \"{tempPath}\"";
+
+                using var process = Process.Start(psi);
+                var output = process.StandardOutput.ReadToEnd();
+                var errors = process.StandardError.ReadToEnd();
+                process.WaitForExit();
+
+                if (process.ExitCode != 0)
+                {
+                    return StatusCode(500, $"Erreur lors de l'importation de la facture.\n{errors}");
+                }
+
+                return Ok(new { message = "📄 Importation réussie", output });
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"❌ Exception: {ex.Message}");
+            }
+        }
 
 
         // DTOs
         public class CreateFactureDto
         {
-            public int NumFacture { get; set; }
+            public string NumFacture { get; set; }
             public DateTime Date { get; set; }
             public bool EstPayee { get; set; }
             public int EntrepriseId { get; set; }

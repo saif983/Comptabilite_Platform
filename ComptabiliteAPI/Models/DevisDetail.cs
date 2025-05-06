@@ -1,22 +1,22 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations; // Required for [Key]
-using System.ComponentModel.DataAnnotations.Schema; // Optional for table mapping
+using ComptabiliteAPI.Models;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
-namespace ComptabiliteAPI.Models
+public class DevisDetail
 {
-    public class DevisDetail
-    {
-        public int Id { get; set; }
-        public int DevisId { get; set; }
-        public Devis Devis { get; set; }
+    [Key]
+    public int Id { get; set; }
 
-        public int ProduitServiceId { get; set; }
-        public ProduitService ProduitService { get; set; }
+    [ForeignKey("Devis")]
+    public int DevisId { get; set; }
+    public Devis Devis { get; set; }
 
-        public int Quantite { get; set; }
-        public decimal PrixTotal => Quantite * ProduitService.PrixUnitaire * (1 + ProduitService.TVA / 100);
-    }
+    [ForeignKey("ProduitService")]
+    public int ProduitServiceId { get; set; }
+    public ProduitService ProduitService { get; set; }
 
+    public int Quantite { get; set; }
 
+    [NotMapped]
+    public decimal PrixTotal => Quantite * ProduitService.PrixUnitaire * (1 + ProduitService.TVA / 100);
 }

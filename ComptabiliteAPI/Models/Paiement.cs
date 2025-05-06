@@ -14,7 +14,7 @@ namespace ComptabiliteAPI.Models
         public int? FactureId { get; set; }
         public decimal Montant { get; set; }
         public DateTime DatePaiement { get; set; }
-        public string ModePaiement { get; set; }
+        public string? ModePaiement { get; set; }
         public TypeTransaction Type { get; set; }
         public string Description { get; set; }
 

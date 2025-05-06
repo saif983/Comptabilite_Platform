@@ -20,7 +20,7 @@ export class FactureComponent implements OnInit {
   factures: any[] = [];
   filteredFactures: any[] = [];
   selectedEntrepriseId: number | null = null;
-  activeTab: 'create' | 'list' = 'list'; // Par défaut on affiche la liste
+  activeTab: 'create' | 'list' | 'payment' = 'list'; // Ajout de l'onglet payment
   
   // Propriétés pour les filtres
   searchTerm: string = '';
@@ -39,9 +39,13 @@ export class FactureComponent implements OnInit {
   itemsPerPage: number = 10;
   totalPages: number = 1;
 
+  // Propriétés pour les paiements
+  paiementForm: FormGroup;
+  selectedFacture: any = null;
+  paiements: any[] = [];
+
   constructor(private fb: FormBuilder, private factureService: FactureService) {
     this.factureForm = this.fb.group({
-      numFacture: ['', Validators.required],
       date: [new Date().toISOString().substring(0, 10), Validators.required],
       nomClient: ['', Validators.required],
       adressClient: ['', Validators.required],
@@ -51,6 +55,19 @@ export class FactureComponent implements OnInit {
       entrepriseId: ['', Validators.required],
       modePaiement: [''],
       produitsServices: this.fb.array([])
+    });
+
+    // Initialiser le formulaire de paiement
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    this.paiementForm = this.fb.group({
+      factureId: [null, Validators.required],
+      montant: [0, [Validators.required, Validators.min(0.01)]],
+      datePaiement: [tomorrow.toISOString().substring(0, 10), Validators.required],
+      modePaiement: ['Bancaire', Validators.required],
+      description: ['', Validators.required],
+      type: [0, Validators.required] // 0 pour Actif par défaut
     });
   }
 
@@ -125,6 +142,27 @@ export class FactureComponent implements OnInit {
   
     this.addProduit(); // Champ par défaut
     this.onEstPayeeChange();
+
+    // Chargement des paiements
+    this.chargerPaiements();
+  }
+
+  // Méthode pour charger tous les paiements
+  chargerPaiements() {
+    this.factureService.getAllPaiements().subscribe({
+      next: (res) => {
+        if (res.$values) {
+          this.paiements = res.$values;
+        } else {
+          this.paiements = [];
+          console.warn("Format de réponse inattendu pour les paiements:", res);
+        }
+      },
+      error: (err) => {
+        console.error("Erreur chargement paiements:", err);
+        this.paiements = [];
+      }
+    });
   }
 
   // Applique tous les filtres aux factures
@@ -326,7 +364,7 @@ export class FactureComponent implements OnInit {
     const formValue = this.factureForm.value;
   
     const dto = {
-      numFacture: Number(formValue.numFacture),
+      numFacture: "", // Sending empty string since backend auto-generates it
       date: formValue.date,
       nomClient: formValue.nomClient,
       adressClient: formValue.adressClient,
@@ -362,6 +400,114 @@ export class FactureComponent implements OnInit {
       error: (err) => {
         console.error(err);
         alert('❌ Erreur lors de la création de la facture.');
+      }
+    });
+  }
+
+  // Méthode pour gérer l'importation de facture PDF
+  onPDFFileSelected(event: any): void {
+    const file = event.target.files[0];
+    if (file && file.type === 'application/pdf') {
+      this.factureService.importerFacturePDF(file).subscribe({
+        next: (response) => {
+          alert('✅ ' + response.message);
+          // Recharger les factures après import réussi
+          if (this.selectedEntrepriseId) {
+            this.chargerFactures();
+          }
+        },
+        error: (error) => {
+          console.error('Erreur lors de l\'importation de la facture:', error);
+          alert('❌ Erreur lors de l\'importation de la facture PDF: ' + 
+                (error.error?.message || error.message || 'Une erreur est survenue'));
+        }
+      });
+      
+      // Réinitialiser l'input file pour permettre de sélectionner le même fichier à nouveau
+      event.target.value = '';
+    } else if (file) {
+      alert('❌ Veuillez sélectionner un fichier PDF valide.');
+      event.target.value = '';
+    }
+  }
+
+  // Nouvelles méthodes pour la gestion des paiements
+  ouvrirFormulairePaiement(facture: any) {
+    this.selectedFacture = facture;
+    
+    // Use tomorrow's date as default for payment
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    // Calculate remaining amount to pay
+    const montantRestant = this.calculerMontantRestant(facture);
+    
+    this.paiementForm.patchValue({
+      factureId: facture.id,
+      montant: montantRestant,
+      datePaiement: tomorrow.toISOString().substring(0, 10),
+      modePaiement: 'Bancaire',
+      description: `Paiement pour facture numéro ${facture.numFacture}`,
+      type: 0 // 0 for Actif
+    });
+    
+    console.log('Payment form initialized with:', this.paiementForm.value);
+    this.activeTab = 'payment';
+  }
+
+  calculerMontantRestant(facture: any): number {
+    // Calculer le montant déjà payé
+    let montantPaye = 0;
+    if (facture.paiements && facture.paiements.$values) {
+      montantPaye = facture.paiements.$values.reduce((acc: number, paiement: any) => acc + paiement.montant, 0);
+    }
+    
+    // Calculer le montant restant arrondi à 2 décimales
+    return Math.round((facture.montantTotal - montantPaye) * 100) / 100;
+  }
+
+  soumettreFormulairePaiement() {
+    if (this.paiementForm.invalid) {
+      alert("Formulaire de paiement invalide");
+      return;
+    }
+
+    // Create a copy of the form value to avoid modifying the original
+    const formValue = { ...this.paiementForm.value };
+    
+    // Ensure the date is in the format expected by the backend
+    if (formValue.datePaiement) {
+      // Convert local date to UTC format
+      const date = new Date(formValue.datePaiement);
+      formValue.datePaiement = date.toISOString();
+    }
+    
+    // Ensure numeric values are parsed as numbers
+    formValue.factureId = Number(formValue.factureId);
+    formValue.montant = Number(formValue.montant);
+    formValue.type = Number(formValue.type);
+    
+    console.log('Sending payment data:', JSON.stringify(formValue, null, 2));
+    
+    this.factureService.ajouterPaiement(formValue).subscribe({
+      next: (response) => {
+        alert('✅ ' + response.message);
+        this.activeTab = 'list';
+        this.chargerFactures();
+        this.chargerPaiements();
+      },
+      error: (error) => {
+        console.error('Erreur lors de l\'ajout du paiement:', error);
+        
+        // More detailed error information
+        if (error.error && error.error.message) {
+          alert('❌ Erreur: ' + error.error.message);
+        } else if (error.status === 500) {
+          alert('❌ Erreur serveur (500). Vérifiez les données du formulaire ou contactez l\'administrateur.');
+        } else {
+          alert('❌ Erreur lors de l\'ajout du paiement: ' + 
+                (error.statusText || 'Une erreur est survenue'));
+        }
       }
     });
   }

@@ -226,8 +226,9 @@ namespace ComptabiliteAPI.Migrations
                     b.Property<decimal>("MontantTotal")
                         .HasColumnType("numeric");
 
-                    b.Property<int>("NumDevis")
-                        .HasColumnType("integer");
+                    b.Property<string>("NumDevis")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Statut")
                         .IsRequired()
@@ -240,32 +241,6 @@ namespace ComptabiliteAPI.Migrations
                     b.HasIndex("EntrepriseId");
 
                     b.ToTable("Devis");
-                });
-
-            modelBuilder.Entity("ComptabiliteAPI.Models.DevisDetail", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("DevisId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ProduitServiceId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Quantite")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DevisId");
-
-                    b.HasIndex("ProduitServiceId");
-
-                    b.ToTable("DevisDetails");
                 });
 
             modelBuilder.Entity("ComptabiliteAPI.Models.Entreprise", b =>
@@ -350,8 +325,9 @@ namespace ComptabiliteAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("NumFacture")
-                        .HasColumnType("integer");
+                    b.Property<string>("NumFacture")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<decimal>("THT")
                         .HasColumnType("numeric");
@@ -426,7 +402,6 @@ namespace ComptabiliteAPI.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("ModePaiement")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<decimal>("Montant")
@@ -529,6 +504,32 @@ namespace ComptabiliteAPI.Migrations
                     b.ToTable("Utilisateurs");
                 });
 
+            modelBuilder.Entity("DevisDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DevisId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProduitServiceId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Quantite")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DevisId");
+
+                    b.HasIndex("ProduitServiceId");
+
+                    b.ToTable("DevisDetails");
+                });
+
             modelBuilder.Entity("ComptabiliteAPI.Models.Bilan", b =>
                 {
                     b.HasOne("ComptabiliteAPI.Models.Entreprise", "Entreprise")
@@ -591,25 +592,6 @@ namespace ComptabiliteAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("Entreprise");
-                });
-
-            modelBuilder.Entity("ComptabiliteAPI.Models.DevisDetail", b =>
-                {
-                    b.HasOne("ComptabiliteAPI.Models.Devis", "Devis")
-                        .WithMany()
-                        .HasForeignKey("DevisId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ComptabiliteAPI.Models.ProduitService", "ProduitService")
-                        .WithMany()
-                        .HasForeignKey("ProduitServiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Devis");
-
-                    b.Navigation("ProduitService");
                 });
 
             modelBuilder.Entity("ComptabiliteAPI.Models.Entreprise", b =>
@@ -716,9 +698,33 @@ namespace ComptabiliteAPI.Migrations
                     b.Navigation("DefaultEntreprise");
                 });
 
+            modelBuilder.Entity("DevisDetail", b =>
+                {
+                    b.HasOne("ComptabiliteAPI.Models.Devis", "Devis")
+                        .WithMany("DevisDetails")
+                        .HasForeignKey("DevisId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ComptabiliteAPI.Models.ProduitService", "ProduitService")
+                        .WithMany()
+                        .HasForeignKey("ProduitServiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Devis");
+
+                    b.Navigation("ProduitService");
+                });
+
             modelBuilder.Entity("ComptabiliteAPI.Models.Abonnement", b =>
                 {
                     b.Navigation("Utilisateurs");
+                });
+
+            modelBuilder.Entity("ComptabiliteAPI.Models.Devis", b =>
+                {
+                    b.Navigation("DevisDetails");
                 });
 
             modelBuilder.Entity("ComptabiliteAPI.Models.Entreprise", b =>

@@ -14,6 +14,7 @@ import { EntrepriseService, EntrepriseModel } from '../core/services/entreprise.
 import { fuseAnimations } from '@fuse/animations';
 import { Subject, takeUntil } from 'rxjs';
 import { UserService } from 'app/core/user/user.service';
+import { factureRoutes } from '../facture/facture.routes';
 
 @Component({
   selector: 'app-entreprise-detail',
@@ -250,7 +251,7 @@ import { UserService } from 'app/core/user/user.service';
               <button 
                 mat-stroked-button 
                 class="justify-start" 
-                [routerLink]="['/entreprises', entrepriseId, 'factures']">
+                [routerLink]="['/entreprises', entrepriseId, 'factureRoutes']">
                 <mat-icon class="mr-2">receipt</mat-icon>
                 Factures
               </button>

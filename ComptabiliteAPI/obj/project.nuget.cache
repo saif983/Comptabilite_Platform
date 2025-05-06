@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "9lm04oZc2v4=",
+  "dgSpecHash": "hG4F0ohLeGs=",
   "success": true,
   "projectFilePath": "C:\\Users\\saif\\Music\\PFE\\ComptabiliteAPI\\ComptabiliteAPI.csproj",
   "expectedPackageFiles": [
@@ -73,7 +73,7 @@
     "C:\\Users\\saif\\.nuget\\packages\\mono.texttemplating\\3.0.0\\mono.texttemplating.3.0.0.nupkg.sha512",
     "C:\\Users\\saif\\.nuget\\packages\\npgsql\\9.0.2\\npgsql.9.0.2.nupkg.sha512",
     "C:\\Users\\saif\\.nuget\\packages\\npgsql.entityframeworkcore.postgresql\\9.0.3\\npgsql.entityframeworkcore.postgresql.9.0.3.nupkg.sha512",
-    "C:\\Users\\saif\\.nuget\\packages\\questpdf\\2025.4.0\\questpdf.2025.4.0.nupkg.sha512",
+    "C:\\Users\\saif\\.nuget\\packages\\questpdf\\2025.4.2\\questpdf.2025.4.2.nupkg.sha512",
     "C:\\Users\\saif\\.nuget\\packages\\swashbuckle.aspnetcore\\7.3.1\\swashbuckle.aspnetcore.7.3.1.nupkg.sha512",
     "C:\\Users\\saif\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\7.3.1\\swashbuckle.aspnetcore.swagger.7.3.1.nupkg.sha512",
     "C:\\Users\\saif\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\7.3.1\\swashbuckle.aspnetcore.swaggergen.7.3.1.nupkg.sha512",

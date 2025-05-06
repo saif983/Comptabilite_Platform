@@ -11,6 +11,8 @@
         <input type="text" placeholder="Rechercher dans mes factures..." [(ngModel)]="searchTerm" class="search-input">
         <span class="search-icon">🔍</span>
       </div>
+      <input type="file" #pdfFileInput style="display: none" accept="application/pdf" (change)="onPDFFileSelected($event)">
+      <button class="import-facture-btn red-light-btn" (click)="pdfFileInput.click()">Importer PDF</button>
       <button class="new-facture-btn green-btn" (click)="activeTab = 'create'">Nouvelle facture</button>
     </div>
   </div>
@@ -26,10 +28,6 @@
       <div class="form-section">
         <h3>Informations générales</h3>
         <div class="form-row">
-          <div class="form-group">
-            <label>Numéro de facture</label>
-            <input type="number" formControlName="numFacture" class="green-input">
-          </div>
           <div class="form-group">
             <label>Date</label>
             <input type="date" formControlName="date" class="green-input">
@@ -115,6 +113,80 @@
         <button type="submit" [disabled]="factureForm.invalid" class="submit-btn green-btn">Créer la facture</button>
       </div>
     </form>
+  </div>
+
+  <!-- Onglet paiement (affiché uniquement quand activeTab === 'payment') -->
+  <div *ngIf="activeTab === 'payment'" class="payment-panel">
+    <div class="panel-header">
+      <h2>Effectuer un paiement</h2>
+      <button class="close-btn" (click)="activeTab = 'list'">×</button>
+    </div>
+
+    <div *ngIf="selectedFacture" class="facture-details">
+      <div class="facture-info">
+        <h3>Détails de la facture</h3>
+        <p><strong>Numéro:</strong> {{ selectedFacture.numFacture }}</p>
+        <p><strong>Client:</strong> {{ selectedFacture.nomClient }}</p>
+        <p><strong>Montant total:</strong> {{ selectedFacture.montantTotal | number:'1.2-2' }} DT</p>
+        <p><strong>Statut:</strong> <span [ngClass]="selectedFacture.estPayee ? 'paid-status' : 'unpaid-status'">
+          {{ selectedFacture.estPayee ? 'Payée' : 'Non payée' }}
+        </span></p>
+      </div>
+
+      <form [formGroup]="paiementForm" (ngSubmit)="soumettreFormulairePaiement()" class="payment-form">
+        <div class="form-section">
+          <h3>Détails du paiement</h3>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label>Montant</label>
+              <input type="number" formControlName="montant" step="0.01" min="0.01" class="green-input">
+              <div *ngIf="paiementForm.get('montant')?.invalid && paiementForm.get('montant')?.touched" class="error-message">
+                Le montant doit être supérieur à 0
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label>Date de paiement</label>
+              <input type="date" formControlName="datePaiement" class="green-input">
+              <div *ngIf="paiementForm.get('datePaiement')?.invalid && paiementForm.get('datePaiement')?.touched" class="error-message">
+                La date est requise
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label>Mode de paiement</label>
+              <select formControlName="modePaiement" class="green-select">
+                <option value="Bancaire">Virement bancaire</option>
+                <option value="Espèce">Espèces</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label>Type de transaction</label>
+              <select formControlName="type" class="green-select">
+                <option [ngValue]="0">Actif</option>
+                <option [ngValue]="1">Passif</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>Description</label>
+            <textarea formControlName="description" rows="3" class="green-textarea"></textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="cancel-btn" (click)="activeTab = 'list'">Annuler</button>
+          <button type="submit" [disabled]="paiementForm.invalid" class="submit-btn green-btn">
+            Enregistrer le paiement
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <!-- Liste des factures (affiché par défaut ou quand activeTab === 'list') -->
@@ -227,6 +299,7 @@
               </span>
             </td>
             <td class="actions-cell">
+              <button *ngIf="!facture.estPayee" class="action-btn payment-btn green-btn-sm" title="Effectuer un paiement" (click)="ouvrirFormulairePaiement(facture)">💰</button>
               <button class="action-btn view-btn green-icon-btn" title="Voir détails">🔍</button>
               <button class="action-btn print-btn green-icon-btn" title="Imprimer">🖨️</button>
               <button class="action-btn more-btn green-icon-btn" title="Plus d'options">⋯</button>

@@ -8,7 +8,7 @@ namespace ComptabiliteAPI.Models
     public class Facture
     {
         public int Id { get; set; }
-        public int NumFacture { get; set; }
+        public string NumFacture { get; set; }
         public DateTime Date { get; set; }
         public bool EstPayee { get; set; }
         public int EntrepriseId { get; set; }

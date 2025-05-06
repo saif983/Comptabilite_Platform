@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 
 @Injectable({
@@ -9,6 +9,7 @@ export class FactureService {
   private apiFactureUrl = 'https://localhost:7141/api/facture';
   private apiProduitServiceUrl = 'https://localhost:7141/api/ProduitService';
   private apiEntrepriseUrl = 'https://localhost:7141/api/entreprises';
+  private apiPaiementUrl = 'https://localhost:7141/api/paiement';
 
   constructor(private http: HttpClient) {}
 
@@ -32,5 +33,25 @@ export class FactureService {
     });
   }
   
+  importerFacturePDF(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    return this.http.post(`${this.apiFactureUrl}/importer-pdf`, formData);
+  }
   
+  // Méthodes pour la gestion des paiements
+  getAllPaiements(): Observable<any> {
+    return this.http.get<any>(`${this.apiPaiementUrl}/all`);
+  }
+  
+  ajouterPaiement(paiement: any): Observable<any> {
+    console.log('Service - Sending payment data:', JSON.stringify(paiement, null, 2));
+    
+    return this.http.post(`${this.apiPaiementUrl}/ajouter`, paiement, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    });
+  }
 }

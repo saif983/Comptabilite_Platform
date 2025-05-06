@@ -52,6 +52,13 @@ var tab: FuseNavigationItem[]=[{
     icon: 'heroicons_outline:clipboard-document-check',
     link: '/dashboards/listfactures'
 },
+{
+    id: 'dashboards.listdevis',
+    title: 'Devis',
+    type: 'basic' as 'basic',
+    icon: 'heroicons_outline:document-text',
+    link: '/dashboards/listdevis'
+},
 
 {
     id: "dashboards.listfournisseurs",
@@ -870,6 +877,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 type: 'basic' as 'basic',
                 icon: 'heroicons_outline:document-text',
                 link: '/pages/facture'
+            },
+            {
+                id: 'pages.devis',
+                title: 'Devis',
+                type: 'basic' as 'basic',
+                icon: 'heroicons_outline:document',
+                link: '/pages/devis'
             },
         ],
     },

@@ -408,3 +408,4 @@ C:\Users\saif\Music\PFE\ComptabiliteAPI\obj\Debug\net8.0\scopedcss\bundle\Compta
 C:\Users\saif\Music\PFE\ComptabiliteAPI\obj\Debug\net8.0\Comptabi.D91EFAA4.Up2Date
 C:\Users\saif\Music\PFE\ComptabiliteAPI\obj\Debug\net8.0\ComptabiliteAPI.genruntimeconfig.cache
 C:\Users\saif\Music\PFE\ComptabiliteAPI\obj\Debug\net8.0\ref\ComptabiliteAPI.dll
+C:\Users\saif\Music\PFE\ComptabiliteAPI\obj\Debug\net8.0\ComptabiliteAPI.sourcelink.json

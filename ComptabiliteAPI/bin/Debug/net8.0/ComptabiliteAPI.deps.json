@@ -20,7 +20,7 @@
           "Microsoft.IdentityModel.Tokens": "7.1.2",
           "MimeKit": "4.11.0",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.3",
-          "QuestPDF": "2025.4.0",
+          "QuestPDF": "2025.4.2",
           "Swashbuckle.AspNetCore": "7.3.1",
           "System.IdentityModel.Tokens.Jwt": "7.1.2"
         },
@@ -871,11 +871,11 @@
           }
         }
       },
-      "QuestPDF/2025.4.0": {
+      "QuestPDF/2025.4.2": {
         "runtime": {
           "lib/net8.0/QuestPDF.dll": {
-            "assemblyVersion": "2025.4.0.0",
-            "fileVersion": "2025.4.0.0"
+            "assemblyVersion": "2025.4.2.0",
+            "fileVersion": "2025.4.2.0"
           }
         },
         "runtimeTargets": {
@@ -1729,12 +1729,12 @@
       "path": "npgsql.entityframeworkcore.postgresql/9.0.3",
       "hashPath": "npgsql.entityframeworkcore.postgresql.9.0.3.nupkg.sha512"
     },
-    "QuestPDF/2025.4.0": {
+    "QuestPDF/2025.4.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-IgLeBf/niXR/r8eRMomwD7TXKJELnIsZX/biOV29zpY1XIztl2DgfZFFoHCLX0dRzmVDy+YG/GfCkUjOMqXzCA==",
-      "path": "questpdf/2025.4.0",
-      "hashPath": "questpdf.2025.4.0.nupkg.sha512"
+      "sha512": "sha512-5x6P87aXvzrBbGn3LIw8I96FuMhEpL59heYyxQ4S/2vHxjVzS9EKwxuGSoa57gYH6TtScY/4427yQOQxP2ghUg==",
+      "path": "questpdf/2025.4.2",
+      "hashPath": "questpdf.2025.4.2.nupkg.sha512"
     },
     "Swashbuckle.AspNetCore/7.3.1": {
       "type": "package",

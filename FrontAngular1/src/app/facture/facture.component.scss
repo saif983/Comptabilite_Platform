@@ -7,6 +7,7 @@ $success-light: #ecfdf5;
 $warning-color: #f59e0b;
 $warning-light: #fffbeb;
 $danger-color: #ef4444;
+$danger-light: #fee2e2; /* Rouge clair pour le bouton d'import */
 $text-dark: #1f2937;
 $text-medium: #4b5563;
 $text-light: #9ca3af;
@@ -24,7 +25,8 @@ $radius-lg: 0.5rem;
 
 /* Styles généraux pour les éléments verts */
 .green-input,
-.green-select {
+.green-select,
+.green-textarea {
   border: 2px solid $border-green !important;
   background-color: $bg-green-light !important;
   transition: all 0.2s ease;
@@ -34,6 +36,13 @@ $radius-lg: 0.5rem;
     box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.2) !important;
     outline: none;
   }
+}
+
+.green-textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: $radius-sm;
+  resize: vertical;
 }
 
 .green-select {
@@ -65,6 +74,22 @@ $radius-lg: 0.5rem;
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+  }
+}
+
+.green-btn-sm {
+  background-color: $primary-color !important;
+  color: white !important;
+  border: none !important;
+  font-weight: 500;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: $radius-sm;
+  transition: all 0.2s ease;
+  
+  &:hover:not(:disabled) {
+    background-color: $primary-dark !important;
+    transform: translateY(-1px);
   }
 }
 
@@ -142,6 +167,29 @@ $radius-lg: 0.5rem;
   &:focus {
     border-color: $primary-color !important;
     box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.2) !important;
+  }
+}
+
+/* Bouton rouge clair pour l'import PDF */
+.red-light-btn {
+  background-color: $danger-light !important;
+  color: $danger-color !important;
+  border: 1px solid $danger-color !important;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-right: 0.75rem;
+  
+  &:hover {
+    background-color: lighten($danger-color, 38%) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+  }
+  
+  &:active {
+    transform: translateY(0);
   }
 }
 
@@ -424,6 +472,187 @@ body {
   }
 }
 
+/* Payment Panel Styles */
+.payment-panel {
+  background-color: $bg-white;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-md;
+  margin: 1rem 2rem;
+  overflow: hidden;
+  border: 1px solid $border-green;
+  
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid $border-green;
+    background-color: $primary-light;
+    
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: $primary-dark;
+    }
+    
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: $text-light;
+      cursor: pointer;
+      
+      &:hover {
+        color: $primary-dark;
+      }
+    }
+  }
+  
+  .facture-details {
+    padding: 1.5rem;
+    
+    .facture-info {
+      background-color: $bg-green-light;
+      border: 1px solid $border-green;
+      border-radius: $radius-md;
+      padding: 1.25rem;
+      margin-bottom: 2rem;
+      
+      h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: $primary-dark;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid $border-green;
+      }
+      
+      p {
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        
+        strong {
+          font-weight: 600;
+          color: $text-dark;
+          margin-right: 0.5rem;
+        }
+      }
+      
+      .paid-status {
+        font-weight: 500;
+        color: $success-color;
+        background-color: $success-light;
+        padding: 0.2rem 0.5rem;
+        border-radius: $radius-sm;
+      }
+      
+      .unpaid-status {
+        font-weight: 500;
+        color: $warning-color;
+        background-color: $warning-light;
+        padding: 0.2rem 0.5rem;
+        border-radius: $radius-sm;
+      }
+    }
+    
+    .payment-form {
+      .form-section {
+        margin-bottom: 2rem;
+        
+        h3 {
+          font-size: 1rem;
+          font-weight: 600;
+          color: $primary-dark;
+          margin-bottom: 1rem;
+          padding-bottom: 0.5rem;
+          border-bottom: 1px solid $border-green;
+        }
+      }
+      
+      .form-row {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        
+        .form-group {
+          flex: 1;
+        }
+      }
+      
+      .form-group {
+        margin-bottom: 1rem;
+        
+        label {
+          display: block;
+          font-size: 0.875rem;
+          color: $text-medium;
+          margin-bottom: 0.5rem;
+        }
+        
+        input, select, textarea {
+          width: 100%;
+          padding: 0.5rem;
+          border: 1px solid $border-green;
+          border-radius: $radius-sm;
+          font-size: 0.875rem;
+          background-color: $bg-green-light;
+          
+          &:focus {
+            outline: none;
+            border-color: $primary-color;
+            box-shadow: 0 0 0 1px $primary-light;
+          }
+        }
+        
+        .error-message {
+          color: $danger-color;
+          font-size: 0.75rem;
+          margin-top: 0.25rem;
+        }
+      }
+      
+      .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        margin-top: 2rem;
+        
+        button {
+          padding: 0.5rem 1.5rem;
+          border-radius: $radius-md;
+          font-weight: 500;
+          cursor: pointer;
+        }
+        
+        .cancel-btn {
+          background-color: $bg-lighter;
+          border: 1px solid $border-color;
+          color: $text-medium;
+          
+          &:hover {
+            background-color: $border-color;
+          }
+        }
+        
+        .submit-btn {
+          background-color: $primary-color;
+          border: none;
+          color: white;
+          
+          &:hover {
+            background-color: $primary-dark;
+          }
+          
+          &:disabled {
+            background-color: $text-light;
+            cursor: not-allowed;
+          }
+        }
+      }
+    }
+  }
+}
+
 /* List Factures Panel */
 .list-factures-panel {
   display: flex;
@@ -632,6 +861,18 @@ body {
               &.more-btn:hover {
                 color: $text-dark;
               }
+              
+              &.payment-btn {
+                color: white;
+                background-color: $primary-color;
+                padding: 0.25rem 0.5rem;
+                border-radius: $radius-sm;
+                
+                &:hover {
+                  background-color: $primary-dark;
+                  transform: translateY(-1px);
+                }
+              }
             }
           }
         }
@@ -704,7 +945,7 @@ body {
     }
   }
   
-  .facture-form {
+  .facture-form, .payment-form {
     .form-row {
       flex-direction: column;
       gap: 0;
@@ -721,7 +962,7 @@ body {
     }
   }
   
-  .list-factures-panel, .create-facture-panel {
+  .list-factures-panel, .create-facture-panel, .payment-panel {
     margin: 1rem;
   }
   

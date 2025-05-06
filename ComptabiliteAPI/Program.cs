@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using QuestPDF.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 // 👉 Ajouter le service CORS
@@ -18,6 +19,7 @@ builder.Services.AddCors(options =>
             .AllowCredentials();
     });
 });
+QuestPDF.Settings.License = LicenseType.Community;
 
 
 // 👉 Ajouter le service DbContext avec PostgreSQL

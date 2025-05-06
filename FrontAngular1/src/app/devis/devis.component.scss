@@ -1,0 +1,1097 @@
+/* Variables SCSS */
+$primary-blue: #4f46e5; /* Indigo */
+$primary-blue-light: #e0e7ff; /* Indigo clair très pâle */
+$primary-blue-dark: #4338ca; /* Indigo moyen */
+$success-color: #10b981; /* Vert émeraude */
+$success-light: #ecfdf5;
+$warning-color: #f59e0b;
+$warning-light: #fffbeb;
+$danger-color: #ef4444;
+$text-dark: #1f2937;
+$text-medium: #4b5563;
+$text-light: #9ca3af;
+$bg-white: #ffffff;
+$bg-light: #f9fafb;
+$bg-lighter: #f3f4f6;
+$bg-blue-light: #eef2ff; /* Fond bleu très pâle */
+$border-color: #e5e7eb;
+$border-blue: #a5b4fc; /* Bordure bleu clair */
+$shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+$shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+$radius-sm: 0.2rem;
+$radius-md: 0.375rem;
+$radius-lg: 0.5rem;
+
+/* Styles généraux pour les éléments bleus */
+.blue-input,
+.blue-select {
+  border: 2px solid $border-blue !important;
+  background-color: $bg-blue-light !important;
+  transition: all 0.2s ease;
+  
+  &:focus {
+    border-color: $primary-blue !important;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2) !important;
+    outline: none;
+  }
+}
+
+.blue-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234338ca' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1em;
+  padding-right: 2rem;
+}
+
+.blue-btn {
+  background-color: $primary-blue !important;
+  color: white !important;
+  border: none !important;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  
+  &:hover:not(:disabled) {
+    background-color: $primary-blue-dark !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.blue-outline-btn {
+  background-color: $bg-blue-light !important;
+  color: $primary-blue-dark !important;
+  border: 2px dashed $primary-blue !important;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: $primary-blue-light !important;
+    border-style: solid !important;
+  }
+}
+
+.blue-icon-btn {
+  color: $primary-blue-dark !important;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: scale(1.2);
+  }
+}
+
+.blue-page-btn {
+  background-color: $bg-blue-light !important;
+  border: 1px solid $border-blue !important;
+  color: $primary-blue-dark !important;
+  
+  &:hover:not(:disabled) {
+    background-color: $primary-blue-light !important;
+    border-color: $primary-blue !important;
+  }
+}
+
+/* Styles de la barre de recherche */
+.search-input {
+  border: 2px solid $border-blue !important;
+  background-color: $bg-blue-light !important;
+  border-radius: $radius-md;
+  padding-left: 2.5rem !important;
+  transition: all 0.2s ease;
+  
+  &:focus {
+    border-color: $primary-blue !important;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2) !important;
+  }
+}
+
+/* Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: $bg-light;
+  color: $text-dark;
+}
+
+.devis-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  background-color: $bg-blue-light;
+}
+
+/* Header Styles */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: $bg-white;
+  border-bottom: 1px solid $border-blue;
+  box-shadow: $shadow-sm;
+  
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: $primary-blue-dark;
+  }
+  
+  .user-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .search-box {
+    position: relative;
+    
+    input {
+      padding: 0.5rem 1rem 0.5rem 2.5rem;
+      border: 1px solid $border-blue;
+      border-radius: $radius-md;
+      width: 300px;
+      font-size: 0.875rem;
+      background-color: $bg-blue-light;
+      
+      &:focus {
+        outline: none;
+        border-color: $primary-blue;
+        box-shadow: 0 0 0 1px $primary-blue-light;
+      }
+    }
+    
+    .search-icon {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: $primary-blue-dark;
+    }
+  }
+  
+  .new-devis-btn {
+    background-color: $primary-blue;
+    color: white;
+    border: none;
+    border-radius: $radius-md;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    
+    &:hover {
+      background-color: $primary-blue-dark;
+    }
+  }
+}
+
+/* Create Devis Panel */
+.create-devis-panel {
+  background-color: $bg-white;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-md;
+  margin: 1rem 2rem;
+  overflow: hidden;
+  border: 1px solid $border-blue;
+  
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid $border-blue;
+    background-color: $primary-blue-light;
+    
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: $primary-blue-dark;
+    }
+    
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: $text-light;
+      cursor: pointer;
+      
+      &:hover {
+        color: $primary-blue-dark;
+      }
+    }
+  }
+  
+  .devis-form {
+    padding: 1.5rem;
+    
+    .form-section {
+      margin-bottom: 2rem;
+      
+      h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: $primary-blue-dark;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid $border-blue;
+      }
+    }
+    
+    .form-row {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      
+      .form-group {
+        flex: 1;
+      }
+    }
+    
+    .form-group {
+      margin-bottom: 1rem;
+      
+      label {
+        display: block;
+        font-size: 0.875rem;
+        color: $text-medium;
+        margin-bottom: 0.5rem;
+      }
+      
+      input, select {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid $border-blue;
+        border-radius: $radius-sm;
+        font-size: 0.875rem;
+        background-color: $bg-blue-light;
+        
+        &:focus {
+          outline: none;
+          border-color: $primary-blue;
+          box-shadow: 0 0 0 1px $primary-blue-light;
+        }
+      }
+    }
+    
+    .produits-list {
+      .produit-item {
+        background-color: $primary-blue-light;
+        border-radius: $radius-sm;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border: 1px solid $border-blue;
+        
+        .produit-select {
+          flex: 2;
+        }
+        
+        .quantite-input {
+          flex: 1;
+        }
+        
+        .remove-btn {
+          background: none;
+          border: none;
+          color: $danger-color;
+          font-size: 1.25rem;
+          cursor: pointer;
+          margin-top: 1.5rem;
+        }
+      }
+    }
+    
+    .add-product-btn {
+      background-color: $primary-blue-light;
+      border: 1px dashed $primary-blue;
+      color: $primary-blue-dark;
+      padding: 0.5rem 1rem;
+      width: 100%;
+      text-align: center;
+      border-radius: $radius-sm;
+      cursor: pointer;
+      transition: all 0.2s;
+      
+      &:hover {
+        background-color: $primary-blue-light;
+        border-color: $primary-blue-dark;
+      }
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      margin-top: 2rem;
+      
+      button {
+        padding: 0.5rem 1.5rem;
+        border-radius: $radius-md;
+        font-weight: 500;
+        cursor: pointer;
+      }
+      
+      .cancel-btn {
+        background-color: $bg-lighter;
+        border: 1px solid $border-color;
+        color: $text-medium;
+        
+        &:hover {
+          background-color: $border-color;
+        }
+      }
+      
+      .submit-btn {
+        background-color: $primary-blue;
+        border: none;
+        color: white;
+        
+        &:hover {
+          background-color: $primary-blue-dark;
+        }
+        
+        &:disabled {
+          background-color: $text-light;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+}
+
+/* List Devis Panel */
+.list-devis-panel {
+  display: flex;
+  flex-direction: column;
+  margin: 1rem 2rem;
+  
+  .filters-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    background-color: $bg-white;
+    padding: 1rem;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-sm;
+    border: 1px solid $border-blue;
+    
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      
+      label {
+        font-size: 0.75rem;
+        color: $primary-blue-dark;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 500;
+      }
+      
+      .filter-control {
+        position: relative;
+        
+        span {
+          position: absolute;
+          left: 0.5rem;
+          top: 50%;
+          transform: translateY(-50%);
+          color: $primary-blue-dark;
+          font-size: 0.875rem;
+        }
+        
+        input, select {
+          padding: 0.5rem 0.5rem 0.5rem 2rem;
+          border: 1px solid $border-blue;
+          border-radius: $radius-md;
+          font-size: 0.875rem;
+          background-color: $bg-blue-light;
+          
+          &:focus {
+            outline: none;
+            border-color: $primary-blue;
+            box-shadow: 0 0 0 1px $primary-blue-light;
+          }
+        }
+        
+        input {
+          width: 140px;
+        }
+        
+        select {
+          width: 140px;
+          appearance: none;
+          background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234338ca' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+          background-repeat: no-repeat;
+          background-position: right 0.5rem center;
+          background-size: 1em;
+        }
+      }
+      
+      &.enterprise-filter {
+        flex-grow: 1;
+        
+        .filter-control select {
+          width: 100%;
+        }
+      }
+    }
+  }
+  
+  .devis-table-wrapper {
+    background-color: $bg-white;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-sm;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    border: 1px solid $border-blue;
+    
+    .devis-table {
+      width: 100%;
+      border-collapse: collapse;
+      
+      th, td {
+        padding: 0.75rem 1rem;
+        text-align: left;
+      }
+      
+      th {
+        background-color: $primary-blue-light;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: $primary-blue-dark;
+        border-bottom: 1px solid $border-blue;
+        white-space: nowrap;
+        
+        &.sortable {
+          cursor: pointer;
+          
+          &:hover {
+            background-color: $primary-blue;
+            color: white;
+          }
+          
+          .sort-icon {
+            font-size: 0.75rem;
+            margin-left: 0.25rem;
+            color: $text-light;
+          }
+        }
+      }
+      
+      .empty-table {
+        text-align: center;
+        color: $text-light;
+        padding: 2rem;
+      }
+      
+      .devis-row {
+        border-bottom: 1px solid $border-blue;
+        transition: background-color 0.2s;
+        
+        &:hover {
+          background-color: $bg-blue-light;
+        }
+        
+        td {
+          font-size: 0.875rem;
+          color: $text-medium;
+          
+          &.date-cell {
+            white-space: nowrap;
+          }
+          
+          &.numero-cell {
+            font-weight: 500;
+            color: $text-dark;
+            
+            .devis-icon {
+              color: $primary-blue;
+              margin-right: 0.5rem;
+            }
+          }
+          
+          &.montant-cell {
+            text-align: right;
+            font-weight: 500;
+          }
+          
+          &.statut-cell {
+            .status-badge {
+              display: inline-block;
+              padding: 0.25rem 0.5rem;
+              border-radius: 9999px;
+              font-size: 0.75rem;
+              font-weight: 500;
+              
+              &.pending {
+                background-color: $warning-light;
+                color: $warning-color;
+              }
+              
+              &.accepted {
+                background-color: $success-light;
+                color: $success-color;
+              }
+
+              &.rejected {
+                background-color: #fee2e2;
+                color: $danger-color;
+              }
+            }
+          }
+          
+          &.actions-cell {
+            white-space: nowrap;
+            
+            .action-btn {
+              background: none;
+              border: none;
+              cursor: pointer;
+              margin-right: 0.5rem;
+              color: $text-light;
+              transition: color 0.2s;
+              
+              &:hover {
+                color: $primary-blue;
+              }
+              
+              &.view-btn:hover {
+                color: $primary-blue;
+              }
+              
+              &.print-btn:hover {
+                color: $success-color;
+              }
+              
+              &.more-btn:hover {
+                color: $text-dark;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    
+    .pagination-btn {
+      background-color: $bg-white;
+      border: 1px solid $border-blue;
+      color: $primary-blue-dark;
+      width: 2rem;
+      height: 2rem;
+      border-radius: $radius-md;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      
+      &:hover:not(:disabled) {
+        border-color: $primary-blue;
+        color: $primary-blue;
+        background-color: $primary-blue-light;
+      }
+      
+      &:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+    }
+    
+    .page-info {
+      font-size: 0.875rem;
+      color: $primary-blue-dark;
+    }
+  }
+}
+
+/* Responsive Media Queries */
+@media (max-width: 1024px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    
+    .user-section {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+  
+  .filters-bar {
+    flex-direction: column;
+    
+    .filter-group {
+      width: 100%;
+      
+      .filter-control {
+        input, select {
+          width: 100% !important;
+        }
+      }
+    }
+  }
+  
+  .devis-form {
+    .form-row {
+      flex-direction: column;
+      gap: 0;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 1rem;
+    
+    .search-box input {
+      width: 200px;
+    }
+  }
+  
+  .list-devis-panel, .create-devis-panel {
+    margin: 1rem;
+  }
+  
+  .devis-table-wrapper {
+    overflow-x: auto;
+    
+    .devis-table {
+      min-width: 800px;
+    }
+  }
+}
+
+/* Styles for the status change dropdown */
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: #f9f9f9;
+  min-width: 150px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 100;
+  border-radius: 4px;
+  overflow: visible;
+  bottom: 100%;
+  margin-bottom: 5px;
+  border: 1px solid #e5e7eb;
+  max-height: none !important;
+  transform-origin: right bottom;
+  transform: translateY(0);
+}
+
+/* Styles pour forcer l'affichage complet */
+.actions-cell {
+  position: relative;
+  overflow: visible !important;
+}
+
+.devis-table-wrapper {
+  overflow: visible !important;
+}
+
+.devis-table {
+  position: relative;
+  overflow: visible !important;
+}
+
+tr.devis-row {
+  position: relative;
+  overflow: visible !important;
+}
+
+/* Style pour le dropdown en bas de tableau - affichage vers le haut */
+tr:nth-last-child(-n+3) .dropdown .dropdown-content {
+  bottom: 100%;
+  top: auto;
+  margin-bottom: 5px;
+  margin-top: 0;
+}
+
+/* Style pour le dropdown en haut de tableau - affichage vers le bas */
+tr:nth-child(-n+3) .dropdown .dropdown-content {
+  top: 100%;
+  bottom: auto;
+  margin-top: 5px;
+  margin-bottom: 0;
+}
+
+.dropdown-title {
+  padding: 8px 15px;
+  font-weight: bold;
+  color: $primary-blue-dark;
+  background-color: $primary-blue-light;
+  border-bottom: 1px solid $border-blue;
+  font-size: 14px;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-content.show {
+  display: block;
+}
+
+.dropdown-content button {
+  color: black;
+  padding: 10px 15px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  transition: background-color 0.2s;
+  font-size: 14px;
+}
+
+.dropdown-content button:hover {
+  background-color: #f1f1f1;
+}
+
+.dropdown-content button.active {
+  background-color: #e0f0ff;
+  font-weight: bold;
+}
+
+/* Styles pour le popup de statut */
+.status-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.status-popup {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  width: 400px;
+  max-width: 90%;
+  overflow: hidden;
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: $primary-blue-light;
+  border-bottom: 1px solid $border-blue;
+  
+  h3 {
+    margin: 0;
+    color: $primary-blue-dark;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  
+  .close-popup-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    color: $text-medium;
+    
+    &:hover {
+      color: $primary-blue-dark;
+    }
+  }
+}
+
+.popup-content {
+  padding: 20px;
+}
+
+.status-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.status-option {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 15px;
+  border: 1px solid $border-color;
+  border-radius: 6px;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+  
+  &:hover {
+    background-color: $bg-lighter;
+  }
+  
+  &.active {
+    border-color: $primary-blue;
+    background-color: $primary-blue-light;
+  }
+  
+  .status-icon {
+    font-size: 20px;
+    
+    &.pending {
+      color: $warning-color;
+    }
+    
+    &.accepted {
+      color: $success-color;
+    }
+    
+    &.rejected {
+      color: $danger-color;
+    }
+  }
+  
+  .status-label {
+    font-size: 16px;
+    font-weight: 500;
+  }
+}
+
+/* Styles pour la liste déroulante de statut */
+.status-select {
+  padding: 0.35rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid $border-blue;
+  font-size: 0.875rem;
+  appearance: none;
+  background-color: white;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234338ca' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1em;
+  padding-right: 2rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 110px;
+  
+  &:focus {
+    outline: none;
+    border-color: $primary-blue;
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+  }
+  
+  /* Styles pour les différents statuts */
+  option[value="En attente"] {
+    background-color: $warning-light;
+    color: $warning-color;
+  }
+  
+  option[value="Accepté"] {
+    background-color: $success-light;
+    color: $success-color;
+  }
+  
+  option[value="Refusé"] {
+    background-color: #fee2e2;
+    color: $danger-color;
+  }
+}
+
+/* Classes pour les différents statuts */
+.status-pending {
+  background-color: $warning-light !important;
+  color: $warning-color !important;
+  border-color: $warning-color !important;
+}
+  
+.status-accepted {
+  background-color: $success-light !important;
+  color: $success-color !important;
+  border-color: $success-color !important;
+}
+  
+.status-rejected {
+  background-color: #fee2e2 !important;
+  color: $danger-color !important;
+  border-color: $danger-color !important;
+}
+
+/* Suppression des styles popup qui ne sont plus utilisés */
+.status-popup-overlay,
+.status-popup,
+.popup-header,
+.popup-content,
+.status-options,
+.status-option {
+  display: none;
+}
+
+/* Styles pour le tableau vertical */
+.vertical-table-container {
+  background-color: $bg-white;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+  border: 1px solid $border-blue;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+}
+
+.v-table-header {
+  display: flex;
+  width: 100%;
+  background-color: $primary-blue-light;
+  position: relative; /* Pour pouvoir positionner des éléments par rapport à lui */
+  
+  /* Ajouter une ombre légère en bas de l'en-tête pour la séparation visuelle */
+  &:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.05), transparent);
+  }
+}
+
+.v-header {
+  padding: 1rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: $primary-blue-dark;
+  text-align: center;
+  
+  &.sortable {
+    cursor: pointer;
+    
+    &:hover {
+      background-color: $primary-blue;
+      color: white;
+    }
+    
+    .sort-icon {
+      font-size: 0.75rem;
+      margin-left: 0.25rem;
+      color: $text-light;
+    }
+  }
+}
+
+.v-table-body {
+  width: 100%;
+}
+
+.v-table-row {
+  display: flex;
+  width: 100%;
+  transition: background-color 0.2s;
+  
+  /* Lignes alternées pour meilleure lisibilité */
+  &:nth-child(even) {
+    background-color: rgba(241, 245, 249, 0.5);
+  }
+  
+  &:hover {
+    background-color: $bg-blue-light;
+  }
+}
+
+.v-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  /* Séparation visuelle légère entre les colonnes */
+  position: relative;
+  
+  &:not(:last-child):after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 1px;
+    background: linear-gradient(to right, transparent, rgba(0,0,0,0.05), transparent);
+  }
+}
+
+.date-column {
+  flex: 0.8;
+}
+
+.numero-column {
+  flex: 1;
+}
+
+.montant-column {
+  flex: 0.8;
+}
+
+.statut-column {
+  flex: 1;
+}
+
+.actions-column {
+  flex: 0.8;
+}
+
+.v-cell {
+  padding: 1rem 1.5rem;
+  font-size: 0.875rem;
+  color: $text-medium;
+  min-height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  
+  .devis-icon {
+    color: $primary-blue;
+    margin-right: 0.5rem;
+  }
+}
+
+.empty-v-table {
+  text-align: center;
+  color: $text-light;
+  padding: 2rem;
+} 

@@ -1380,7 +1380,7 @@
           }
         }
       },
-      "QuestPDF/2025.4.0": {
+      "QuestPDF/2025.4.2": {
         "type": "package",
         "compile": {
           "lib/net8.0/QuestPDF.dll": {
@@ -4483,10 +4483,10 @@
         "postgresql.png"
       ]
     },
-    "QuestPDF/2025.4.0": {
-      "sha512": "IgLeBf/niXR/r8eRMomwD7TXKJELnIsZX/biOV29zpY1XIztl2DgfZFFoHCLX0dRzmVDy+YG/GfCkUjOMqXzCA==",
+    "QuestPDF/2025.4.2": {
+      "sha512": "5x6P87aXvzrBbGn3LIw8I96FuMhEpL59heYyxQ4S/2vHxjVzS9EKwxuGSoa57gYH6TtScY/4427yQOQxP2ghUg==",
       "type": "package",
-      "path": "questpdf/2025.4.0",
+      "path": "questpdf/2025.4.2",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -4528,6 +4528,7 @@
         "Logo.png",
         "PackageLicense.md",
         "PackageReadme.md",
+        "README.md",
         "ReleaseNotes.txt",
         "build/QuestPDF.targets",
         "build/net4/QuestPDF.targets",
@@ -4539,7 +4540,7 @@
         "lib/net8.0/QuestPDF.xml",
         "lib/netstandard2.0/QuestPDF.dll",
         "lib/netstandard2.0/QuestPDF.xml",
-        "questpdf.2025.4.0.nupkg.sha512",
+        "questpdf.2025.4.2.nupkg.sha512",
         "questpdf.nuspec",
         "runtimes/linux-arm64/native/libQuestPdfSkia.so",
         "runtimes/linux-arm64/native/libcrypto.so",
@@ -5452,7 +5453,7 @@
       "Microsoft.IdentityModel.Tokens >= 7.1.2",
       "MimeKit >= 4.11.0",
       "Npgsql.EntityFrameworkCore.PostgreSQL >= 9.0.3",
-      "QuestPDF >= 2025.4.0",
+      "QuestPDF >= 2025.4.2",
       "Swashbuckle.AspNetCore >= 7.3.1",
       "System.IdentityModel.Tokens.Jwt >= 7.1.2"
     ]
@@ -5561,7 +5562,7 @@
           },
           "QuestPDF": {
             "target": "Package",
-            "version": "[2025.4.0, )"
+            "version": "[2025.4.2, )"
           },
           "Swashbuckle.AspNetCore": {
             "target": "Package",
