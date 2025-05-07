@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "hG4F0ohLeGs=",
+  "dgSpecHash": "RNLuMT0tkAc=",
   "success": true,
-  "projectFilePath": "C:\\Users\\saif\\Music\\PFE\\ComptabiliteAPI\\ComptabiliteAPI.csproj",
+  "projectFilePath": "C:\\Users\\saif\\music\\pfe\\ComptabiliteAPI\\ComptabiliteAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\saif\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\saif\\.nuget\\packages\\bouncycastle.cryptography\\2.5.1\\bouncycastle.cryptography.2.5.1.nupkg.sha512",

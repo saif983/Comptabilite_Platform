@@ -38,6 +38,8 @@ export class FactureComponent implements OnInit {
   currentPage: number = 1;
   itemsPerPage: number = 10;
   totalPages: number = 1;
+  // Exposer Math pour le template
+  Math = Math;
 
   // Propriétés pour les paiements
   paiementForm: FormGroup;
@@ -411,10 +413,7 @@ export class FactureComponent implements OnInit {
       this.factureService.importerFacturePDF(file).subscribe({
         next: (response) => {
           alert('✅ ' + response.message);
-          // Recharger les factures après import réussi
-          if (this.selectedEntrepriseId) {
-            this.chargerFactures();
-          }
+          // La page se rechargera automatiquement grâce au window.location.reload() dans le service
         },
         error: (error) => {
           console.error('Erreur lors de l\'importation de la facture:', error);
@@ -510,5 +509,17 @@ export class FactureComponent implements OnInit {
         }
       }
     });
+  }
+
+  // Méthode pour obtenir la liste des pages à afficher dans la pagination
+  getPagesToShow(): number[] {
+    const pagesToShow: number[] = [];
+    
+    // Afficher toutes les pages sans limite
+    for (let i = 1; i <= this.totalPages; i++) {
+      pagesToShow.push(i);
+    }
+    
+    return pagesToShow;
   }
 }

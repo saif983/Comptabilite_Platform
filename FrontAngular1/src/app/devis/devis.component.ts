@@ -37,6 +37,8 @@ export class DevisComponent implements OnInit {
   currentPage: number = 1;
   itemsPerPage: number = 10;
   totalPages: number = 1;
+  // Exposer Math pour le template
+  Math = Math;
   
   // Propriété pour le menu déroulant de statut
   activeDropdownDevisId: number | null = null;
@@ -418,5 +420,17 @@ export class DevisComponent implements OnInit {
         alert('❌ Erreur lors de la création du devis: ' + errorMessage);
       }
     });
+  }
+
+  // Méthode pour obtenir la liste des pages à afficher dans la pagination
+  getPagesToShow(): number[] {
+    const pagesToShow: number[] = [];
+    
+    // Afficher toutes les pages sans limite
+    for (let i = 1; i <= this.totalPages; i++) {
+      pagesToShow.push(i);
+    }
+    
+    return pagesToShow;
   }
 } 

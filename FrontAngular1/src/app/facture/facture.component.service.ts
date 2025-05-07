@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { Observable, map, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +37,12 @@ export class FactureService {
     const formData = new FormData();
     formData.append('file', file);
     
-    return this.http.post(`${this.apiFactureUrl}/importer-pdf`, formData);
+    return this.http.post(`${this.apiFactureUrl}/importer-pdf`, formData).pipe(
+      tap(() => {
+        // Refresh the page immediately after successful import
+        window.location.reload();
+      })
+    );
   }
   
   // Méthodes pour la gestion des paiements
