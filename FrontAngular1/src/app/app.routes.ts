@@ -270,6 +270,12 @@ export const appRoutes: Route[] = [
                         loadComponent: () =>
                             import('./devis/devis.component').then(m => m.DevisComponent),
                     },
+                    // Produits & Services
+                    {
+                        path: 'produit-service',
+                        loadComponent: () =>
+                            import('./produit-service/produit-service.component').then(m => m.ProduitServiceComponent),
+                    },
                     // Authentication
                     {
                         path: 'authentication',

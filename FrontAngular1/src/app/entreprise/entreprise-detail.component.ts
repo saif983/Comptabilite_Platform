@@ -251,7 +251,7 @@ import { factureRoutes } from '../facture/facture.routes';
               <button 
                 mat-stroked-button 
                 class="justify-start" 
-                [routerLink]="['/entreprises', entrepriseId, 'factureRoutes']">
+                (click)="redirectToFactures()">
                 <mat-icon class="mr-2">receipt</mat-icon>
                 Factures
               </button>
@@ -267,7 +267,7 @@ import { factureRoutes } from '../facture/facture.routes';
               <button 
                 mat-stroked-button 
                 class="justify-start" 
-                [routerLink]="['/entreprises', entrepriseId, 'produits']">
+                (click)="redirectToProduitService()">
                 <mat-icon class="mr-2">inventory_2</mat-icon>
                 Produits & Services
               </button>
@@ -445,5 +445,13 @@ export class EntrepriseDetailComponent implements OnInit, OnDestroy {
         console.error('Erreur:', error);
       }
     );
+  }
+  
+  redirectToFactures() {
+    this.router.navigateByUrl('/pages/facture');
+  }
+  
+  redirectToProduitService() {
+    this.router.navigateByUrl('/pages/produit-service');
   }
 } 

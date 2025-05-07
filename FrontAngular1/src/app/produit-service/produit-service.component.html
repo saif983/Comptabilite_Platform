@@ -1,0 +1,140 @@
+<div class="container">
+  <!-- En-tête de page -->
+  <div class="header">
+    <h1 class="title">Produits & Services</h1>
+    <div class="search-filter">
+      <mat-form-field appearance="outline">
+        <mat-label>Rechercher</mat-label>
+        <input matInput [(ngModel)]="searchTerm" (keyup)="applyFilter()" placeholder="Rechercher dans les produits et services">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline">
+        <mat-label>Entreprise</mat-label>
+        <mat-select [(ngModel)]="selectedEntrepriseId" (selectionChange)="onEntrepriseChange()">
+          <mat-option *ngFor="let entreprise of entreprises" [value]="entreprise.id">
+            {{ entreprise.nom }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- Loader global -->
+  <div *ngIf="isLoading" class="loading-spinner">
+    <mat-spinner [diameter]="40"></mat-spinner>
+  </div>
+
+  <!-- Section principale avec grille responsive -->
+  <div class="main-content" *ngIf="!isLoading">
+    <div class="grid-container">
+      <!-- Formulaire de création/édition -->
+      <mat-card class="form-card">
+        <mat-card-header>
+          <mat-card-title>{{ isEditing ? 'Modifier' : 'Ajouter' }} un produit/service</mat-card-title>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <form [formGroup]="produitServiceForm" (ngSubmit)="onSubmit()">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Nom</mat-label>
+              <input matInput formControlName="nom" placeholder="Nom du produit/service" required>
+              <mat-error *ngIf="produitServiceForm.get('nom')?.hasError('required')">Le nom est requis</mat-error>
+              <mat-error *ngIf="produitServiceForm.get('nom')?.hasError('minlength')">Le nom doit contenir au moins 2 caractères</mat-error>
+            </mat-form-field>
+            
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Prix unitaire (DT)</mat-label>
+                <input matInput type="number" formControlName="prixUnitaire" placeholder="0.00" min="0.01" step="0.01" required>
+                <mat-error *ngIf="produitServiceForm.get('prixUnitaire')?.hasError('required')">Le prix est requis</mat-error>
+                <mat-error *ngIf="produitServiceForm.get('prixUnitaire')?.hasError('min')">Le prix doit être positif</mat-error>
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>TVA (%)</mat-label>
+                <input matInput type="number" formControlName="tva" placeholder="0" min="0" max="100" required>
+                <mat-error *ngIf="produitServiceForm.get('tva')?.hasError('required')">La TVA est requise</mat-error>
+                <mat-error *ngIf="produitServiceForm.get('tva')?.hasError('min')">La TVA ne peut pas être négative</mat-error>
+                <mat-error *ngIf="produitServiceForm.get('tva')?.hasError('max')">La TVA ne peut pas dépasser 100%</mat-error>
+              </mat-form-field>
+            </div>
+            
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Entreprise</mat-label>
+              <mat-select formControlName="entrepriseId" required>
+                <mat-option *ngFor="let entreprise of entreprises" [value]="entreprise.id">
+                  {{ entreprise.nom }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="produitServiceForm.get('entrepriseId')?.hasError('required')">L'entreprise est requise</mat-error>
+            </mat-form-field>
+            
+            <div class="form-actions">
+              <button type="button" mat-stroked-button color="warn" (click)="resetForm()">
+                <mat-icon>close</mat-icon> Annuler
+              </button>
+              <button type="submit" mat-raised-button color="primary" [disabled]="produitServiceForm.invalid">
+                <mat-icon>{{ isEditing ? 'save' : 'add' }}</mat-icon>
+                {{ isEditing ? 'Mettre à jour' : 'Ajouter' }}
+              </button>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+      
+      <!-- Liste des produits et services -->
+      <mat-card class="list-card">
+        <mat-card-header>
+          <mat-card-title>Liste des produits et services</mat-card-title>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <div *ngIf="filteredProduitServices.length === 0" class="empty-list">
+            <mat-icon>inventory_2</mat-icon>
+            <p>Aucun produit ou service trouvé</p>
+            <button mat-stroked-button color="primary" (click)="resetForm()">
+              <mat-icon>add</mat-icon> Ajouter un produit/service
+            </button>
+          </div>
+          
+          <table *ngIf="filteredProduitServices.length > 0" mat-table [dataSource]="filteredProduitServices" class="full-width">
+            <!-- Nom Column -->
+            <ng-container matColumnDef="nom">
+              <th mat-header-cell *matHeaderCellDef>Nom</th>
+              <td mat-cell *matCellDef="let element">{{ element.nom }}</td>
+            </ng-container>
+            
+            <!-- Prix Unitaire Column -->
+            <ng-container matColumnDef="prixUnitaire">
+              <th mat-header-cell *matHeaderCellDef>Prix unitaire</th>
+              <td mat-cell *matCellDef="let element">{{ element.prixUnitaire | number:'1.2-2' }} DT</td>
+            </ng-container>
+            
+            <!-- TVA Column -->
+            <ng-container matColumnDef="tva">
+              <th mat-header-cell *matHeaderCellDef>TVA</th>
+              <td mat-cell *matCellDef="let element">{{ element.tva }}%</td>
+            </ng-container>
+            
+            <!-- Actions Column -->
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let element">
+                <button mat-icon-button color="primary" (click)="editProduitService(element)" matTooltip="Modifier">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="deleteProduitService(element.id)" matTooltip="Supprimer">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+            
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div> 
