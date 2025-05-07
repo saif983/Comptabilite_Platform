@@ -5,7 +5,7 @@
     <div class="search-filter">
       <mat-form-field appearance="outline">
         <mat-label>Rechercher</mat-label>
-        <input matInput [(ngModel)]="searchTerm" (keyup)="applyFilter()" placeholder="Rechercher dans les produits et services">
+        <input matInput [(ngModel)]="searchTerm" (keyup)="applyFilter()" placeholder="Recherche globale">
         <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>
       
@@ -17,6 +17,44 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+    </div>
+  </div>
+
+  <!-- Filtres spécifiques -->
+  <div class="advanced-filters">
+    <h2 class="filter-title">Filtres avancés</h2>
+    <div class="filter-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Nom</mat-label>
+        <input matInput [(ngModel)]="filterNom" (keyup)="applyAdvancedFilters()" placeholder="Filtrer par nom">
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline">
+        <mat-label>Prix min (DT)</mat-label>
+        <input matInput type="number" [(ngModel)]="filterPrixMin" (change)="applyAdvancedFilters()" placeholder="Prix minimum" min="0">
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline">
+        <mat-label>Prix max (DT)</mat-label>
+        <input matInput type="number" [(ngModel)]="filterPrixMax" (change)="applyAdvancedFilters()" placeholder="Prix maximum" min="0">
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline">
+        <mat-label>TVA (%)</mat-label>
+        <mat-select [(ngModel)]="filterTVA" (selectionChange)="applyAdvancedFilters()">
+          <mat-option [value]="null">Tous</mat-option>
+          <mat-option *ngFor="let tvaOption of tvaSuggestions" [value]="tvaOption">
+            {{ tvaOption }}%
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    
+    <div class="filter-actions">
+      <span class="results-count">{{ filteredProduitServices.length }} résultat(s) trouvé(s)</span>
+      <button mat-stroked-button color="warn" (click)="resetFilters()" [disabled]="!isFiltered">
+        <mat-icon>filter_alt_off</mat-icon> Réinitialiser les filtres
+      </button>
     </div>
   </div>
 
@@ -98,22 +136,54 @@
             </button>
           </div>
           
-          <table *ngIf="filteredProduitServices.length > 0" mat-table [dataSource]="filteredProduitServices" class="full-width">
+          <!-- Boutons de tri -->
+          <div *ngIf="filteredProduitServices.length > 0" class="sort-buttons">
+            <span class="sort-label">Trier par : </span>
+            <button mat-button (click)="sortData({active: 'nom', direction: sortField === 'nom' ? (sortDirection === 'asc' ? 'desc' : 'asc') : 'asc'})">
+              Nom
+              <mat-icon *ngIf="sortField === 'nom' && sortDirection === 'asc'">arrow_upward</mat-icon>
+              <mat-icon *ngIf="sortField === 'nom' && sortDirection === 'desc'">arrow_downward</mat-icon>
+            </button>
+            <button mat-button (click)="sortData({active: 'prixUnitaire', direction: sortField === 'prixUnitaire' ? (sortDirection === 'asc' ? 'desc' : 'asc') : 'asc'})">
+              Prix unitaire
+              <mat-icon *ngIf="sortField === 'prixUnitaire' && sortDirection === 'asc'">arrow_upward</mat-icon>
+              <mat-icon *ngIf="sortField === 'prixUnitaire' && sortDirection === 'desc'">arrow_downward</mat-icon>
+            </button>
+            <button mat-button (click)="sortData({active: 'tva', direction: sortField === 'tva' ? (sortDirection === 'asc' ? 'desc' : 'asc') : 'asc'})">
+              TVA
+              <mat-icon *ngIf="sortField === 'tva' && sortDirection === 'asc'">arrow_upward</mat-icon>
+              <mat-icon *ngIf="sortField === 'tva' && sortDirection === 'desc'">arrow_downward</mat-icon>
+            </button>
+          </div>
+          
+          <table *ngIf="filteredProduitServices.length > 0" mat-table [dataSource]="paginatedProduitServices" class="full-width">
             <!-- Nom Column -->
             <ng-container matColumnDef="nom">
-              <th mat-header-cell *matHeaderCellDef>Nom</th>
+              <th mat-header-cell *matHeaderCellDef>
+                Nom
+                <mat-icon *ngIf="sortField === 'nom' && sortDirection === 'asc'" class="sort-icon">arrow_upward</mat-icon>
+                <mat-icon *ngIf="sortField === 'nom' && sortDirection === 'desc'" class="sort-icon">arrow_downward</mat-icon>
+              </th>
               <td mat-cell *matCellDef="let element">{{ element.nom }}</td>
             </ng-container>
             
             <!-- Prix Unitaire Column -->
             <ng-container matColumnDef="prixUnitaire">
-              <th mat-header-cell *matHeaderCellDef>Prix unitaire</th>
+              <th mat-header-cell *matHeaderCellDef>
+                Prix unitaire
+                <mat-icon *ngIf="sortField === 'prixUnitaire' && sortDirection === 'asc'" class="sort-icon">arrow_upward</mat-icon>
+                <mat-icon *ngIf="sortField === 'prixUnitaire' && sortDirection === 'desc'" class="sort-icon">arrow_downward</mat-icon>
+              </th>
               <td mat-cell *matCellDef="let element">{{ element.prixUnitaire | number:'1.2-2' }} DT</td>
             </ng-container>
             
             <!-- TVA Column -->
             <ng-container matColumnDef="tva">
-              <th mat-header-cell *matHeaderCellDef>TVA</th>
+              <th mat-header-cell *matHeaderCellDef>
+                TVA
+                <mat-icon *ngIf="sortField === 'tva' && sortDirection === 'asc'" class="sort-icon">arrow_upward</mat-icon>
+                <mat-icon *ngIf="sortField === 'tva' && sortDirection === 'desc'" class="sort-icon">arrow_downward</mat-icon>
+              </th>
               <td mat-cell *matCellDef="let element">{{ element.tva }}%</td>
             </ng-container>
             
@@ -133,6 +203,40 @@
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
           </table>
+          
+          <!-- Pagination personnalisée -->
+          <div *ngIf="filteredProduitServices.length > 0" class="pagination-container">
+            <div class="pagination-info">
+              Affichage de {{ currentPage * pageSize + 1 }} à {{ Math.min((currentPage + 1) * pageSize, filteredProduitServices.length) }} sur {{ filteredProduitServices.length }} éléments
+            </div>
+            <div class="pagination-controls">
+              <button mat-icon-button [disabled]="currentPage === 0" (click)="goToPage(0)" matTooltip="Première page">
+                <mat-icon>first_page</mat-icon>
+              </button>
+              <button mat-icon-button [disabled]="currentPage === 0" (click)="goToPage(currentPage - 1)" matTooltip="Page précédente">
+                <mat-icon>chevron_left</mat-icon>
+              </button>
+              
+              <div class="page-numbers">
+                <button 
+                  *ngFor="let page of getPagesToShow()" 
+                  mat-button 
+                  [class.active]="page === currentPage"
+                  [disabled]="page === -1"
+                  (click)="page !== -1 && goToPage(page)">
+                  {{ page === -1 ? '...' : page + 1 }}
+                </button>
+              </div>
+              
+              <button mat-icon-button [disabled]="currentPage >= totalPages - 1" (click)="goToPage(currentPage + 1)" matTooltip="Page suivante">
+                <mat-icon>chevron_right</mat-icon>
+              </button>
+              <button mat-icon-button [disabled]="currentPage >= totalPages - 1" (click)="goToPage(totalPages - 1)" matTooltip="Dernière page">
+                <mat-icon>last_page</mat-icon>
+              </button>
+            </div>
+          </div>
+          
         </mat-card-content>
       </mat-card>
     </div>

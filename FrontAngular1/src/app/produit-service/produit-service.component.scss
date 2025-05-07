@@ -134,6 +134,8 @@ table {
     color: $text-color;
     background-color: $secondary-color;
     text-align: left;
+    position: relative;
+    padding-right: 24px; // For sort icons
   }
 
   th, td {
@@ -143,6 +145,16 @@ table {
 
   tr:hover {
     background-color: $hover-color;
+  }
+  
+  .sort-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
   }
 }
 
@@ -165,6 +177,100 @@ table {
   p {
     margin-bottom: 24px;
     font-size: 16px;
+  }
+}
+
+// Tri et pagination
+.sort-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 16px;
+  
+  .sort-label {
+    margin-right: 8px;
+    color: $light-text;
+  }
+  
+  button {
+    margin-right: 8px;
+    
+    mat-icon {
+      font-size: 16px;
+      height: 16px;
+      width: 16px;
+      margin-left: 4px;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    flex-direction: column;
+    align-items: flex-start;
+    
+    .sort-label {
+      margin-bottom: 8px;
+    }
+    
+    button {
+      margin-bottom: 4px;
+    }
+  }
+}
+
+.pagination-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 24px;
+  
+  .pagination-info {
+    font-size: 14px;
+    color: $light-text;
+    margin-bottom: 12px;
+  }
+  
+  .pagination-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    
+    .page-numbers {
+      display: flex;
+      align-items: center;
+      overflow-x: auto;
+      max-width: 100%;
+      padding: 4px 0;
+      margin: 0 8px;
+      
+      button {
+        min-width: 36px;
+        height: 36px;
+        line-height: 36px;
+        padding: 0;
+        border-radius: 4px;
+        
+        &.active {
+          background-color: $primary-color;
+          color: white;
+        }
+      }
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .pagination-controls {
+      justify-content: space-between;
+      
+      .page-numbers {
+        margin: 0 4px;
+        
+        button {
+          min-width: 32px;
+          height: 32px;
+          line-height: 32px;
+        }
+      }
+    }
   }
 }
 
@@ -201,4 +307,69 @@ tr.mat-row {
 .snackbar-error {
   background-color: $warning-color;
   color: white;
+}
+
+// Filtres avancés
+.advanced-filters {
+  background-color: $secondary-color;
+  border-radius: 8px;
+  box-shadow: $shadow;
+  padding: 16px;
+  margin-bottom: 24px;
+  
+  .filter-title {
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0 0 16px 0;
+    color: $text-color;
+  }
+  
+  .filter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+    
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr 1fr;
+    }
+    
+    @media (max-width: 576px) {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .filter-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    .results-count {
+      font-size: 14px;
+      color: $light-text;
+    }
+    
+    @media (max-width: 576px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+  }
+}
+
+// Pagination adjustments for more pages
+.pagination-container {
+  .pagination-controls {
+    .page-numbers {
+      .ellipsis {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        min-width: 36px;
+        height: 36px;
+        padding: 0;
+        color: $light-text;
+      }
+    }
+  }
 } 

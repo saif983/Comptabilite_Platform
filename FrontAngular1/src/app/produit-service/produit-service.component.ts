@@ -5,8 +5,8 @@ import { ProduitServiceService, ProduitServiceModel } from './produit-service.se
 import { EntrepriseService, EntrepriseModel } from '../core/services/entreprise.service';
 import { UserService } from '../core/user/user.service';
 import { MatTableModule } from '@angular/material/table';
-import { MatSortModule } from '@angular/material/sort';
-import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule, Sort } from '@angular/material/sort';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -45,6 +45,9 @@ import { MatDividerModule } from '@angular/material/divider';
   ]
 })
 export class ProduitServiceComponent implements OnInit {
+  // Rendre Math accessible au template
+  Math = Math;
+  
   produitServices: ProduitServiceModel[] = [];
   filteredProduitServices: ProduitServiceModel[] = [];
   produitServiceForm: FormGroup;
@@ -55,6 +58,23 @@ export class ProduitServiceComponent implements OnInit {
   searchTerm = '';
   selectedProduitService: ProduitServiceModel | null = null;
   currentUserId: number | null = null;
+  
+  // Filtres avancés
+  filterNom = '';
+  filterPrixMin: number | null = null;
+  filterPrixMax: number | null = null;
+  filterTVA: number | null = null;
+  tvaSuggestions: number[] = [];
+  isFiltered = false;
+  
+  // Pagination
+  pageSize = 15; // Pagination à 15 produits par page
+  currentPage = 0;
+  pageSizeOptions: number[] = [5, 10, 15, 25, 50];
+  
+  // Tri
+  sortDirection: 'asc' | 'desc' = 'asc';
+  sortField: string = 'nom';
   
   // Colonnes à afficher dans le tableau
   displayedColumns: string[] = ['nom', 'prixUnitaire', 'tva', 'actions'];
@@ -135,6 +155,10 @@ export class ProduitServiceComponent implements OnInit {
           } else {
             this.produitServices = Array.isArray(data) ? data : [];
           }
+          
+          // Extraire les valeurs de TVA uniques pour les suggestions
+          this.extractTvaSuggestions();
+          
           this.applyFilter();
           this.isLoading = false;
         },
@@ -155,15 +179,81 @@ export class ProduitServiceComponent implements OnInit {
   applyFilter(): void {
     if (!this.searchTerm.trim()) {
       this.filteredProduitServices = [...this.produitServices];
-      return;
+    } else {
+      const searchTermLower = this.searchTerm.toLowerCase().trim();
+      this.filteredProduitServices = this.produitServices.filter(item => 
+        item.nom.toLowerCase().includes(searchTermLower) ||
+        item.prixUnitaire.toString().includes(searchTermLower) ||
+        item.tva.toString().includes(searchTermLower)
+      );
     }
     
-    const searchTermLower = this.searchTerm.toLowerCase().trim();
-    this.filteredProduitServices = this.produitServices.filter(item => 
-      item.nom.toLowerCase().includes(searchTermLower) ||
-      item.prixUnitaire.toString().includes(searchTermLower) ||
-      item.tva.toString().includes(searchTermLower)
-    );
+    // Après un filtre global, appliquer également les filtres avancés
+    this.applyAdvancedFilters(false);
+    
+    // Réinitialiser à la première page après un filtre
+    this.currentPage = 0;
+  }
+  
+  // Appliquer les filtres avancés
+  applyAdvancedFilters(resetPage: boolean = true): void {
+    // Conserver les produits filtrés par la recherche globale
+    let result = this.searchTerm.trim() ? [...this.filteredProduitServices] : [...this.produitServices];
+    
+    // Filtre par nom (spécifique)
+    if (this.filterNom.trim()) {
+      const nomFilter = this.filterNom.toLowerCase().trim();
+      result = result.filter(item => item.nom.toLowerCase().includes(nomFilter));
+    }
+    
+    // Filtre par prix minimum
+    if (this.filterPrixMin !== null && !isNaN(this.filterPrixMin)) {
+      result = result.filter(item => item.prixUnitaire >= (this.filterPrixMin || 0));
+    }
+    
+    // Filtre par prix maximum
+    if (this.filterPrixMax !== null && !isNaN(this.filterPrixMax)) {
+      result = result.filter(item => item.prixUnitaire <= (this.filterPrixMax || Number.MAX_VALUE));
+    }
+    
+    // Filtre par TVA
+    if (this.filterTVA !== null) {
+      result = result.filter(item => item.tva === this.filterTVA);
+    }
+    
+    // Mettre à jour les résultats filtrés
+    this.filteredProduitServices = result;
+    
+    // Vérifier si des filtres sont appliqués
+    this.isFiltered = 
+      this.filterNom.trim() !== '' || 
+      (this.filterPrixMin !== null && !isNaN(this.filterPrixMin)) || 
+      (this.filterPrixMax !== null && !isNaN(this.filterPrixMax)) || 
+      this.filterTVA !== null;
+    
+    // Réinitialiser à la première page après un filtre
+    if (resetPage) {
+      this.currentPage = 0;
+    }
+  }
+  
+  // Réinitialiser les filtres avancés
+  resetFilters(): void {
+    this.filterNom = '';
+    this.filterPrixMin = null;
+    this.filterPrixMax = null;
+    this.filterTVA = null;
+    this.isFiltered = false;
+    
+    // Réappliquer uniquement le filtre global
+    this.applyFilter();
+  }
+  
+  // Extraire les valeurs de TVA uniques pour les suggestions
+  private extractTvaSuggestions(): void {
+    const uniqueTvaSet = new Set<number>();
+    this.produitServices.forEach(item => uniqueTvaSet.add(item.tva));
+    this.tvaSuggestions = Array.from(uniqueTvaSet).sort((a, b) => a - b);
   }
 
   // Soumettre le formulaire
@@ -330,5 +420,94 @@ export class ProduitServiceComponent implements OnInit {
   onEntrepriseChange(): void {
     this.selectedEntrepriseId = Number(this.produitServiceForm.get('entrepriseId')?.value);
     this.loadProduitServices();
+  }
+
+  // Gestion de la pagination
+  onPageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex;
+    this.pageSize = event.pageSize;
+  }
+  
+  // Obtenir les éléments de la page actuelle
+  get paginatedProduitServices(): ProduitServiceModel[] {
+    const startIndex = this.currentPage * this.pageSize;
+    const sorted = this.getSortedData([...this.filteredProduitServices]);
+    return sorted.slice(startIndex, startIndex + this.pageSize);
+  }
+  
+  // Tri des données
+  sortData(sort: Sort): void {
+    this.sortField = sort.active;
+    this.sortDirection = sort.direction as 'asc' | 'desc';
+    this.currentPage = 0; // Réinitialiser à la première page après le tri
+  }
+  
+  // Appliquer le tri aux données
+  getSortedData(data: ProduitServiceModel[]): ProduitServiceModel[] {
+    if (!this.sortField || !this.sortDirection) {
+      return data;
+    }
+    
+    return data.sort((a, b) => {
+      const isAsc = this.sortDirection === 'asc';
+      switch (this.sortField) {
+        case 'nom': return this.compare(a.nom, b.nom, isAsc);
+        case 'prixUnitaire': return this.compare(a.prixUnitaire, b.prixUnitaire, isAsc);
+        case 'tva': return this.compare(a.tva, b.tva, isAsc);
+        default: return 0;
+      }
+    });
+  }
+  
+  // Utilitaire de comparaison pour le tri
+  compare(a: number | string, b: number | string, isAsc: boolean): number {
+    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+  }
+  
+  // Nombre total de pages
+  get totalPages(): number {
+    return Math.ceil(this.filteredProduitServices.length / this.pageSize);
+  }
+  
+  // Générer un array de numéros de pages pour l'affichage
+  getPagesToShow(): number[] {
+    const totalPages = this.totalPages;
+    if (totalPages <= 7) {
+      return Array.from({ length: totalPages }, (_, i) => i);
+    }
+    
+    // Afficher les premières pages, les pages autour de la page actuelle, et les dernières pages
+    let pages: number[] = [0, 1]; // Toujours afficher les 2 premières pages
+    
+    // Ajouter la page courante et ses voisines
+    const startPage = Math.max(2, this.currentPage - 1);
+    const endPage = Math.min(totalPages - 3, this.currentPage + 1);
+    
+    // Ajouter des ellipses si nécessaire
+    if (startPage > 2) {
+      pages.push(-1); // -1 représente une ellipse
+    }
+    
+    // Ajouter les pages autour de la page courante
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+    
+    // Ajouter des ellipses si nécessaire
+    if (endPage < totalPages - 3) {
+      pages.push(-1); // -1 représente une ellipse
+    }
+    
+    // Toujours afficher les 2 dernières pages
+    pages.push(totalPages - 2, totalPages - 1);
+    
+    return pages;
+  }
+  
+  // Changer de page
+  goToPage(page: number): void {
+    if (page >= 0 && page < this.totalPages) {
+      this.currentPage = page;
+    }
   }
 } 
