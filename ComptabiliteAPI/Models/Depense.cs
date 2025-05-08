@@ -21,14 +21,19 @@ namespace ComptabiliteAPI.Models
         public DateTime Date { get; set; }
 
         public string Justificatif { get; set; }
-        
-        // Permettre null pour les dépenses existantes (pour éviter les erreurs de migration)
+
+        // ✅ Ajouter cette ligne pour corriger l'erreur :
+        public string Categorie { get; set; }
+
+        public byte[] VerificatioFacture { get; set; }
+        public string type { get; set; }
+
         public int? UtilisateurId { get; set; }
         public int EntreprisID { get; set; }
 
-        // Relation avec l'utilisateur (facultatif)
         [ForeignKey("UtilisateurId")]
         [JsonIgnore]
         public virtual Utilisateur? Utilisateur { get; set; }
     }
+
 }

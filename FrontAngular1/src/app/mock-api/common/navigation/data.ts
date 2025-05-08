@@ -885,6 +885,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 icon: 'heroicons_outline:document',
                 link: '/pages/devis'
             },
+            {
+                id: 'pages.depense',
+                title: 'Dépenses',
+                type: 'basic' as 'basic',
+                icon: 'heroicons_outline:banknotes',
+                link: '/pages/depense'
+            },
         ],
     },
     {

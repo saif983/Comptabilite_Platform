@@ -1,0 +1,213 @@
+<!-- Vue principale des dépenses -->
+<div class="depenses-container">
+  <!-- En-tête de page -->
+  <div class="header">
+    <div class="title-section">
+      <h1>Dépenses</h1>
+    </div>
+    
+    <div class="user-section">
+      <div class="search-box">
+        <input type="text" placeholder="Rechercher dans mes dépenses..." [(ngModel)]="searchTerm" (input)="applyFilters()" class="search-input">
+        <span class="search-icon">🔍</span>
+      </div>
+      <button class="new-depense-btn orange-btn" (click)="activeTab = 'create'">Nouvelle dépense</button>
+    </div>
+  </div>
+
+  <!-- Onglet création de dépense (affiché uniquement quand activeTab === 'create') -->
+  <div *ngIf="activeTab === 'create'" class="create-depense-panel">
+    <div class="panel-header">
+      <h2>Créer une dépense</h2>
+      <button class="close-btn" (click)="activeTab = 'list'; chargerDepenses()">×</button>
+    </div>
+
+    <form [formGroup]="depenseForm" (ngSubmit)="submit()" class="depense-form">
+      <div class="form-section">
+        <h3>Informations générales</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" formControlName="date" class="orange-input">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Entreprise</label>
+          <select formControlName="entreprisID" class="orange-select">
+            <option value="" disabled selected>Choisir une entreprise</option>
+            <option *ngFor="let e of entreprises" [value]="e.id">{{ e.nom }}</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-section">
+        <h3>Informations de la dépense</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Catégorie</label>
+            <select formControlName="categorie" class="orange-select">
+              <option value="" disabled selected>Choisir une catégorie</option>
+              <option value="Équipement">Équipement</option>
+              <option value="Marketing">Marketing</option>
+              <option value="Salaires">Salaires</option>
+              <option value="Locaux">Locaux</option>
+              <option value="Fournitures">Fournitures</option>
+              <option value="Services">Services</option>
+              <option value="Autre">Autre</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Fournisseur</label>
+            <input type="text" formControlName="fournisseur" placeholder="Nom du fournisseur" class="orange-input">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Montant (DT)</label>
+            <input type="number" formControlName="montant" step="0.01" min="0.01" placeholder="0.00" class="orange-input">
+          </div>
+
+          <div class="form-group">
+            <label>Justificatif</label>
+            <input type="text" formControlName="justificatif" placeholder="Description du justificatif" class="orange-input">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Pièce jointe (facture, reçu...)</label>
+            <input type="file" (change)="onFileChange($event)" accept="application/pdf" class="file-input">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="cancel-btn" (click)="activeTab = 'list'">Annuler</button>
+        <button type="submit" [disabled]="depenseForm.invalid" class="submit-btn orange-btn">Enregistrer la dépense</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Liste des dépenses (affiché par défaut ou quand activeTab === 'list') -->
+  <div *ngIf="activeTab === 'list'" class="list-depenses-panel">
+    <!-- Filtres et recherche -->
+    <div class="filters-bar">
+      <div class="filter-group">
+        <label>Date</label>
+        <div class="filter-control">
+          <span>🗓️</span>
+          <select [(ngModel)]="dateFilter" (change)="applyFilters()" class="orange-select">
+            <option value="all">Toutes les dates</option>
+            <option value="this-month">Ce mois</option>
+            <option value="last-month">Mois dernier</option>
+            <option value="this-year">Cette année</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="filter-group">
+        <label>Catégorie</label>
+        <div class="filter-control">
+          <span>📂</span>
+          <input type="text" placeholder="Filtrer par catégorie" [(ngModel)]="categorieFilter" (input)="applyFilters()" class="orange-input">
+        </div>
+      </div>
+      
+      <div class="filter-group">
+        <label>Statut</label>
+        <div class="filter-control">
+          <span>⚡</span>
+          <select [(ngModel)]="statutFilter" (change)="applyFilters()" class="orange-select">
+            <option value="all">Tous</option>
+            <option value="En Cours">En cours</option>
+            <option value="Terminer">Terminé</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="filter-group">
+        <label>Montant</label>
+        <div class="filter-control">
+          <span>💰</span>
+          <input type="text" placeholder="Montant" [(ngModel)]="montantFilter" (input)="applyFilters()" class="orange-input">
+        </div>
+      </div>
+    </div>
+    
+    <!-- Tableau des dépenses -->
+    <div class="depenses-table-container">
+      <table class="depenses-table">
+        <thead>
+          <tr>
+            <th (click)="sortBy('date')">
+              Date 
+              <span *ngIf="sortColumn === 'date'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+            </th>
+            <th (click)="sortBy('categorie')">
+              Catégorie
+              <span *ngIf="sortColumn === 'categorie'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+            </th>
+            <th (click)="sortBy('fournisseur')">
+              Fournisseur
+              <span *ngIf="sortColumn === 'fournisseur'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+            </th>
+            <th (click)="sortBy('montant')">
+              Montant
+              <span *ngIf="sortColumn === 'montant'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+            </th>
+            <th (click)="sortBy('type')">
+              Statut
+              <span *ngIf="sortColumn === 'type'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+            </th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let depense of paginatedDepenses">
+            <td>{{ depense.date | date:'dd/MM/yyyy' }}</td>
+            <td>{{ depense.categorie }}</td>
+            <td>{{ depense.fournisseur }}</td>
+            <td>{{ depense.montant | number:'1.2-2' }} DT</td>
+            <td>
+              <span [ngClass]="depense.type === 'Terminer' ? 'completed-status' : 'pending-status'">
+                {{ depense.type === 'Terminer' ? 'Terminé' : 'En cours' }}
+              </span>
+            </td>
+            <td class="actions-cell">
+              <button *ngIf="depense.type !== 'Terminer'" class="action-btn" (click)="telechargerJustificatif(depense.id)" title="Télécharger le justificatif">
+                📥 Télécharger
+              </button>
+              <span *ngIf="depense.type === 'Terminer'" class="completed-text">✓ Justificatif vérifié</span>
+            </td>
+          </tr>
+          <tr *ngIf="paginatedDepenses.length === 0">
+            <td colspan="6" class="no-data">Aucune dépense trouvée</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Pagination -->
+    <div class="pagination-container" *ngIf="totalPages > 1">
+      <button class="page-btn" (click)="setPage(1)" [disabled]="currentPage === 1">«</button>
+      <button class="page-btn" (click)="setPage(currentPage - 1)" [disabled]="currentPage === 1">‹</button>
+      
+      <ng-container *ngFor="let page of [].constructor(totalPages); let i = index">
+        <button 
+          *ngIf="i+1 === 1 || i+1 === totalPages || (i+1 >= currentPage - 1 && i+1 <= currentPage + 1)"
+          class="page-btn" 
+          [class.active]="currentPage === i+1"
+          (click)="setPage(i+1)">
+          {{ i+1 }}
+        </button>
+        <span *ngIf="i+1 === 2 && currentPage > 3">...</span>
+        <span *ngIf="i+1 === totalPages - 1 && currentPage < totalPages - 2">...</span>
+      </ng-container>
+      
+      <button class="page-btn" (click)="setPage(currentPage + 1)" [disabled]="currentPage === totalPages">›</button>
+      <button class="page-btn" (click)="setPage(totalPages)" [disabled]="currentPage === totalPages">»</button>
+    </div>
+  </div>
+</div> 

@@ -276,6 +276,12 @@ export const appRoutes: Route[] = [
                         loadComponent: () =>
                             import('./produit-service/produit-service.component').then(m => m.ProduitServiceComponent),
                     },
+                    // Depenses
+                    {
+                        path: 'depense',
+                        loadComponent: () =>
+                            import('./depense/depense.component').then(m => m.DepenseComponent),
+                    },
                     // Authentication
                     {
                         path: 'authentication',

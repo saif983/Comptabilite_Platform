@@ -1,0 +1,399 @@
+// Variables
+$primary-color: #32CD32; // Lime Green
+$primary-light: #EBFAEB; // Version plus claire du Lime Green
+$text-color: #333;
+$bg-color: #f5f5f5;
+$border-color: #ddd;
+$success-color: #4caf50;
+$pending-color: #ff9800;
+$error-color: #f44336;
+
+// General container
+.depenses-container {
+  padding: 20px;
+  background-color: #fff;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  
+  h1, h2, h3 {
+    color: $text-color;
+    margin-bottom: 15px;
+  }
+}
+
+// Header styling
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  width: 100%;
+  
+  .title-section {
+    h1 {
+      font-size: 2rem;
+      font-weight: 600;
+      margin: 0;
+      color: $primary-color;
+    }
+  }
+  
+  .user-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    
+    .search-box {
+      position: relative;
+      
+      .search-input {
+        padding: 10px 15px 10px 40px;
+        border: 1px solid $border-color;
+        border-radius: 4px;
+        width: 300px;
+        font-size: 0.9rem;
+        
+        &:focus {
+          outline: none;
+          border-color: $primary-color;
+          box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+        }
+      }
+      
+      .search-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #999;
+      }
+    }
+  }
+}
+
+// Buttons
+.orange-btn, .new-depense-btn {
+  background-color: $primary-color;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s;
+  
+  &:hover {
+    background-color: darken($primary-color, 10%);
+  }
+  
+  &:active {
+    background-color: darken($primary-color, 15%);
+  }
+}
+
+.cancel-btn {
+  background-color: #f5f5f5;
+  color: $text-color;
+  border: 1px solid $border-color;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  
+  &:hover {
+    background-color: darken(#f5f5f5, 5%);
+  }
+}
+
+.action-btn {
+  background-color: transparent;
+  color: $primary-color;
+  border: 1px solid $primary-color;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  
+  &:hover {
+    background-color: rgba($primary-color, 0.1);
+  }
+}
+
+// Create depense panel
+.create-depense-panel {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+  width: 100%;
+  
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid $border-color;
+    background-color: $primary-light;
+    border-radius: 8px 8px 0 0;
+    
+    h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      color: darken($primary-color, 15%);
+    }
+    
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #999;
+      
+      &:hover {
+        color: $error-color;
+      }
+    }
+  }
+  
+  .depense-form {
+    padding: 20px;
+    
+    .form-section {
+      margin-bottom: 30px;
+      
+      h3 {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid $primary-light;
+        color: $primary-color;
+      }
+    }
+    
+    .form-row {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 15px;
+      
+      @media (max-width: 768px) {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+    
+    .form-group {
+      flex: 1;
+      margin-bottom: 15px;
+      
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+        color: $text-color;
+      }
+      
+      .orange-input, .orange-select, .file-input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid $border-color;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        
+        &:focus {
+          outline: none;
+          border-color: $primary-color;
+          box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+        }
+      }
+      
+      .orange-select {
+        background-color: white;
+        cursor: pointer;
+      }
+      
+      .file-input {
+        padding: 8px;
+        border: 1px dashed $primary-color;
+        background-color: rgba($primary-color, 0.05);
+      }
+    }
+    
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+      margin-top: 30px;
+      
+      .submit-btn {
+        min-width: 150px;
+      }
+    }
+  }
+}
+
+// List depenses panel
+.list-depenses-panel {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  
+  .filters-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 15px 20px;
+    border-bottom: 1px solid $border-color;
+    background-color: $primary-light;
+    border-radius: 8px 8px 0 0;
+    
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      
+      label {
+        font-size: 0.8rem;
+        margin-bottom: 5px;
+        color: darken($primary-color, 20%);
+        font-weight: 600;
+      }
+      
+      .filter-control {
+        display: flex;
+        align-items: center;
+        
+        span {
+          margin-right: 8px;
+          color: $primary-color;
+        }
+        
+        .orange-input, .orange-select {
+          padding: 8px 10px;
+          border: 1px solid $border-color;
+          border-radius: 4px;
+          font-size: 0.9rem;
+          
+          &:focus {
+            outline: none;
+            border-color: $primary-color;
+            box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+          }
+        }
+        
+        .orange-select {
+          background-color: white;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+  
+  .depenses-table-container {
+    overflow-x: auto;
+    width: 100%;
+    
+    .depenses-table {
+      width: 100%;
+      border-collapse: collapse;
+      
+      th, td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid $border-color;
+      }
+      
+      th {
+        background-color: #f9f9f9;
+        font-weight: 600;
+        cursor: pointer;
+        user-select: none;
+        color: darken($primary-color, 15%);
+        
+        &:hover {
+          background-color: $primary-light;
+        }
+      }
+      
+      tbody tr {
+        &:hover {
+          background-color: rgba($primary-color, 0.05);
+        }
+      }
+      
+      .completed-status {
+        background-color: rgba($success-color, 0.1);
+        color: $success-color;
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
+      
+      .pending-status {
+        background-color: rgba($pending-color, 0.1);
+        color: $pending-color;
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
+      
+      .actions-cell {
+        white-space: nowrap;
+      }
+      
+      .completed-text {
+        color: $success-color;
+        font-size: 0.9rem;
+      }
+      
+      .no-data {
+        text-align: center;
+        color: #999;
+        padding: 30px;
+      }
+    }
+  }
+  
+  .pagination-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    gap: 5px;
+    
+    .page-btn {
+      background-color: #f5f5f5;
+      border: 1px solid $border-color;
+      color: $text-color;
+      min-width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      cursor: pointer;
+      
+      &:hover:not(:disabled) {
+        background-color: $primary-light;
+      }
+      
+      &.active {
+        background-color: $primary-color;
+        border-color: $primary-color;
+        color: white;
+      }
+      
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+  }
+} 
