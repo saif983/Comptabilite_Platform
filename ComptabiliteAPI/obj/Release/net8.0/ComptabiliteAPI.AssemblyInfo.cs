@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ComptabiliteAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+837c9ee68b50c8c03ae930f8e5694c38d57f78cc")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8112e1e683744d218945e9de1667985f4fbc088f")]
 [assembly: System.Reflection.AssemblyProductAttribute("ComptabiliteAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ComptabiliteAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -11,7 +11,8 @@
         <input type="text" placeholder="Rechercher dans mes dépenses..." [(ngModel)]="searchTerm" (input)="applyFilters()" class="search-input">
         <span class="search-icon">🔍</span>
       </div>
-      <button class="new-depense-btn orange-btn" (click)="activeTab = 'create'">Nouvelle dépense</button>
+      <button class="diagnostic-btn" (click)="diagnostiquerProblemeAffichage()">Diagnostiquer</button>
+      <button class="new-depense-btn" (click)="activeTab = 'create'">Nouvelle dépense</button>
     </div>
   </div>
 
@@ -79,6 +80,8 @@
           <div class="form-group">
             <label>Pièce jointe (facture, reçu...)</label>
             <input type="file" (change)="onFileChange($event)" accept="application/pdf" class="file-input">
+            <small *ngIf="selectedFile">Fichier sélectionné: {{ selectedFile.name }}</small>
+            <small *ngIf="!selectedFile" class="text-warning">Aucun fichier sélectionné. Veuillez joindre une facture ou un reçu.</small>
           </div>
         </div>
       </div>

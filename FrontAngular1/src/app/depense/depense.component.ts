@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { DepenseService } from './depense.service';
+import { DepenseService, Depense, Entreprise, DepenseResponse, ApiResponse } from './depense.service';
 import { catchError, finalize, tap, delay } from 'rxjs/operators';
 import { of } from 'rxjs';
 
@@ -15,11 +15,11 @@ import { of } from 'rxjs';
 export class DepenseComponent implements OnInit {
   // Propriétés du formulaire
   depenseForm: FormGroup;
-  entreprises: any[] = [];
+  entreprises: Entreprise[] = [];
   
   // Propriétés pour les dépenses
-  depenses: any[] = [];
-  filteredDepenses: any[] = [];
+  depenses: Depense[] = [];
+  filteredDepenses: Depense[] = [];
   selectedEntrepriseId: number | null = null;
   activeTab: 'create' | 'list' = 'list'; // Par défaut on affiche la liste
   
@@ -44,11 +44,14 @@ export class DepenseComponent implements OnInit {
   selectedFile: File | null = null;
 
   constructor(private fb: FormBuilder, private depenseService: DepenseService) {
+    // Formater la date du jour pour les champs de type date HTML
+    const today = new Date().toISOString().split('T')[0]; // Format YYYY-MM-DD pour les inputs date HTML
+    
     this.depenseForm = this.fb.group({
       categorie: ['', Validators.required],
       fournisseur: ['', Validators.required],
       montant: ['', [Validators.required, Validators.min(0.01)]],
-      date: [new Date().toISOString().substring(0, 10), Validators.required],
+      date: [today, Validators.required],
       justificatif: ['', Validators.required],
       entreprisID: ['', Validators.required],
       fichierVerification: [null]
@@ -56,20 +59,35 @@ export class DepenseComponent implements OnInit {
   }
   
   ngOnInit(): void {
+    console.log('Initialisation du composant Depense');
+    
+    // Date du jour formatée correctement pour le formulaire HTML
+    const today = new Date().toISOString().split('T')[0];
+    this.depenseForm.get('date')?.setValue(today);
+    
     // Chargement des entreprises
     this.depenseService.getEntreprises().subscribe({
       next: (data) => {
-        this.entreprises = data.$values || data;
+        console.log('Entreprises reçues:', data);
+        this.entreprises = data;
+        
         // Si des entreprises sont trouvées, on sélectionne la première par défaut
-        if (this.entreprises.length > 0) {
+        if (this.entreprises && this.entreprises.length > 0) {
           this.selectedEntrepriseId = this.entreprises[0].id;
           this.depenseForm.get('entreprisID')?.setValue(this.selectedEntrepriseId);
+          console.log(`Entreprise sélectionnée par défaut: ID=${this.selectedEntrepriseId}`);
+          
+          // Charger les dépenses pour cette entreprise
           this.chargerDepenses();
+        } else {
+          console.warn('Aucune entreprise trouvée');
+          alert('Aucune entreprise n\'est disponible. Veuillez d\'abord créer une entreprise.');
         }
       },
       error: (err) => {
         console.error("Erreur lors du chargement des entreprises:", err);
         this.entreprises = [];
+        alert('Erreur lors du chargement des entreprises. Veuillez rafraîchir la page.');
       }
     });
   }
@@ -88,203 +106,180 @@ export class DepenseComponent implements OnInit {
     }
 
     // Récupérer les valeurs du formulaire
-    const categorie = this.depenseForm.get('categorie')?.value;
-    const fournisseur = this.depenseForm.get('fournisseur')?.value;
-    const montant = this.depenseForm.get('montant')?.value;
-    const date = this.depenseForm.get('date')?.value;
-    const justificatif = this.depenseForm.get('justificatif')?.value;
-    const entreprisID = this.depenseForm.get('entreprisID')?.value;
+    const formData = new FormData();
+    const formValues = this.depenseForm.value;
     
-    // S'assurer que les valeurs sont valides
-    if (!categorie || !fournisseur || !montant || !date || !justificatif || !entreprisID) {
-      console.error('Valeurs de formulaire manquantes');
-      alert('Veuillez remplir tous les champs requis');
+    // Log des valeurs du formulaire
+    console.log('Valeurs du formulaire:', formValues);
+
+    // Vérifier que toutes les valeurs requises sont présentes
+    const requiredFields = ['categorie', 'fournisseur', 'montant', 'date', 'justificatif', 'entreprisID'];
+    const missingFields = requiredFields.filter(field => !formValues[field]);
+    
+    if (missingFields.length > 0) {
+      console.error('Champs manquants:', missingFields);
+      alert('Veuillez remplir tous les champs requis: ' + missingFields.join(', '));
       return;
     }
+
+    // Formater correctement la date avant de l'ajouter au FormData
+    const dateValue = formValues.date;
+    let formattedDate;
     
-    // Log les valeurs pour déboguer
-    console.log('Valeurs du formulaire:', {
-      categorie,
-      fournisseur,
-      montant,
-      date,
-      justificatif,
-      entreprisID,
-      fichier: this.selectedFile ? this.selectedFile.name : 'aucun'
+    if (dateValue) {
+      try {
+        // Convertir en objet Date
+        const date = new Date(dateValue);
+        
+        // Vérifier que la date est valide
+        if (isNaN(date.getTime())) {
+          throw new Error('Date invalide');
+        }
+        
+        // Formatage correct pour correspondre au format attendu par le backend
+        formattedDate = date.toISOString();
+        
+        console.log('Date formatée pour le backend:', formattedDate);
+      } catch (error) {
+        console.error('Erreur lors du formatage de la date:', error);
+        alert('Date invalide. Veuillez sélectionner une date valide.');
+        return;
+      }
+    } else {
+      console.error('Date manquante');
+      alert('Veuillez sélectionner une date');
+      return;
+    }
+
+    // Ajouter les valeurs au FormData avec la date formatée
+    Object.keys(formValues).forEach(key => {
+      if (key !== 'fichierVerification' && key !== 'date') {
+        formData.append(key, formValues[key]);
+      }
     });
     
-    // S'assurer que entreprisID est un nombre
-    const entreprisIDNum = Number(entreprisID);
-    if (isNaN(entreprisIDNum)) {
-      console.error('EntreprisID invalide:', entreprisID);
-      alert('ID d\'entreprise invalide');
-      return;
-    }
-    
-    // Créer le FormData
-    const formData = new FormData();
-    formData.append('categorie', categorie);
-    formData.append('fournisseur', fournisseur);
-    formData.append('montant', montant.toString());
-    formData.append('date', date);
-    formData.append('justificatif', justificatif);
-    formData.append('entreprisID', entreprisIDNum.toString());
+    // Ajouter la date correctement formatée
+    formData.append('date', formattedDate);
 
+    // Ajouter le fichier de vérification sous le nom correct (FichierVerification)
     if (this.selectedFile) {
       formData.append('fichierVerification', this.selectedFile, this.selectedFile.name);
     }
-    
-    console.log('Envoi de FormData avec entreprisID:', entreprisIDNum);
-    
+
+    // Log des données envoyées
+    console.log('Données envoyées au serveur:', {
+      categorie: formValues.categorie,
+      fournisseur: formValues.fournisseur,
+      montant: formValues.montant,
+      date: formattedDate,
+      justificatif: formValues.justificatif,
+      entreprisID: formValues.entreprisID,
+      fichier: this.selectedFile ? this.selectedFile.name : 'aucun'
+    });
+
     // Désactiver le formulaire pendant le traitement
     this.depenseForm.disable();
-    
-    // Variable pour stocker l'ID de la dépense créée
-    let createdDepenseId: number | null = null;
-    
+
     this.depenseService.createDepense(formData)
       .pipe(
-        tap(response => {
-          console.log('Réponse brute du serveur:', response);
-          
-          // Extraire l'ID de la dépense créée
-          if (response && response.id) {
-            createdDepenseId = response.id;
-            console.log('ID de la dépense créée:', createdDepenseId);
-          }
-        }),
         catchError(error => {
-          console.error('Erreur interceptée:', error);
+          console.error('Erreur lors de la création de la dépense:', error);
           
-          // Vérifier si le corps de l'erreur contient un ID de dépense
-          if (error && error.error && error.error.id) {
-            createdDepenseId = error.error.id;
-            console.log('ID de la dépense trouvé dans l\'erreur:', createdDepenseId);
+          // Afficher un message d'erreur approprié avec les détails
+          let errorMessage = error.message || 'Erreur lors de la création de la dépense';
+          if (error.details) {
+            errorMessage += '\n\nDétails: ' + error.details;
           }
           
-          // Si c'est une erreur 500 OK ou contient un message de succès
-          if ((error.status === 500 && error.statusText === 'OK') || 
-              (error.error && error.error.message && error.error.message.includes('succès'))) {
-            console.log('Traitement comme succès malgré l\'erreur');
-            return of({ 
-              message: 'Dépense créée avec succès', 
-              isErrorButSuccess: true,
-              id: createdDepenseId
-            });
+          if (error.status === 0) {
+            errorMessage = 'Impossible de se connecter au serveur. Vérifiez votre connexion internet.';
+          } else if (error.status === 500) {
+            errorMessage = 'Erreur serveur interne.\n\nVeuillez vérifier que tous les champs sont correctement remplis et que le fichier joint est valide.';
+            if (error.error && error.error.details) {
+              errorMessage += '\n\nDétails techniques: ' + error.error.details;
+            }
           }
           
-          // Propager l'erreur
-          throw error;
+          alert(errorMessage);
+          return of(null);
         }),
-        // Attendre pour s'assurer que la transaction est terminée
-        delay(1500),
-        // Réactiver le formulaire dans tous les cas
         finalize(() => {
           this.depenseForm.enable();
         })
       )
-      .subscribe({
-        next: (response) => {
-          // Si on a reçu un ID dans la réponse et qu'il n'est pas déjà stocké
-          if (response.id && !createdDepenseId) {
-            createdDepenseId = response.id;
-          }
+      .subscribe(response => {
+        if (response) {
+          console.log('Réponse du serveur:', response);
           
-          console.log('Réponse finale, ID dépense:', createdDepenseId);
+          // Stocker l'ID de la dépense créée
+          const depenseId = response.id;
           
-          // Afficher le message de succès
-          alert('Dépense créée avec succès' + (createdDepenseId ? ` (ID: ${createdDepenseId})` : ''));
-          
-          // Réinitialiser le formulaire
-          this.depenseForm.reset();
-          this.depenseForm.get('date')?.setValue(new Date().toISOString().substring(0, 10));
-          this.selectedFile = null;
-          
-          // Passer à l'onglet de liste
-          this.activeTab = 'list';
-          
-          // Fonction pour vérifier si la dépense est dans la liste après chargement
-          const verifierPresenceDependeCreee = (attemptsLeft = 3) => {
+          if (depenseId) {
+            // Afficher le message de succès
+            alert('Dépense créée avec succès (ID: ' + depenseId + ')');
+            
+            // Réinitialiser le formulaire
+            this.depenseForm.reset();
+            this.depenseForm.get('date')?.setValue(new Date().toISOString().substring(0, 10));
+            this.depenseForm.get('entreprisID')?.setValue(this.selectedEntrepriseId);
+            this.selectedFile = null;
+            
+            // Passer à l'onglet de liste
+            this.activeTab = 'list';
+            
+            // Recharger les dépenses avec un délai pour s'assurer que la base de données est à jour
             setTimeout(() => {
+              console.log('Rechargement des dépenses...');
               this.chargerDepenses();
-              
-              // Si on a un ID, vérifier si la dépense est dans la liste
-              if (createdDepenseId) {
-                setTimeout(() => {
-                  const depenseTrouvee = this.depenses.some(d => d.id === createdDepenseId);
-                  console.log(`Dépense ID ${createdDepenseId} trouvée dans la liste: ${depenseTrouvee}`);
-                  
-                  // Si la dépense n'est pas trouvée et qu'il reste des tentatives, réessayer
-                  if (!depenseTrouvee && attemptsLeft > 0) {
-                    console.log(`Nouvelle tentative de chargement (${attemptsLeft} restantes)...`);
-                    verifierPresenceDependeCreee(attemptsLeft - 1);
-                  }
-                }, 500);
-              }
             }, 1000);
-          };
-          
-          // Lancer la vérification
-          verifierPresenceDependeCreee();
-        },
-        error: (finalError) => {
-          console.error('Erreur finale lors de la création:', finalError);
-          alert('Erreur lors de la création de la dépense: ' + (finalError.message || 'Erreur inconnue'));
+          } else {
+            console.error('ID de dépense manquant dans la réponse:', response);
+            alert('Erreur: ID de dépense manquant dans la réponse');
+          }
+        } else {
+          console.error('Réponse vide du serveur');
+          alert('Erreur: Réponse invalide du serveur');
         }
       });
   }
 
   chargerDepenses(): void {
-    console.log('Chargement des dépenses pour entreprise ID:', this.selectedEntrepriseId);
-    
     if (!this.selectedEntrepriseId) {
-      console.error('Aucune entreprise sélectionnée pour charger les dépenses');
+      console.error('Aucune entreprise sélectionnée');
       return;
     }
+
+    console.log('Chargement des dépenses pour entreprise:', this.selectedEntrepriseId);
     
-    // S'assurer que l'ID est un nombre
-    const entrepriseId = Number(this.selectedEntrepriseId);
-    if (isNaN(entrepriseId)) {
-      console.error('ID d\'entreprise invalide pour charger les dépenses:', this.selectedEntrepriseId);
-      return;
-    }
-    
-    console.log('Appel API pour charger les dépenses de l\'entreprise ID:', entrepriseId);
-    
-    this.depenseService.getDepensesParEntreprise(entrepriseId)
-      .pipe(
-        tap(data => console.log('Données reçues pour les dépenses:', data)),
-        catchError(err => {
-          console.error('Erreur lors du chargement des dépenses:', err);
-          // Retourner un tableau vide en cas d'erreur pour éviter de bloquer le flux
-          return of([]);
-        })
-      )
+    this.depenseService.getDepensesByEntreprise(this.selectedEntrepriseId)
       .subscribe({
         next: (data) => {
-          // Vérifier si les données sont dans un format attendu
-          if (data && Array.isArray(data)) {
-            this.depenses = data;
-          } else if (data && data.$values && Array.isArray(data.$values)) {
-            this.depenses = data.$values;
-          } else if (data) {
-            console.warn('Format de données inattendu:', data);
-            // Essayer de convertir en tableau si possible
-            this.depenses = Array.isArray(data) ? data : [data];
-          } else {
+          console.log('Dépenses reçues:', data);
+          
+          if (!data || data.length === 0) {
+            console.log('Aucune dépense trouvée pour cette entreprise');
             this.depenses = [];
+          } else {
+            this.depenses = data;
+            console.log(`${this.depenses.length} dépense(s) chargée(s)`);
           }
           
-          console.log(`${this.depenses.length} dépenses chargées.`);
           this.applyFilters();
           this.calculateTotalPages();
+        },
+        error: (err) => {
+          console.error('Erreur lors du chargement des dépenses:', err);
+          this.depenses = [];
+          this.filteredDepenses = [];
+          this.calculateTotalPages();
+          alert('Erreur lors du chargement des dépenses. Veuillez réessayer.');
         }
       });
   }
 
   telechargerJustificatif(depenseId: number): void {
     this.depenseService.getJustificatif(depenseId).subscribe({
-      next: (response: any) => {
+      next: (response: Blob) => {
         // Créer un blob à partir des données et le télécharger
         const blob = new Blob([response], { type: 'application/pdf' });
         const url = window.URL.createObjectURL(blob);
@@ -307,15 +302,18 @@ export class DepenseComponent implements OnInit {
   // Méthodes de filtrage et tri
   applyFilters(): void {
     let filtered = [...this.depenses];
+    console.log('Filtrage en cours sur', filtered.length, 'dépenses');
 
     // Filtrage par terme de recherche (sur plusieurs champs)
     if (this.searchTerm) {
       const searchTermLower = this.searchTerm.toLowerCase();
+      const countBefore = filtered.length;
       filtered = filtered.filter(depense => 
         depense.fournisseur.toLowerCase().includes(searchTermLower) || 
         depense.categorie.toLowerCase().includes(searchTermLower) ||
         depense.justificatif.toLowerCase().includes(searchTermLower)
       );
+      console.log(`Filtre "Recherche" (${this.searchTerm}): ${countBefore} -> ${filtered.length}`);
     }
 
     // Filtrage par date
@@ -324,6 +322,7 @@ export class DepenseComponent implements OnInit {
       const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
       const firstDayOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
       const firstDayOfYear = new Date(today.getFullYear(), 0, 1);
+      const countBefore = filtered.length;
 
       filtered = filtered.filter(depense => {
         const depenseDate = new Date(depense.date);
@@ -336,33 +335,42 @@ export class DepenseComponent implements OnInit {
         }
         return true;
       });
+      console.log(`Filtre "Date" (${this.dateFilter}): ${countBefore} -> ${filtered.length}`);
     }
 
     // Filtrage par catégorie
     if (this.categorieFilter) {
+      const countBefore = filtered.length;
       filtered = filtered.filter(depense => 
         depense.categorie.toLowerCase().includes(this.categorieFilter.toLowerCase())
       );
+      console.log(`Filtre "Catégorie" (${this.categorieFilter}): ${countBefore} -> ${filtered.length}`);
     }
 
     // Filtrage par fournisseur
     if (this.fournisseurFilter) {
+      const countBefore = filtered.length;
       filtered = filtered.filter(depense => 
         depense.fournisseur.toLowerCase().includes(this.fournisseurFilter.toLowerCase())
       );
+      console.log(`Filtre "Fournisseur" (${this.fournisseurFilter}): ${countBefore} -> ${filtered.length}`);
     }
 
     // Filtrage par montant
     if (this.montantFilter) {
       const montant = parseFloat(this.montantFilter);
       if (!isNaN(montant)) {
+        const countBefore = filtered.length;
         filtered = filtered.filter(depense => depense.montant === montant);
+        console.log(`Filtre "Montant" (${this.montantFilter}): ${countBefore} -> ${filtered.length}`);
       }
     }
 
     // Filtrage par statut
     if (this.statutFilter !== 'all') {
+      const countBefore = filtered.length;
       filtered = filtered.filter(depense => depense.type === this.statutFilter);
+      console.log(`Filtre "Statut" (${this.statutFilter}): ${countBefore} -> ${filtered.length}`);
     }
 
     // Tri
@@ -382,6 +390,7 @@ export class DepenseComponent implements OnInit {
     });
 
     this.filteredDepenses = filtered;
+    console.log('Filtrage terminé, résultat:', filtered.length, 'dépenses');
     this.calculateTotalPages();
   }
 
@@ -416,5 +425,68 @@ export class DepenseComponent implements OnInit {
 
   get produitsFormArray(): FormArray {
     return this.depenseForm.get('produitsServices') as FormArray;
+  }
+
+  // Fonction de diagnostic pour vérifier les problèmes
+  diagnostiquerProblemeAffichage(): void {
+    // 1. Vérifier les filtres actifs
+    console.log('=== DIAGNOSTIC DES FILTRES ACTIFS ===');
+    console.log('Date:', this.dateFilter);
+    console.log('Statut:', this.statutFilter);
+    console.log('Catégorie:', this.categorieFilter);
+    console.log('Fournisseur:', this.fournisseurFilter);
+    console.log('Montant:', this.montantFilter);
+    console.log('Recherche:', this.searchTerm);
+    
+    // 2. Vérifier l'état des dépenses avant filtrage
+    console.log('=== DIAGNOSTIC DES DONNÉES ===');
+    console.log('Total dépenses chargées:', this.depenses.length);
+    console.log('Total dépenses après filtrage:', this.filteredDepenses.length);
+    
+    if (this.depenses.length > 0) {
+      // Afficher quelques données d'exemple
+      console.log('Exemple de dépense:', this.depenses[0]);
+    }
+    
+    // 3. Vérifier directement l'API
+    if (this.selectedEntrepriseId) {
+      console.log('=== VÉRIFICATION DIRECTE DE L\'API ===');
+      const timestamp = new Date().getTime();
+      const url = `${this.depenseService['apiDepensesUrl']}/entreprise/${this.selectedEntrepriseId}?t=${timestamp}`;
+      
+      console.log('Appel API direct:', url);
+      
+      // Appel direct à l'API pour voir ce qu'elle retourne réellement
+      this.depenseService['http'].get(url).subscribe({
+        next: (data: any) => {
+          console.log('Réponse brute de l\'API:', data);
+          
+          // Si les données sont disponibles, vérifier les IDs
+          if (Array.isArray(data)) {
+            console.log('IDs des dépenses retournées:', data.map((d: any) => d.id));
+          } else if (data && typeof data === 'object' && '$values' in data && Array.isArray(data.$values)) {
+            console.log('IDs des dépenses retournées:', data.$values.map((d: any) => d.id));
+          }
+        },
+        error: (err) => {
+          console.error('Erreur lors de la vérification directe:', err);
+        }
+      });
+    }
+    
+    // 4. Réinitialiser tous les filtres
+    const resetFiltres = confirm('Voulez-vous réinitialiser tous les filtres pour voir toutes les dépenses?');
+    if (resetFiltres) {
+      this.dateFilter = 'all';
+      this.statutFilter = 'all';
+      this.categorieFilter = '';
+      this.fournisseurFilter = '';
+      this.montantFilter = '';
+      this.searchTerm = '';
+      this.applyFilters();
+      
+      // Recharger les données
+      this.chargerDepenses();
+    }
   }
 } 

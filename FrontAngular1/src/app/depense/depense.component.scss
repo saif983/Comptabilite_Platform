@@ -396,4 +396,24 @@ $error-color: #f44336;
       }
     }
   }
+}
+
+// Ajout du style pour le bouton de diagnostic
+.diagnostic-btn {
+  background-color: #9575cd; // Violet clair
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s;
+  
+  &:hover {
+    background-color: darken(#9575cd, 10%);
+  }
+  
+  &:active {
+    background-color: darken(#9575cd, 15%);
+  }
 } 

@@ -383,25 +383,47 @@ namespace ComptabiliteAPI.Controllers
         [HttpGet("all")]
         public async Task<IActionResult> GetAllEntreprises()
         {
-            int userId = GetUtilisateurId();
-            var entreprises = await _context.Entreprises
-                .Where(e => e.UtilisateurId == userId)
-                .ToListAsync();
-
-            var result = entreprises.Select(e => new
+            try
             {
-                id = e.Id,
-                nom = e.Nom,
-                adresse = e.Adresse,
-                mf = e.MF,
-                tel = e.Tel,
-                hasLogo = e.Logo != null && e.Logo.Length > 0,
-                hasRCS = e.RCS != null && e.RCS.Length > 0,
-                hasIdentitegerant = e.Identitegerant != null && e.Identitegerant.Length > 0,
-                hasJustificatifedomicile = e.Justificatifedomicile != null && e.Justificatifedomicile.Length > 0
-            }).ToList();
+                Console.WriteLine("Demande de toutes les entreprises");
+                int userId = GetUtilisateurId();
+                Console.WriteLine($"UserID: {userId}");
+                
+                var entreprises = await _context.Entreprises
+                    .Where(e => e.UtilisateurId == userId)
+                    .ToListAsync();
 
-            return Ok(result);
+                Console.WriteLine($"Nombre d'entreprises trouvées: {entreprises.Count}");
+
+                var result = entreprises.Select(e => new
+                {
+                    id = e.Id,
+                    nom = e.Nom,
+                    adresse = e.Adresse,
+                    mf = e.MF,
+                    tel = e.Tel,
+                    hasLogo = e.Logo != null && e.Logo.Length > 0,
+                    hasRCS = e.RCS != null && e.RCS.Length > 0,
+                    hasIdentitegerant = e.Identitegerant != null && e.Identitegerant.Length > 0,
+                    hasJustificatifedomicile = e.Justificatifedomicile != null && e.Justificatifedomicile.Length > 0
+                }).ToList();
+
+                // Si aucune entreprise n'est trouvée, retourner un tableau vide
+                if (result.Count == 0)
+                {
+                    Console.WriteLine("Aucune entreprise trouvée, retour d'un tableau vide");
+                    return Ok(new List<object>());
+                }
+
+                // Format de réponse standardisé
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ERREUR dans GetAllEntreprises: {ex.Message}");
+                Console.WriteLine($"STACK TRACE: {ex.StackTrace}");
+                return StatusCode(500, new { message = "Erreur lors de la récupération des entreprises", details = ex.Message });
+            }
         }
 
         [HttpPost("{id}/set-default")]
