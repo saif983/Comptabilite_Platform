@@ -1,27 +1,28 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { SocialLoginModule, SocialAuthServiceConfig, GoogleLoginProvider } from '@abacritt/angularx-social-login';
-
+import { LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserModule, HammerModule } from '@angular/platform-browser';
-import { IgxCalendarModule } from 'igniteui-angular';
-import { MatFormFieldModule } from '@angular/material/form-field';
+
+// Angular Material
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatSidenavModule } from '@angular/material/sidenav'; // Add MatSidenavModule
-
-
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
     declarations: [
-       
+        
     ],
     imports: [
         BrowserModule,
@@ -33,23 +34,22 @@ import { MatSidenavModule } from '@angular/material/sidenav'; // Add MatSidenavM
         ]),
         CommonModule,
         ReactiveFormsModule,
-        MatIconModule,
-        SocialLoginModule,
         BrowserAnimationsModule,
-        HammerModule,
-        IgxCalendarModule,
-        MatFormFieldModule,
+        SocialLoginModule,
+        
+        // Angular Material
         MatInputModule,
         MatButtonModule,
-        MatTableModule,
-        ReactiveFormsModule,
+        MatIconModule,
         MatCardModule,
         MatToolbarModule,
-        MatSidenavModule, // Add MatSidenavModule to imports
+        MatSidenavModule,
+        MatDividerModule,
+        MatProgressSpinnerModule,
+        MatSelectModule,
+        MatTooltipModule,
     ],
    
-    
-    
     providers: [
         {
             provide: 'SocialAuthServiceConfig',
@@ -58,9 +58,7 @@ import { MatSidenavModule } from '@angular/material/sidenav'; // Add MatSidenavM
                 providers: [
                     {
                         id: GoogleLoginProvider.PROVIDER_ID,
-                        provider: new GoogleLoginProvider('559595036763-57sesap5ls3e9jve2p8semqf4m77cb9l.apps.googleusercontent.com', {
-                            scopes: 'openid profile email',
-                        }),
+                        provider: new GoogleLoginProvider("821704401000-hfkc0a1amle76001on6fk85o2k8bv4bc.apps.googleusercontent.com"),
                     },
                 ],
                 onError: (err) => {
@@ -68,6 +66,7 @@ import { MatSidenavModule } from '@angular/material/sidenav'; // Add MatSidenavM
                 },
             } as SocialAuthServiceConfig,
         },
+        { provide: LocationStrategy, useClass: HashLocationStrategy },
     ],
     
 })

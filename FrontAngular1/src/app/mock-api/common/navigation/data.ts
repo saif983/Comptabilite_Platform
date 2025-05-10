@@ -107,7 +107,7 @@ const entrepriseMenu: FuseNavigationItem[] = [
         type    : 'basic' as 'basic',
         icon    : 'heroicons_outline:plus-circle',
         link    : '/entreprises/new'
-    }
+    },
 ];
 
 export const defaultNavigation: FuseNavigationItem[] = [
@@ -134,6 +134,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 link: item.link
             })),
             ...entrepriseMenu,
+            {
+                id      : 'employe.bilan',
+                title   : 'Bilan Comptable',
+                type    : 'basic' as 'basic',
+                icon    : 'heroicons_outline:document-chart-bar',
+                link    : '/bilan-comptable'
+            },
             {
                 id   : 'employe.abonnement',
                 title: 'Abonnement',
@@ -175,6 +182,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 link: item.link
             })),
             ...entrepriseMenu,
+            {
+                id      : 'admin.bilan',
+                title   : 'Bilan Comptable',
+                type    : 'basic' as 'basic',
+                icon    : 'heroicons_outline:document-chart-bar',
+                link    : '/bilan-comptable'
+            },
             {
                 id   : 'admin.abonnement',
                 title: 'Abonnement',

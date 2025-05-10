@@ -1,0 +1,176 @@
+<div class="bilan-container">
+  <h1 class="main-title">Bilan Comptable</h1>
+  
+  <mat-card class="form-card">
+    <mat-card-header>
+      <mat-card-title>Générer un bilan comptable</mat-card-title>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <div *ngIf="error" class="error-message">
+        {{ error }}
+      </div>
+      
+      <div *ngIf="debug" class="debug-info">
+        <p>Debug: {{ debug }}</p>
+      </div>
+      
+      <form (ngSubmit)="generateBilan()">
+        <div class="form-row">
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Entreprise</mat-label>
+            <mat-select [(ngModel)]="selectedEnterpriseId" name="enterprise" required>
+              <mat-option *ngFor="let enterprise of enterprises" [value]="enterprise.id">
+                {{ enterprise.nom }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-row">
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Capital (optionnel)</mat-label>
+            <input matInput type="number" [(ngModel)]="capital" name="capital">
+            <span matSuffix>TND</span>
+          </mat-form-field>
+        </div>
+        
+        <button mat-raised-button color="primary" type="submit" [disabled]="loading || !selectedEnterpriseId" class="submit-button">
+          <mat-icon>assessment</mat-icon>
+          {{ loading ? 'Chargement...' : 'Générer le bilan' }}
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+  
+  <div *ngIf="loading" class="loading-spinner">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Génération du bilan en cours...</p>
+  </div>
+  
+  <div *ngIf="bilanData" class="bilan-result">
+    <mat-card>
+      <mat-card-header class="bilan-header">
+        <mat-card-title>{{ bilanData.title || 'Bilan Comptable' }}</mat-card-title>
+        <div class="action-buttons">
+          <button mat-raised-button color="primary" (click)="exportToExcel()" matTooltip="Exporter vers Excel">
+            <mat-icon>description</mat-icon> Exporter Excel
+          </button>
+          <button mat-raised-button color="accent" (click)="printBilan()" matTooltip="Imprimer le bilan">
+            <mat-icon>print</mat-icon> Imprimer
+          </button>
+        </div>
+      </mat-card-header>
+      
+      <mat-card-content id="bilan-print-section">
+        <h2 class="bilan-title">{{ bilanData.title || 'Bilan Comptable' }}</h2>
+        
+        <div class="bilan-tables">
+          <!-- Actif -->
+          <div class="bilan-table">
+            <h3 class="table-title actif-title">Actif</h3>
+            <table class="modern-table">
+              <thead>
+                <tr>
+                  <th colspan="2">Postes</th>
+                  <th>Montant</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Immobilisations -->
+                <tr class="section-header">
+                  <td colspan="3">Immobilisations</td>
+                </tr>
+                <tr *ngFor="let item of bilanData.actif?.immobilisations">
+                  <td></td>
+                  <td>{{ item.label }}</td>
+                  <td class="amount">{{ item.montant | number:'1.2-2' }} TND</td>
+                </tr>
+                <tr class="subtotal-row">
+                  <td></td>
+                  <td>Total immobilisations</td>
+                  <td class="amount">{{ bilanData.actif?.total_immobilisations | number:'1.2-2' }} TND</td>
+                </tr>
+                
+                <!-- Actif circulant -->
+                <tr class="section-header">
+                  <td colspan="3">Actif circulant</td>
+                </tr>
+                <tr *ngFor="let item of bilanData.actif?.actif_circulant">
+                  <td></td>
+                  <td>{{ item.label }}</td>
+                  <td class="amount">{{ item.montant | number:'1.2-2' }} TND</td>
+                </tr>
+                <tr class="subtotal-row">
+                  <td></td>
+                  <td>Total actif circulant</td>
+                  <td class="amount">{{ bilanData.actif?.total_actif_circulant | number:'1.2-2' }} TND</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr class="total-row">
+                  <td colspan="2">TOTAL ACTIF</td>
+                  <td class="amount">{{ bilanData.actif?.total_actif | number:'1.2-2' }} TND</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          
+          <!-- Passif -->
+          <div class="bilan-table">
+            <h3 class="table-title passif-title">Passif</h3>
+            <table class="modern-table">
+              <thead>
+                <tr>
+                  <th colspan="2">Postes</th>
+                  <th>Montant</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Capitaux propres -->
+                <tr class="section-header">
+                  <td colspan="3">Capitaux propres</td>
+                </tr>
+                <tr *ngFor="let item of bilanData.passif?.capitaux_propres">
+                  <td></td>
+                  <td>{{ item.label }}</td>
+                  <td class="amount">{{ item.montant | number:'1.2-2' }} TND</td>
+                </tr>
+                <tr class="subtotal-row">
+                  <td></td>
+                  <td>Total capitaux propres</td>
+                  <td class="amount">{{ bilanData.passif?.total_capitaux_propres | number:'1.2-2' }} TND</td>
+                </tr>
+                
+                <!-- Dettes -->
+                <tr class="section-header">
+                  <td colspan="3">Dettes</td>
+                </tr>
+                <tr *ngFor="let item of bilanData.passif?.dettes">
+                  <td></td>
+                  <td>{{ item.label }}</td>
+                  <td class="amount">{{ item.montant | number:'1.2-2' }} TND</td>
+                </tr>
+                <tr class="subtotal-row">
+                  <td></td>
+                  <td>Total dettes</td>
+                  <td class="amount">{{ bilanData.passif?.total_dettes | number:'1.2-2' }} TND</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr class="total-row">
+                  <td colspan="2">TOTAL PASSIF</td>
+                  <td class="amount">{{ bilanData.passif?.total_passif | number:'1.2-2' }} TND</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+        
+        <div class="bilan-footer">
+          <p>Document généré le {{ currentDate | date:'dd/MM/yyyy' }} à {{ currentDate | date:'HH:mm' }}</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

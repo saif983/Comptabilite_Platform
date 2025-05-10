@@ -35,7 +35,7 @@ export const appRoutes: Route[] = [
         resolve: {
             initialData: initialDataResolver,
         },
-        children: [{ path: 'profileE', component: ProfileComponent }, { path: 'abonnement', component: AbonnementComponent }],
+        children: [{ path: 'profileE', component: ProfileComponent }, { path: 'abonnement', component: AbonnementComponent }, { path: 'bilan-comptable', loadComponent: () => import('app/bilan-comptable/bilan-comptable.component').then(c => c.BilanComptableComponent) }],
     },
 
     {

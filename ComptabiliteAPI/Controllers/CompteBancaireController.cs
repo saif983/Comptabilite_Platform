@@ -14,16 +14,38 @@ namespace ComptabiliteAPI.Controllers
     public class CompteBancaireController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly ILogger<CompteBancaireController> _logger;
 
-        public CompteBancaireController(AppDbContext context)
+        public CompteBancaireController(AppDbContext context, ILogger<CompteBancaireController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         private int GetUtilisateurId()
         {
             var claim = User.FindFirst(ClaimTypes.NameIdentifier);
             return int.Parse(claim.Value);
+        }
+
+        // Méthode utilitaire pour gérer les erreurs de conversion décimale
+        private decimal SafeDecimal(object value, decimal defaultValue = 0)
+        {
+            if (value == null)
+                return defaultValue;
+
+            try
+            {
+                if (value is decimal decVal)
+                    return decVal;
+
+                return Convert.ToDecimal(value);
+            }
+            catch
+            {
+                _logger.LogWarning($"Impossible de convertir la valeur '{value}' en décimal. Utilisation de la valeur par défaut {defaultValue}.");
+                return defaultValue;
+            }
         }
 
         [HttpPost("create")]
@@ -53,56 +75,123 @@ namespace ComptabiliteAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCompteBancaire(int id)
         {
-            var compte = await _context.ComptesBancaires.FindAsync(id);
-            if (compte == null || compte.UtilisateurId != GetUtilisateurId())
+            try
             {
-                return NotFound("Compte Bancaire non trouvé.");
+                var compte = await _context.ComptesBancaires
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(c => c.Id == id);
+
+                if (compte == null || compte.UtilisateurId != GetUtilisateurId())
+                {
+                    return NotFound("Compte Bancaire non trouvé.");
+                }
+
+                var dto = new CompteBancaireDto
+                {
+                    Id = compte.Id,
+                    NumeroCompte = compte.NumeroCompte,
+                    NomBanque = compte.NomBanque,
+                    TypeCompte = compte.TypeCompte,
+                    DateOuverture = compte.DateOuverture,
+                    Solde = SafeDecimal(compte.Solde),
+                    Derniers4Chiffres = compte.Derniers4Chiffres
+                };
+
+                return Ok(dto);
             }
-
-            var dto = new CompteBancaireDto
+            catch (Exception ex)
             {
-                Id = compte.Id,
-                NumeroCompte = compte.NumeroCompte,
-                NomBanque = compte.NomBanque,
-                TypeCompte = compte.TypeCompte,
-                DateOuverture = compte.DateOuverture,
-                Solde = compte.Solde,
-                Derniers4Chiffres = compte.Derniers4Chiffres
-            };
-
-            return Ok(dto);
+                _logger.LogError(ex, "Erreur lors de la récupération du compte bancaire");
+                return StatusCode(500, "Une erreur est survenue lors de la récupération du compte bancaire.");
+            }
         }
 
         [HttpGet("all")]
         public async Task<IActionResult> GetAllByUser()
         {
-            var utilisateurId = GetUtilisateurId();
+            try
+            {
+                var utilisateurId = GetUtilisateurId();
+                List<CompteBancaireDto> dtos = new List<CompteBancaireDto>();
 
-            var comptes = await _context.ComptesBancaires
-                .Where(c => c.UtilisateurId == utilisateurId)
-                .ToListAsync();
+                // Récupérer les IDs des comptes d'abord (cela évite les problèmes avec les valeurs décimales)
+                var compteIds = await _context.ComptesBancaires
+                    .Where(c => c.UtilisateurId == utilisateurId)
+                    .Select(c => c.Id)
+                    .ToListAsync();
 
-            var dtos = comptes.Select(c => new CompteBancaireDto
-            {
-                Id = c.Id,
-                NumeroCompte = c.NumeroCompte,
-                NomBanque = c.NomBanque,
-                TypeCompte = c.TypeCompte,
-                DateOuverture = c.DateOuverture,
-                Solde = c.Solde,
-                Derniers4Chiffres = c.Derniers4Chiffres
-            });
-            if (dtos == null || !dtos.Any())
-            {
-                return NotFound("Aucun compte bancaire trouvé.");
-            }
-            else
-            {
+                // Traiter chaque compte individuellement pour éviter qu'une erreur sur un compte
+                // n'empêche la récupération des autres
+                foreach (var id in compteIds)
+                {
+                    try
+                    {
+                        // Récupérer le compte en utilisant des propriétés spécifiques pour éviter 
+                        // les problèmes de conversion automatique
+                        var compteData = await _context.ComptesBancaires
+                            .Where(c => c.Id == id)
+                            .Select(c => new
+                            {
+                                c.Id,
+                                c.NumeroCompte,
+                                c.NomBanque,
+                                c.TypeCompte,
+                                c.DateOuverture,
+                                // Récupérer Solde comme string pour éviter l'erreur de conversion
+                                SoldeAsString = c.Solde.ToString(),
+                            })
+                            .AsNoTracking()
+                            .FirstOrDefaultAsync();
+
+                        if (compteData != null)
+                        {
+                            // Conversion manuelle avec gestion d'erreur
+                            decimal solde = 0;
+                            try
+                            {
+                                if (decimal.TryParse(compteData.SoldeAsString, out var parsedSolde))
+                                {
+                                    solde = parsedSolde;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                _logger.LogWarning(ex, $"Erreur lors de la conversion du solde pour le compte {id}");
+                            }
+
+                            dtos.Add(new CompteBancaireDto
+                            {
+                                Id = compteData.Id,
+                                NumeroCompte = compteData.NumeroCompte ?? string.Empty,
+                                NomBanque = compteData.NomBanque ?? string.Empty,
+                                TypeCompte = compteData.TypeCompte ?? "Courant",
+                                DateOuverture = compteData.DateOuverture,
+                                Solde = solde,
+                                Derniers4Chiffres = compteData.NumeroCompte?.Length >= 4
+                                    ? compteData.NumeroCompte.Substring(compteData.NumeroCompte.Length - 4)
+                                    : compteData.NumeroCompte ?? string.Empty
+                            });
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, $"Erreur lors de la récupération du compte bancaire ID {id}");
+                        // Continuer avec les autres comptes
+                    }
+                }
+
+                if (!dtos.Any())
+                {
+                    return NotFound("Aucun compte bancaire trouvé.");
+                }
+                
                 return Ok(dtos);
             }
-
-
-
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erreur lors de la récupération des comptes bancaires");
+                return StatusCode(500, "Une erreur est survenue lors de la récupération des comptes bancaires.");
+            }
         }
     }
 }
