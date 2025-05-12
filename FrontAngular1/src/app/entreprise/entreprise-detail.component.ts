@@ -10,7 +10,11 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatTableModule } from '@angular/material/table';
+import { MatBadgeModule } from '@angular/material/badge';
 import { EntrepriseService, EntrepriseModel } from '../core/services/entreprise.service';
+import { HistoriqueService, HistoriqueModel, HistoriqueResponse, HistoriqueStats } from '../core/services/historique.service';
 import { fuseAnimations } from '@fuse/animations';
 import { Subject, takeUntil } from 'rxjs';
 import { UserService } from 'app/core/user/user.service';
@@ -30,7 +34,10 @@ import { factureRoutes } from '../facture/facture.routes';
     MatSnackBarModule,
     MatChipsModule,
     MatDividerModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatPaginatorModule,
+    MatTableModule,
+    MatBadgeModule
   ],
   template: `
     <div class="flex flex-col w-full p-6">
@@ -199,10 +206,134 @@ import { factureRoutes } from '../facture/facture.routes';
               </mat-tab>
               
               <mat-tab label="Historique">
-                <div class="p-4 text-center">
-                  <mat-icon class="text-6xl text-gray-400 mb-2">history</mat-icon>
-                  <h3 class="text-xl font-medium mb-2">Historique des opérations</h3>
-                  <p class="text-gray-500">L'historique des modifications et opérations sera disponible prochainement.</p>
+                <div class="p-4">
+                  <div *ngIf="isLoadingHistorique" class="flex justify-center my-4">
+                    <mat-spinner [diameter]="40"></mat-spinner>
+                  </div>
+                  
+                  <div *ngIf="!isLoadingHistorique && historiqueStats" class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="bg-green-50 p-4 rounded-lg border border-green-100">
+                      <div class="flex items-center justify-between">
+                        <div>
+                          <div class="text-xs text-green-600 uppercase font-semibold">Actions totales</div>
+                          <div class="text-2xl font-bold mt-1">{{ historiqueStats.totalActions }}</div>
+                        </div>
+                        <div class="bg-green-100 p-2 rounded-full">
+                          <mat-icon class="text-green-600">history</mat-icon>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                      <div class="flex items-center justify-between">
+                        <div>
+                          <div class="text-xs text-blue-600 uppercase font-semibold">30 derniers jours</div>
+                          <div class="text-2xl font-bold mt-1">{{ historiqueStats.actionsRecentes }}</div>
+                        </div>
+                        <div class="bg-blue-100 p-2 rounded-full">
+                          <mat-icon class="text-blue-600">date_range</mat-icon>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="bg-purple-50 p-4 rounded-lg border border-purple-100">
+                      <div class="flex items-center justify-between">
+                        <div>
+                          <div class="text-xs text-purple-600 uppercase font-semibold">Modules actifs</div>
+                          <div class="text-2xl font-bold mt-1">{{ historiqueStats.actionsParModule.length }}</div>
+                        </div>
+                        <div class="bg-purple-100 p-2 rounded-full">
+                          <mat-icon class="text-purple-600">category</mat-icon>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="bg-orange-50 p-4 rounded-lg border border-orange-100">
+                      <div class="flex items-center justify-between">
+                        <div>
+                          <div class="text-xs text-orange-600 uppercase font-semibold">Types d'actions</div>
+                          <div class="text-2xl font-bold mt-1">{{ historiqueStats.actionsParType.length }}</div>
+                        </div>
+                        <div class="bg-orange-100 p-2 rounded-full">
+                          <mat-icon class="text-orange-600">data_usage</mat-icon>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div *ngIf="!isLoadingHistorique && historique && historique.items.length > 0" class="overflow-x-auto">
+                    <table mat-table [dataSource]="historique.items" class="w-full">
+                      <!-- Date Column -->
+                      <ng-container matColumnDef="date">
+                        <th mat-header-cell *matHeaderCellDef>Date</th>
+                        <td mat-cell *matCellDef="let item">{{ item.dateAction | date:'dd/MM/yyyy HH:mm' }}</td>
+                      </ng-container>
+                      
+                      <!-- Utilisateur Column -->
+                      <ng-container matColumnDef="utilisateur">
+                        <th mat-header-cell *matHeaderCellDef>Utilisateur</th>
+                        <td mat-cell *matCellDef="let item">{{ item.nomUtilisateur }}</td>
+                      </ng-container>
+                      
+                      <!-- Module Column -->
+                      <ng-container matColumnDef="module">
+                        <th mat-header-cell *matHeaderCellDef>Module</th>
+                        <td mat-cell *matCellDef="let item">
+                          <span [ngClass]="{
+                            'px-2 py-1 rounded-full text-xs font-medium': true,
+                            'bg-blue-100 text-blue-800': item.module === 'Facture',
+                            'bg-green-100 text-green-800': item.module === 'Paiement',
+                            'bg-purple-100 text-purple-800': item.module === 'Devis',
+                            'bg-orange-100 text-orange-800': item.module === 'ProduitService',
+                            'bg-red-100 text-red-800': item.module === 'Depense',
+                            'bg-gray-100 text-gray-800': !['Facture', 'Paiement', 'Devis', 'ProduitService', 'Depense'].includes(item.module)
+                          }">
+                            {{ item.module }}
+                          </span>
+                        </td>
+                      </ng-container>
+                      
+                      <!-- Type Column -->
+                      <ng-container matColumnDef="type">
+                        <th mat-header-cell *matHeaderCellDef>Type</th>
+                        <td mat-cell *matCellDef="let item">
+                          <span [ngClass]="{
+                            'px-2 py-1 rounded-full text-xs font-medium': true,
+                            'bg-green-100 text-green-800': item.typeAction === 'create',
+                            'bg-blue-100 text-blue-800': item.typeAction === 'update',
+                            'bg-red-100 text-red-800': item.typeAction === 'delete',
+                            'bg-purple-100 text-purple-800': item.typeAction === 'import',
+                            'bg-gray-100 text-gray-800': !['create', 'update', 'delete', 'import'].includes(item.typeAction)
+                          }">
+                            {{ item.typeAction }}
+                          </span>
+                        </td>
+                      </ng-container>
+                      
+                      <!-- Description Column -->
+                      <ng-container matColumnDef="description">
+                        <th mat-header-cell *matHeaderCellDef>Description</th>
+                        <td mat-cell *matCellDef="let item">{{ item.description }}</td>
+                      </ng-container>
+                      
+                      <tr mat-header-row *matHeaderRowDef="historiqueColumns"></tr>
+                      <tr mat-row *matRowDef="let row; columns: historiqueColumns;"></tr>
+                    </table>
+                    
+                    <mat-paginator
+                      [length]="historique.totalItems"
+                      [pageSize]="historique.pageSize"
+                      [pageIndex]="historique.currentPage - 1"
+                      [pageSizeOptions]="[5, 10, 25, 50]"
+                      (page)="onPageChange($event)">
+                    </mat-paginator>
+                  </div>
+                  
+                  <div *ngIf="!isLoadingHistorique && (!historique || historique.items.length === 0)" class="text-center py-8">
+                    <mat-icon class="text-6xl text-gray-300 mb-4">history_toggle_off</mat-icon>
+                    <h3 class="text-xl font-medium mb-2">Aucun historique disponible</h3>
+                    <p class="text-gray-500">Aucune action n'a été enregistrée pour cette entreprise.</p>
+                  </div>
                 </div>
               </mat-tab>
             </mat-tab-group>
@@ -310,6 +441,13 @@ export class EntrepriseDetailComponent implements OnInit, OnDestroy {
   entreprise: EntrepriseModel;
   isLoading = true;
   isDefaultEntreprise = false;
+  
+  // Historique
+  historique: HistoriqueResponse;
+  historiqueStats: HistoriqueStats;
+  isLoadingHistorique = false;
+  historiqueColumns = ['date', 'utilisateur', 'module', 'type', 'description'];
+  
   private _unsubscribeAll: Subject<any> = new Subject<any>();
   
   constructor(
@@ -317,7 +455,8 @@ export class EntrepriseDetailComponent implements OnInit, OnDestroy {
     private router: Router,
     private snackBar: MatSnackBar,
     public entrepriseService: EntrepriseService,
-    private userService: UserService
+    private userService: UserService,
+    private historiqueService: HistoriqueService
   ) {}
   
   ngOnInit() {
@@ -453,5 +592,39 @@ export class EntrepriseDetailComponent implements OnInit, OnDestroy {
   
   redirectToProduitService() {
     this.router.navigateByUrl('/pages/produit-service');
+  }
+  
+  // Méthode pour charger l'historique de l'entreprise
+  loadHistorique(page: number = 1, pageSize: number = 10) {
+    this.isLoadingHistorique = true;
+    
+    // Charger les statistiques
+    this.historiqueService.getStatistiques(this.entrepriseId).subscribe(
+      (stats) => {
+        this.historiqueStats = stats;
+      },
+      (error) => {
+        console.error('Erreur lors du chargement des statistiques:', error);
+      }
+    );
+    
+    // Charger les données d'historique avec pagination
+    this.historiqueService.getHistoriqueEntreprise(this.entrepriseId, page, pageSize).subscribe(
+      (response) => {
+        this.historique = response;
+        this.isLoadingHistorique = false;
+      },
+      (error) => {
+        this.isLoadingHistorique = false;
+        console.error('Erreur lors du chargement de l\'historique:', error);
+      }
+    );
+  }
+  
+  // Gestion de la pagination
+  onPageChange(event: PageEvent) {
+    const page = event.pageIndex + 1;
+    const pageSize = event.pageSize;
+    this.loadHistorique(page, pageSize);
   }
 } 

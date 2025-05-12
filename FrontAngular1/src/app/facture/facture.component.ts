@@ -522,4 +522,31 @@ export class FactureComponent implements OnInit {
     
     return pagesToShow;
   }
+
+  // Actualiser manuellement le statut d'une facture
+  actualiserStatutFacture(facture: any) {
+    if (!facture || !facture.id) {
+      alert('Impossible d\'actualiser le statut : facture non valide');
+      return;
+    }
+
+    this.factureService.actualiserStatutFacture(facture.id).subscribe({
+      next: (response) => {
+        console.log('Statut de facture actualisé:', response);
+        
+        // Mettre à jour le statut dans l'objet facture local
+        facture.estPayee = response.estPayee;
+        
+        // Afficher un message de confirmation
+        alert(response.message);
+        
+        // Recharger les factures pour avoir les données à jour
+        this.chargerFactures();
+      },
+      error: (error) => {
+        console.error('Erreur lors de l\'actualisation du statut de la facture:', error);
+        alert('❌ Erreur lors de l\'actualisation du statut de la facture');
+      }
+    });
+  }
 }

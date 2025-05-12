@@ -302,6 +302,7 @@
               <button *ngIf="!facture.estPayee" class="action-btn payment-btn green-btn-sm" title="Effectuer un paiement" (click)="ouvrirFormulairePaiement(facture)">💰</button>
               <button class="action-btn view-btn green-icon-btn" title="Voir détails">🔍</button>
               <button class="action-btn print-btn green-icon-btn" title="Imprimer">🖨️</button>
+              <button class="action-btn refresh-btn green-icon-btn" title="Actualiser le statut" (click)="actualiserStatutFacture(facture)">🔄</button>
               <button class="action-btn more-btn green-icon-btn" title="Plus d'options">⋯</button>
             </td>
           </tr>

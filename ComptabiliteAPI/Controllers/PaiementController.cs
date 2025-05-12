@@ -248,6 +248,68 @@ namespace ComptabiliteAPI.Controllers
             }
         }
 
+        [HttpPost("actualiser-statut-facture/{factureId}")]
+        public async Task<IActionResult> ActualiserStatutFacture(int factureId)
+        {
+            try
+            {
+                var utilisateurId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+
+                // Récupérer la facture et ses paiements
+                var factureQuery = await _context.Factures
+                    .Where(f => f.Id == factureId && f.UtilisateurId == utilisateurId)
+                    .Select(f => new
+                    {
+                        f.Id,
+                        f.NumFacture,
+                        MontantTotalStr = f.MontantTotal.ToString(),
+                        Paiements = f.Paiements.Select(p => new
+                        {
+                            MontantStr = p.Montant.ToString()
+                        }).ToList()
+                    })
+                    .FirstOrDefaultAsync();
+
+                if (factureQuery == null)
+                    return NotFound("Facture non trouvée.");
+
+                // Conversion sécurisée des valeurs
+                var montantTotal = ParseDecimal(factureQuery.MontantTotalStr);
+                
+                decimal totalPaye = 0;
+                foreach (var paiementItem in factureQuery.Paiements)
+                {
+                    totalPaye += ParseDecimal(paiementItem.MontantStr);
+                }
+
+                var reste = Math.Round(montantTotal - totalPaye, 2);
+                
+                // Utilisation d'une tolérance pour gérer les erreurs d'arrondi
+                const decimal tolerance = 0.01m;
+                bool doitEtrePayee = reste <= tolerance || totalPaye >= montantTotal;
+                
+                _logger.LogInformation($"Actualisation statut facture {factureId}: montantTotal={montantTotal}, totalPaye={totalPaye}, reste={reste}, doitEtrePayee={doitEtrePayee}");
+
+                // Mise à jour du statut de la facture
+                await _context.Database.ExecuteSqlRawAsync(
+                    @"UPDATE ""Factures"" SET ""EstPayee"" = {0} WHERE ""Id"" = {1}",
+                    doitEtrePayee, factureId);
+
+                return Ok(new { 
+                    message = doitEtrePayee ? "Facture marquée comme payée." : "Facture marquée comme non payée.",
+                    estPayee = doitEtrePayee,
+                    montantTotal = montantTotal,
+                    totalPaye = totalPaye,
+                    resteAPayer = reste
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erreur lors de l'actualisation du statut de la facture");
+                return StatusCode(500, $"Erreur serveur: {ex.Message}");
+            }
+        }
+
         private int GetUtilisateurId()
         {
             return int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "0");

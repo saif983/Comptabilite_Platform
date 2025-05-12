@@ -24,6 +24,7 @@ namespace ComptabiliteAPI.Data
         public DbSet<Devis> Devis { get; set; }
         public DbSet<DevisDetail> DevisDetails { get; set; }
         public DbSet<ProduitService> ProduitServices { get; set; }
+        public DbSet<Historique> Historiques { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

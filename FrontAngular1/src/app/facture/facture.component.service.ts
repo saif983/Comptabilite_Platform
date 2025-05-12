@@ -59,4 +59,8 @@ export class FactureService {
       })
     });
   }
+  
+  actualiserStatutFacture(factureId: number): Observable<any> {
+    return this.http.post(`${this.apiPaiementUrl}/actualiser-statut-facture/${factureId}`, {});
+  }
 }
