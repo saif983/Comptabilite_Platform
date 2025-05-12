@@ -81,8 +81,8 @@ export class AbonnementComponent implements OnInit {
         };
         this.currentSubscriptionType = response.type;
 
-        // Mettre à jour localStorage
-        localStorage.setItem('currentSubscriptionType', response.type);
+        // Mettre à jour sessionStorage
+        sessionStorage.setItem('currentSubscriptionType', response.type);
 
         this.alert = {
           type: 'success',

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Observable, of, switchMap } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
+import { UserService } from 'app/core/user/user.service';
 
 export interface ProduitServiceModel {
   id?: number;
@@ -18,11 +19,14 @@ export interface ProduitServiceModel {
 export class ProduitServiceService {
   private apiUrl = 'https://localhost:7141/api/ProduitService';
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private userService: UserService
+  ) { }
 
   // Créer des en-têtes avec le token d'authentification
   private getHeaders(): HttpHeaders {
-    const token = localStorage.getItem('accessToken');
+    const token = sessionStorage.getItem('accessToken');
     let headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
@@ -66,14 +70,34 @@ export class ProduitServiceService {
     return this.http.get<ProduitServiceModel>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
   }
 
-  // Obtenir tous les produits/services
-  getAllProduitServices(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/all`, { headers: this.getHeaders() });
-  }
-
   // Obtenir tous les produits/services d'une entreprise
   getProduitServicesByEntreprise(entrepriseId: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/entreprise/${entrepriseId}`, { headers: this.getHeaders() });
+  }
+
+  // Obtenir les produits/services de l'entreprise par défaut de l'utilisateur ou d'une entreprise spécifiée
+  getProduitServices(selectedEntrepriseId?: number): Observable<any> {
+    // Si un ID d'entreprise est spécifié, utiliser celui-là
+    if (selectedEntrepriseId) {
+      return this.getProduitServicesByEntreprise(selectedEntrepriseId);
+    }
+    
+    // Sinon, récupérer les produits de l'entreprise par défaut de l'utilisateur
+    return this.userService.user$.pipe(
+      switchMap(user => {
+        if (user && user.defaultEntrepriseId) {
+          console.log('Récupération des produits pour l\'entreprise par défaut:', user.defaultEntrepriseId);
+          return this.getProduitServicesByEntreprise(user.defaultEntrepriseId);
+        } else {
+          console.warn('Aucune entreprise par défaut définie pour l\'utilisateur');
+          return of([]);
+        }
+      }),
+      catchError(error => {
+        console.error('Erreur lors de la récupération des produits:', error);
+        return of([]);
+      })
+    );
   }
 
   // Modifier un produit/service

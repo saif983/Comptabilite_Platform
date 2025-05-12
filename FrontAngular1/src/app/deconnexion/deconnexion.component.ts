@@ -22,8 +22,8 @@ export class DeconnexionComponent implements OnInit {
       console.log('Déconnexion réussie');
       
       // Nettoyer également les autres données locales si nécessaire
-      localStorage.removeItem("employe");
-      localStorage.removeItem("admin");
+      sessionStorage.removeItem("employe");
+      sessionStorage.removeItem("admin");
       
       // Rediriger vers la page de connexion
       this._router.navigate(["sign-in"]);

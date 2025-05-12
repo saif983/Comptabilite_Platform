@@ -12,7 +12,8 @@ namespace ComptabiliteAPI.Models
         public int Id { get; set; }
         public int UtilisateurId { get; set; }
         public Utilisateur Utilisateur { get; set; }
-
+        public int EntrepriseID { get; set; }
+        public Entreprise Entreprise { get; set; }// 🔗 Association
         public string NumeroCompte { get; set; } = string.Empty;
         public string NomBanque { get; set; } = string.Empty;
         public string TypeCompte { get; set; } = "Courant"; // ou "Epargne", etc.

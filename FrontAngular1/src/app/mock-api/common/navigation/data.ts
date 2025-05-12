@@ -111,7 +111,7 @@ const entrepriseMenu: FuseNavigationItem[] = [
 ];
 
 export const defaultNavigation: FuseNavigationItem[] = [
-    localStorage.getItem('employe') ? {
+    sessionStorage.getItem('employe') ? {
         id      : 'employe',
         title   : 'employe',
         subtitle: 'Unique dashboard designs',

@@ -53,6 +53,7 @@ export class ProduitServiceComponent implements OnInit {
   produitServiceForm: FormGroup;
   entreprises: EntrepriseModel[] = [];
   selectedEntrepriseId: number | null = null;
+  defaultEntrepriseName: string = '';
   isLoading = false;
   isEditing = false;
   searchTerm = '';
@@ -105,7 +106,28 @@ export class ProduitServiceComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // D'abord charger les entreprises
     this.loadEntreprises();
+    
+    // Ensuite vérifier si l'utilisateur a une entreprise par défaut
+    this.userService.user$.subscribe(user => {
+      if (user && user.defaultEntrepriseId) {
+        console.log('Entreprise par défaut de l\'utilisateur trouvée:', user.defaultEntrepriseId);
+        this.selectedEntrepriseId = user.defaultEntrepriseId;
+        this.produitServiceForm.get('entrepriseId')?.setValue(this.selectedEntrepriseId);
+        this.loadProduitServices();
+        this.updateDefaultEntrepriseName();
+      } else {
+        console.log('Aucune entreprise par défaut trouvée pour l\'utilisateur, utilisation de la première entreprise disponible');
+        // Si pas d'entreprise par défaut, mais que les entreprises sont déjà chargées
+        if (this.entreprises && this.entreprises.length > 0 && !this.selectedEntrepriseId) {
+          this.selectedEntrepriseId = this.entreprises[0].id;
+          this.produitServiceForm.get('entrepriseId')?.setValue(this.selectedEntrepriseId);
+          this.loadProduitServices();
+          this.updateDefaultEntrepriseName();
+        }
+      }
+    });
   }
 
   // Chargement des entreprises
@@ -121,10 +143,17 @@ export class ProduitServiceComponent implements OnInit {
             this.entreprises = Array.isArray(data) ? data : [];
           }
           
-          if (this.entreprises.length > 0 && this.entreprises[0].id) {
+          this.updateDefaultEntrepriseName();
+          
+          // Si aucune entreprise n'est déjà sélectionnée et qu'aucune n'est définie par défaut
+          // Attention: ne pas charger les produits ici car la méthode ngOnInit pourrait le faire aussi
+          if (!this.selectedEntrepriseId && this.entreprises.length > 0 && this.entreprises[0].id) {
             this.selectedEntrepriseId = this.entreprises[0].id;
             this.produitServiceForm.get('entrepriseId')?.setValue(this.selectedEntrepriseId);
-            this.loadProduitServices();
+            // Ne pas appeler loadProduitServices() ici, car c'est fait dans ngOnInit
+          } else if (this.selectedEntrepriseId) {
+            // Si une entreprise est déjà sélectionnée, s'assurer que le formulaire est correctement défini
+            this.produitServiceForm.get('entrepriseId')?.setValue(this.selectedEntrepriseId);
           }
           
           this.isLoading = false;
@@ -143,10 +172,28 @@ export class ProduitServiceComponent implements OnInit {
 
   // Chargement des produits et services
   loadProduitServices(): void {
-    if (!this.selectedEntrepriseId) return;
-    
     this.isLoading = true;
-    this.produitServiceService.getProduitServicesByEntreprise(this.selectedEntrepriseId)
+    
+    // Vérifier qu'il y a une entreprise sélectionnée
+    if (!this.selectedEntrepriseId && this.entreprises && this.entreprises.length > 0) {
+      // Si pas d'entreprise sélectionnée mais des entreprises disponibles, sélectionner la première
+      this.selectedEntrepriseId = this.entreprises[0].id;
+      this.produitServiceForm.get('entrepriseId')?.setValue(this.selectedEntrepriseId);
+    }
+
+    // Si toujours pas d'entreprise sélectionnée, afficher un message et arrêter le chargement
+    if (!this.selectedEntrepriseId) {
+      this.isLoading = false;
+      this.produitServices = [];
+      this.filteredProduitServices = [];
+      this.snackBar.open('Aucune entreprise disponible ou sélectionnée', 'Fermer', {
+        duration: 3000,
+        panelClass: ['snackbar-warning']
+      });
+      return;
+    }
+    
+    this.produitServiceService.getProduitServices(this.selectedEntrepriseId)
       .subscribe({
         next: (data) => {
           // Gérer les formats de réponse possibles
@@ -416,10 +463,19 @@ export class ProduitServiceComponent implements OnInit {
     this.selectedProduitService = null;
   }
 
-  // Changer l'entreprise sélectionnée
-  onEntrepriseChange(): void {
-    this.selectedEntrepriseId = Number(this.produitServiceForm.get('entrepriseId')?.value);
-    this.loadProduitServices();
+  // Obtenir le nom de l'entreprise par défaut pour l'affichage
+  getDefaultEntrepriseName(): string {
+    return this.defaultEntrepriseName;
+  }
+
+  // Mettre à jour le nom de l'entreprise par défaut
+  private updateDefaultEntrepriseName(): void {
+    if (this.selectedEntrepriseId && this.entreprises.length > 0) {
+      const entreprise = this.entreprises.find(e => e.id === this.selectedEntrepriseId);
+      if (entreprise) {
+        this.defaultEntrepriseName = entreprise.nom;
+      }
+    }
   }
 
   // Gestion de la pagination

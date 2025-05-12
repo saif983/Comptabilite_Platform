@@ -27,7 +27,7 @@ namespace ComptabiliteAPI.Controllers
             var claim = User.FindFirst(ClaimTypes.NameIdentifier);
             return int.Parse(claim.Value);
         }
-
+        
         // Méthode utilitaire pour gérer les erreurs de conversion décimale
         private decimal SafeDecimal(object value, decimal defaultValue = 0)
         {
@@ -60,7 +60,8 @@ namespace ComptabiliteAPI.Controllers
                 NomBanque = dto.NomBanque,
                 TypeCompte = dto.TypeCompte,
                 DateOuverture = dto.DateOuverture,
-                Solde = dto.Solde
+                Solde = dto.Solde,
+                EntrepriseID =dto.EntrepriseID
             };
 
             _context.ComptesBancaires.Add(compte);

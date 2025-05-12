@@ -1,4 +1,3 @@
-
 import { CommonModule } from '@angular/common';
 import { NgIf } from '@angular/common';
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
@@ -53,7 +52,7 @@ export class ProfileComponent implements OnInit{
    */
   ngOnInit(): void
   {
-    const token=localStorage.getItem("employe")
+    const token=sessionStorage.getItem("employe")
     this.profileForm = this._formBuilder.group({
       name     : [this.userC.name, Validators.required],
       email     : [this.userC.email, [Validators.required, Validators.email]],

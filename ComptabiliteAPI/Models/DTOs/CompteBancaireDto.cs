@@ -17,7 +17,7 @@ namespace ComptabiliteAPI.Models.DTOs
         public decimal Solde { get; set; }
         public string Derniers4Chiffres { get; set; }
         public int EntrepriseID { get; set; } // 🔗 Association
-        public string NomEntreprise { get; set; } // 🔄 Pour affichage
+        
     }
 
 

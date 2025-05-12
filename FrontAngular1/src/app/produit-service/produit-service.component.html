@@ -11,11 +11,7 @@
       
       <mat-form-field appearance="outline">
         <mat-label>Entreprise</mat-label>
-        <mat-select [(ngModel)]="selectedEntrepriseId" (selectionChange)="onEntrepriseChange()">
-          <mat-option *ngFor="let entreprise of entreprises" [value]="entreprise.id">
-            {{ entreprise.nom }}
-          </mat-option>
-        </mat-select>
+        <input matInput [value]="getDefaultEntrepriseName()" readonly>
       </mat-form-field>
     </div>
   </div>
@@ -100,12 +96,8 @@
             
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Entreprise</mat-label>
-              <mat-select formControlName="entrepriseId" required>
-                <mat-option *ngFor="let entreprise of entreprises" [value]="entreprise.id">
-                  {{ entreprise.nom }}
-                </mat-option>
-              </mat-select>
-              <mat-error *ngIf="produitServiceForm.get('entrepriseId')?.hasError('required')">L'entreprise est requise</mat-error>
+              <input matInput [value]="getDefaultEntrepriseName()" readonly>
+              <input type="hidden" formControlName="entrepriseId">
             </mat-form-field>
             
             <div class="form-actions">
