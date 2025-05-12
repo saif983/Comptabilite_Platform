@@ -1,0 +1,723 @@
+// Variables
+$primary-color: #6366f1;
+$secondary-color: #f59e0b;
+$success-color: #10b981;
+$warning-color: #f97316;
+$danger-color: #ef4444;
+$background-color: #f8fafc;
+$card-background: white;
+$card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+$border-radius: 16px;
+$spacing-unit: 24px;
+$font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+// Mixins pour les graphiques
+@mixin stat-chart($color) {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 100px;
+  height: 50px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 50' preserveAspectRatio='none'%3E%3Cpath d='M0,50 L10,45 C20,40 30,35 40,25 C50,15 60,10 70,15 C80,20 90,30 100,25 L100,50 Z' fill='#{$color}' opacity='0.2'/%3E%3Cpath d='M0,50 L10,45 C20,40 30,35 40,25 C50,15 60,10 70,15 C80,20 90,30 100,25' stroke='#{$color}' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0.7;
+}
+
+.dashboard-container {
+  font-family: $font-family;
+  padding: $spacing-unit;
+  background-color: $background-color;
+  min-height: 100vh;
+  color: #334155;
+
+  // Dashboard Header
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-unit;
+    
+    h1 {
+      font-size: 28px;
+      font-weight: 600;
+      color: #334155;
+      margin: 0;
+      flex-grow: 0;
+    }
+
+    .search-container {
+      flex-grow: 1;
+      margin: 0 60px;
+      position: relative;
+      max-width: 400px;
+      
+      .search-input {
+        width: 100%;
+        padding: 10px 40px 10px 15px;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        background-color: white;
+        font-size: 14px;
+        
+        &:focus {
+          outline: none;
+          border-color: $primary-color;
+          box-shadow: 0 0 0 2px rgba($primary-color, 0.1);
+        }
+      }
+      
+      .search-icon {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 20px;
+      }
+    }
+    
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      
+      .notification-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background-color: #f1f5f9;
+        cursor: pointer;
+        
+        .material-icons {
+          font-size: 20px;
+          color: #64748b;
+        }
+        
+        &:hover {
+          background-color: #e2e8f0;
+        }
+      }
+      
+      .avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        overflow: hidden;
+        
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+      
+      .username {
+        font-weight: 500;
+        font-size: 14px;
+      }
+      
+      .material-icons {
+        font-size: 20px;
+        color: #64748b;
+        cursor: pointer;
+      }
+    }
+  }
+  
+  // Main Content
+  .main-content {
+    // Top Cards Row
+    .cards-row {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: $spacing-unit;
+      margin-bottom: $spacing-unit;
+      
+      @media (max-width: 1024px) {
+        grid-template-columns: 1fr;
+      }
+      
+      // Congrats Card
+      .congrats-card {
+        background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
+        color: white;
+        padding: $spacing-unit;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        overflow: hidden;
+        
+        .trophy-icon {
+          background-color: rgba(255, 255, 255, 0.2);
+          width: 56px;
+          height: 56px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 16px;
+          
+          .material-icons {
+            font-size: 30px;
+            color: white;
+          }
+        }
+        
+        .congrats-content {
+          z-index: 1;
+          
+          h2 {
+            font-size: 22px;
+            font-weight: 600;
+            margin: 0 0 10px 0;
+          }
+          
+          p {
+            font-size: 14px;
+            opacity: 0.9;
+            margin: 0;
+            max-width: 80%;
+          }
+        }
+        
+        .decoration-flags {
+          position: absolute;
+          top: 0;
+          right: 0;
+          width: 100%;
+          height: 50px;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 50'%3E%3Cpath d='M0,0 L10,5 L20,0 L30,5 L40,0 L50,5 L60,0 L70,5 L80,0 L90,5 L100,0 L110,5 L120,0 L130,5 L140,0 L150,5 L160,0 L170,5 L180,0 L190,5 L200,0 L210,5 L220,0 L230,5 L240,0 L250,5 L260,0 L270,5 L280,0 L290,5 L300,0' stroke='rgba(255,255,255,0.5)' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+          background-repeat: repeat-x;
+          background-size: auto 100%;
+        }
+        
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: -20px;
+          right: -20px;
+          width: 120px;
+          height: 120px;
+          background-color: rgba(255, 255, 255, 0.1);
+          border-radius: 50%;
+          z-index: 0;
+        }
+      }
+      
+      // My Card Section
+      .my-card-section {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 20px;
+        padding: $spacing-unit;
+        position: relative;
+        overflow: hidden;
+        
+        @media (max-width: 768px) {
+          grid-template-columns: 1fr;
+        }
+        
+        .card-info {
+          h2 {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0 0 16px 0;
+            color: #334155;
+          }
+          
+          .card-select {
+            margin-bottom: 20px;
+            
+            select {
+              width: 100%;
+              padding: 8px 12px;
+              border-radius: 8px;
+              border: 1px solid #e2e8f0;
+              background-color: #f8fafc;
+              font-size: 14px;
+              color: #64748b;
+              
+              &:focus {
+                outline: none;
+                border-color: $primary-color;
+              }
+            }
+          }
+          
+          .card-details {
+            .detail-row {
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 12px;
+              font-size: 14px;
+              
+              .label {
+                color: #64748b;
+              }
+              
+              .value {
+                font-weight: 500;
+                color: #334155;
+              }
+            }
+          }
+        }
+        
+        .credit-card {
+          background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+          border-radius: 16px;
+          padding: 20px;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          height: 190px;
+          color: white;
+          position: relative;
+          box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+          
+          .card-chip {
+            width: 40px;
+            height: 30px;
+            background-color: rgba(255, 255, 255, 0.4);
+            border-radius: 5px;
+            margin-bottom: 30px;
+            
+            &::after {
+              content: '';
+              display: block;
+              width: 100%;
+              height: 10px;
+              background-color: rgba(255, 255, 255, 0.6);
+              border-radius: 5px;
+              margin-top: 5px;
+            }
+          }
+          
+          .card-number {
+            font-size: 18px;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            font-weight: 500;
+          }
+          
+          .card-holder {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            
+            .card-name {
+              font-size: 14px;
+              font-weight: 500;
+            }
+            
+            .card-logo {
+              .mastercard-logo {
+                display: flex;
+                align-items: center;
+                
+                .circle {
+                  width: 25px;
+                  height: 25px;
+                  border-radius: 50%;
+                  
+                  &.red {
+                    background-color: #ff4136;
+                    margin-right: -8px;
+                    z-index: 1;
+                  }
+                  
+                  &.yellow {
+                    background-color: #ffdc00;
+                  }
+                }
+              }
+            }
+          }
+        }
+        
+        .card-person-illustration {
+          position: absolute;
+          bottom: 0;
+          right: 20px;
+          width: 140px;
+          height: 140px;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 140'%3E%3Crect width='140' height='140' fill='transparent'/%3E%3C/svg%3E");
+          z-index: 2;
+        }
+      }
+    }
+    
+    // Stats Widgets
+    .stats-widgets {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: $spacing-unit;
+      margin-bottom: $spacing-unit;
+      
+      @media (max-width: 1200px) {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      @media (max-width: 640px) {
+        grid-template-columns: 1fr;
+      }
+      
+      .stat-card {
+        background-color: white;
+        border-radius: $border-radius;
+        padding: 20px;
+        position: relative;
+        box-shadow: $card-shadow;
+        overflow: hidden;
+        
+        .stat-icon {
+          width: 48px;
+          height: 48px;
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 16px;
+          
+          .material-icons {
+            font-size: 24px;
+            color: white;
+          }
+          
+          &.users {
+            background-color: rgba($primary-color, 0.15);
+            
+            .material-icons {
+              color: $primary-color;
+            }
+          }
+          
+          &.revenue {
+            background-color: rgba($success-color, 0.15);
+            
+            .material-icons {
+              color: $success-color;
+            }
+          }
+          
+          &.orders {
+            background-color: rgba($danger-color, 0.15);
+            
+            .material-icons {
+              color: $danger-color;
+            }
+          }
+          
+          &.clients {
+            background-color: rgba($warning-color, 0.15);
+            
+            .material-icons {
+              color: $warning-color;
+            }
+          }
+        }
+        
+        .stat-info {
+          position: relative;
+          z-index: 1;
+          
+          h3 {
+            font-size: 28px;
+            font-weight: 600;
+            margin: 0 0 4px 0;
+            color: #0f172a;
+          }
+          
+          p {
+            font-size: 14px;
+            color: #64748b;
+            margin: 0;
+          }
+        }
+        
+        .purple-chart {
+          @include stat-chart('#818cf8');
+        }
+        
+        .green-chart {
+          @include stat-chart('#10b981');
+        }
+        
+        .red-chart {
+          @include stat-chart('#ef4444');
+        }
+        
+        .orange-chart {
+          @include stat-chart('#f97316');
+        }
+      }
+    }
+    
+    // Charts Section
+    .charts-section {
+      display: grid;
+      grid-template-columns: 1.7fr 1fr;
+      gap: $spacing-unit;
+      margin-bottom: $spacing-unit;
+      
+      @media (max-width: 1024px) {
+        grid-template-columns: 1fr;
+      }
+      
+      .chart-card {
+        background-color: white;
+        border-radius: $border-radius;
+        padding: $spacing-unit;
+        box-shadow: $card-shadow;
+        
+        .chart-header {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 20px;
+          
+          .chart-title {
+            h3 {
+              font-size: 18px;
+              font-weight: 600;
+              margin: 0 0 10px 0;
+              color: #334155;
+            }
+            
+            .revenue-amount {
+              display: flex;
+              align-items: baseline;
+              gap: 10px;
+              
+              h2 {
+                font-size: 24px;
+                font-weight: 600;
+                margin: 0;
+                color: #0f172a;
+              }
+              
+              .monthly {
+                font-size: 14px;
+                color: #64748b;
+              }
+            }
+          }
+          
+          .chart-actions {
+            .material-icons {
+              color: #64748b;
+              cursor: pointer;
+            }
+          }
+          
+          .chart-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            
+            .legend-item {
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              font-size: 13px;
+              color: #64748b;
+              
+              .legend-dot {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                
+                &.finished {
+                  background-color: #6366f1;
+                }
+                
+                &.pending {
+                  background-color: #f59e0b;
+                }
+                
+                &.rejected {
+                  background-color: #ef4444;
+                }
+              }
+            }
+          }
+        }
+        
+        .chart-container {
+          height: 300px;
+          width: 100%;
+        }
+      }
+    }
+    
+    // Financial Summary Cards
+    .summary-cards {
+      margin-bottom: $spacing-unit;
+      
+      .financial-card {
+        background-color: white;
+        border-radius: $border-radius;
+        box-shadow: $card-shadow;
+        
+        .card-content {
+          padding: $spacing-unit;
+          
+          h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0 0 16px 0;
+            color: #334155;
+          }
+          
+          .financial-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            
+            @media (max-width: 640px) {
+              grid-template-columns: 1fr;
+            }
+            
+            .financial-item {
+              display: flex;
+              flex-direction: column;
+              
+              .label {
+                font-size: 14px;
+                color: #64748b;
+                margin-bottom: 8px;
+              }
+              
+              .value {
+                font-size: 20px;
+                font-weight: 600;
+                
+                &.positive {
+                  color: $success-color;
+                }
+                
+                &.negative {
+                  color: $danger-color;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    // Loading Container
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 0;
+      
+      .spinner {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 16px;
+        border: 3px solid #e2e8f0;
+        border-radius: 50%;
+        border-top-color: $primary-color;
+        animation: spin 1s linear infinite;
+      }
+      
+      span {
+        font-size: 14px;
+        color: #64748b;
+      }
+    }
+  }
+  
+  // Card common style
+  .card {
+    border-radius: $border-radius;
+    background-color: white;
+    box-shadow: $card-shadow;
+    overflow: hidden;
+  }
+}
+
+// Animation for spinner
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Mobile responsive styles
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 16px;
+    
+    .dashboard-header {
+      flex-wrap: wrap;
+      gap: 16px;
+      
+      h1 {
+        width: 100%;
+      }
+      
+      .search-container {
+        flex-grow: 1;
+        margin: 0;
+      }
+    }
+    
+    .main-content {
+      .cards-row {
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+      
+      .stats-widgets {
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+      
+      .charts-section {
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-container {
+    padding: 12px;
+    
+    .dashboard-header {
+      .user-profile {
+        .username {
+          display: none;
+        }
+      }
+    }
+    
+    .main-content {
+      .congrats-card {
+        .congrats-content {
+          p {
+            max-width: 100%;
+          }
+        }
+      }
+      
+      .my-card-section {
+        .card-person-illustration {
+          display: none;
+        }
+      }
+    }
+  }
+  
+  .mobile-hide {
+    display: none !important;
+  }
+}

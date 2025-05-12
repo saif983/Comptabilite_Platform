@@ -29,6 +29,7 @@ $transition: all 0.3s ease;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  animation: fadeIn 0.5s ease-in-out;
 }
 
 html, body {
@@ -465,66 +466,93 @@ img {
 
 /* Style renforcé pour les cartes */
 .feature-card-interactive {
-  background: white !important;
-  border-radius: 16px !important;
-  overflow: hidden !important;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1) !important;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-  position: relative !important;
-  display: flex !important;
-  flex-direction: column !important;
-  border-top: 5px solid $primary-green !important;
-  opacity: 1 !important;
-  transform: translateY(0) !important;
-  min-height: 320px !important;
-  margin-bottom: 2rem !important;
-  padding: 20px !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   
   &:hover {
-    transform: translateY(-15px) !important;
-    box-shadow: 0 15px 35px rgba(46, 125, 50, 0.15) !important;
+    transform: translateY(-10px) !important;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
     
     .feature-icon {
-      transform: scale(1.1) translateY(-5px) !important;
+      transform: scale(1.1) !important;
       background: linear-gradient(135deg, $primary-green, $light-green) !important;
       color: white !important;
     }
   }
   
-  &[data-feature="factures"] {
-    border-top-color: #4caf50;
-    .feature-icon { color: #4caf50; }
-    &:hover .feature-icon { background: linear-gradient(135deg, #4caf50, #81c784); }
+  .feature-icon {
+    width: 60px;
+    height: 60px;
+    background: #f5f5f5;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    transition: all 0.3s ease;
+    
+    i {
+      font-size: 24px;
+      color: $primary-green;
+      transition: all 0.3s ease;
+    }
   }
   
-  &[data-feature="entreprises"] {
-    border-top-color: #2196f3;
-    .feature-icon { color: #2196f3; }
-    &:hover .feature-icon { background: linear-gradient(135deg, #2196f3, #64b5f6); }
+  .feature-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    
+    p {
+      margin-bottom: 1rem;
+      color: #666;
+    }
   }
   
-  &[data-feature="dashboard"] {
-    border-top-color: #ff9800;
-    .feature-icon { color: #ff9800; }
-    &:hover .feature-icon { background: linear-gradient(135deg, #ff9800, #ffb74d); }
+  .feature-details {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem;
+    
+    li {
+      padding: 0.4rem 0;
+      position: relative;
+      padding-left: 1.5rem;
+      color: #555;
+      
+      &:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        top: 0.4rem;
+        color: $primary-green;
+        font-weight: bold;
+      }
+    }
   }
   
-  &[data-feature="bilan"] {
-    border-top-color: #9c27b0;
-    .feature-icon { color: #9c27b0; }
-    &:hover .feature-icon { background: linear-gradient(135deg, #9c27b0, #ce93d8); }
+  .feature-cta {
+    margin-top: auto;
   }
   
-  &[data-feature="produits"] {
-    border-top-color: #f44336;
-    .feature-icon { color: #f44336; }
-    &:hover .feature-icon { background: linear-gradient(135deg, #f44336, #e57373); }
-  }
-  
-  &[data-feature="securite"] {
-    border-top-color: #607d8b;
-    .feature-icon { color: #607d8b; }
-    &:hover .feature-icon { background: linear-gradient(135deg, #607d8b, #90a4ae); }
+  .btn-feature {
+    display: inline-block;
+    padding: 0.6rem 1.5rem;
+    background: $primary-green;
+    color: white;
+    font-weight: 600;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    
+    &:hover {
+      background: $dark-green;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+      transform: translateY(-3px);
+    }
   }
 }
 
@@ -921,4 +949,138 @@ img:not([src*="CIN.png"]) {
   max-width: 60px;
   max-height: 60px;
   border-radius: 50%;
+}
+
+// Style pour le menu mobile
+.mobile-menu {
+  transition: all 0.3s ease;
+  overflow: hidden;
+  border-top: 1px solid #f0f0f0;
+  margin-top: 1rem;
+}
+
+.mobile-menu.hidden {
+  display: none;
+}
+
+// Styles pour les cartes de fonctionnalités interactives
+.feature-card-interactive {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  
+  &:hover {
+    transform: translateY(-10px) !important;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
+    
+    .feature-icon {
+      transform: scale(1.1) !important;
+      background: linear-gradient(135deg, $primary-green, $light-green) !important;
+      color: white !important;
+    }
+  }
+  
+  .feature-icon {
+    width: 60px;
+    height: 60px;
+    background: #f5f5f5;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    transition: all 0.3s ease;
+    
+    i {
+      font-size: 24px;
+      color: $primary-green;
+      transition: all 0.3s ease;
+    }
+  }
+  
+  .feature-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    
+    p {
+      margin-bottom: 1rem;
+      color: #666;
+    }
+  }
+  
+  .feature-details {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem;
+    
+    li {
+      padding: 0.4rem 0;
+      position: relative;
+      padding-left: 1.5rem;
+      color: #555;
+      
+      &:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        top: 0.4rem;
+        color: $primary-green;
+        font-weight: bold;
+      }
+    }
+  }
+  
+  .feature-cta {
+    margin-top: auto;
+  }
+  
+  .btn-feature {
+    display: inline-block;
+    padding: 0.6rem 1.5rem;
+    background: $primary-green;
+    color: white;
+    font-weight: 600;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    
+    &:hover {
+      background: $dark-green;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+      transform: translateY(-3px);
+    }
+  }
+}
+
+// Styles pour le logo
+.logo-main {
+  transition: all 0.3s ease;
+}
+
+// Media queries pour améliorer le responsive
+@media (max-width: 640px) {
+  .hero-content h1 {
+    font-size: 2rem;
+  }
+  
+  .feature-icon {
+    width: 50px !important;
+    height: 50px !important;
+    
+    i {
+      font-size: 20px !important;
+    }
+  }
+  
+  .btn-feature {
+    padding: 0.5rem 1.2rem !important;
+    font-size: 0.9rem !important;
+  }
+  
+  .feature-card-interactive h3 {
+    font-size: 1.2rem !important;
+  }
 }

@@ -10,6 +10,7 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
+  mobileMenuOpen = false;
 
   constructor() { }
 
@@ -24,6 +25,11 @@ export class HomeComponent implements OnInit {
   @HostListener('window:scroll', ['$event'])
   onWindowScroll() {
     this.animateOnScroll();
+  }
+
+  // Gérer l'ouverture/fermeture du menu mobile
+  toggleMobileMenu() {
+    this.mobileMenuOpen = !this.mobileMenuOpen;
   }
 
   // Initialiser les animations

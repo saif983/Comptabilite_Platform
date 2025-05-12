@@ -25,7 +25,7 @@ export const appRoutes: Route[] = [
     {
         path: 'signed-in-redirect',
         pathMatch: 'full',
-        redirectTo: 'entreprises',
+        redirectTo: 'dashboard',
     },
     { path: 'deconnexion', redirectTo: 'sign-out' },
     {
@@ -36,7 +36,7 @@ export const appRoutes: Route[] = [
         resolve: {
             initialData: initialDataResolver,
         },
-        children: [{ path: 'profileE', component: ProfileComponent }, { path: 'abonnement', component: AbonnementComponent }, { path: 'bilan-comptable', loadComponent: () => import('app/bilan-comptable/bilan-comptable.component').then(c => c.BilanComptableComponent) }],
+        children: [{ path: 'profileE', component: ProfileComponent }, { path: 'abonnement', component: AbonnementComponent }, { path: 'bilan-comptable', loadComponent: () => import('app/bilan-comptable/bilan-comptable.component').then(c => c.BilanComptableComponent) }, { path: 'dashboard', loadComponent: () => import('app/modules/dashboard/dashboard.component').then(c => c.DashboardComponent) }],
     },
 
     {

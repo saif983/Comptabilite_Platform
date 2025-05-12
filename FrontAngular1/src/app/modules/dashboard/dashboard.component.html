@@ -1,0 +1,215 @@
+<div class="dashboard-container">
+    <!-- Header -->
+    <div class="dashboard-header">
+        <h1>Dashboard</h1>
+        <div class="search-container">
+            <input type="text" placeholder="Search here..." class="search-input">
+            <span class="material-icons search-icon">search</span>
+        </div>
+        <div class="user-profile">
+            <div class="notification-icon">
+                <span class="material-icons">notifications</span>
+            </div>
+            <div class="avatar">
+                <!-- L'image peut être remplacée par celle de l'utilisateur -->
+                <img src="assets/images/avatars/male-02.jpg" alt="User Profile">
+            </div>
+            <span class="username">{{userName}}</span>
+            <span class="material-icons">expand_more</span>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Cards Section -->
+        <div class="cards-row">
+            <!-- Congrats Card -->
+            <div class="card congrats-card">
+                <div class="trophy-icon">
+                    <span class="material-icons">emoji_events</span>
+                </div>
+                <div class="congrats-content">
+                    <h2>Félicitations {{userName}}!</h2>
+                    <p>Vous avez atteint 57.6% de ventes en plus. Vérifiez votre nouveau badge dans votre profil.</p>
+                </div>
+                <div class="decoration-flags"></div>
+            </div>
+
+            <!-- My Card Section -->
+            <div class="card my-card-section">
+                <div class="card-info">
+                    <h2>Ma Carte</h2>
+                    <div class="card-select">
+                        <select>
+                            <option>XXXX-XXXX-XXXX-1234</option>
+                        </select>
+                    </div>
+                    <div class="card-details">
+                        <div class="detail-row">
+                            <span class="label">Date de relevé:</span>
+                            <span class="value">20 Avr 2023</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Date de paiement:</span>
+                            <span class="value">Non Applicable</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Paiement minimum:</span>
+                            <span class="value">0 DT</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Montant total dû:</span>
+                            <span class="value">0 DT</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="credit-card">
+                    <div class="card-chip"></div>
+                    <div class="card-number">0000 5678 9012 1234</div>
+                    <div class="card-holder">
+                        <div class="card-name">{{userName}}</div>
+                        <div class="card-logo">
+                            <div class="mastercard-logo">
+                                <div class="circle red"></div>
+                                <div class="circle yellow"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-person-illustration"></div>
+            </div>
+        </div>
+
+        <!-- Stats Widgets -->
+        <div class="stats-widgets">
+            <div class="stat-card">
+                <div class="stat-icon users">
+                    <span class="material-icons">people</span>
+                </div>
+                <div class="stat-info">
+                    <h3>92.6k</h3>
+                    <p>Abonnements Gagnés</p>
+                </div>
+                <div class="stat-chart purple-chart"></div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon revenue">
+                    <span class="material-icons">attach_money</span>
+                </div>
+                <div class="stat-info">
+                    <h3>97.5k</h3>
+                    <p>Services Complétés</p>
+                </div>
+                <div class="stat-chart green-chart"></div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon orders">
+                    <span class="material-icons">shopping_cart</span>
+                </div>
+                <div class="stat-info">
+                    <h3>67%</h3>
+                    <p>Croissance Ventes</p>
+                </div>
+                <div class="stat-chart red-chart"></div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon clients">
+                    <span class="material-icons">mail</span>
+                </div>
+                <div class="stat-info">
+                    <h3>71.9k</h3>
+                    <p>Ordres Reçus</p>
+                </div>
+                <div class="stat-chart orange-chart"></div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="charts-section">
+            <!-- Revenue Chart -->
+            <div class="card chart-card revenue-chart">
+                <div class="chart-header">
+                    <div class="chart-title">
+                        <h3>Revenus</h3>
+                        <div class="revenue-amount">
+                            <h2>{{formatCurrency(86589)}}</h2>
+                            <span class="monthly">Ce mois</span>
+                        </div>
+                    </div>
+                    <div class="chart-actions">
+                        <span class="material-icons">more_horiz</span>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas #monthlyRevenueChart></canvas>
+                </div>
+            </div>
+
+            <!-- Product Orders Chart -->
+            <div class="card chart-card orders-chart">
+                <div class="chart-header">
+                    <div class="chart-title">
+                        <h3>Commandes de produits</h3>
+                    </div>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <span class="legend-dot finished"></span>
+                            <span>Terminées: 23042</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot pending"></span>
+                            <span>En attente: 14658</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot rejected"></span>
+                            <span>Rejetées: 4758</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas #invoiceStatusChart></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Financial Summary Cards (Garder certains éléments de l'ancien design) -->
+        <div class="summary-cards" *ngIf="!loading.financial && !error.financial">
+            <div class="card financial-card">
+                <div class="card-content">
+                    <h2>Résumé Financier</h2>
+                    <div class="financial-grid">
+                        <div class="financial-item">
+                            <span class="label">Revenus Totaux</span>
+                            <span class="value positive">{{formatCurrency(financialSummary?.totalRevenue)}}</span>
+                        </div>
+                        <div class="financial-item">
+                            <span class="label">Dépenses Totales</span>
+                            <span class="value negative">{{formatCurrency(financialSummary?.totalExpenses)}}</span>
+                        </div>
+                        <div class="financial-item">
+                            <span class="label">Bénéfice</span>
+                            <span class="value" [ngClass]="{'positive': financialSummary?.profit > 0, 'negative': financialSummary?.profit < 0}">
+                                {{formatCurrency(financialSummary?.profit)}}
+                            </span>
+                        </div>
+                        <div class="financial-item">
+                            <span class="label">Flux de Trésorerie</span>
+                            <span class="value" [ngClass]="{'positive': financialSummary?.cashFlow > 0, 'negative': financialSummary?.cashFlow < 0}">
+                                {{formatCurrency(financialSummary?.cashFlow)}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading indicators -->
+        <div class="loading-container" *ngIf="loading.financial || loading.invoices || loading.expenses || loading.charts">
+            <div class="spinner"></div>
+            <span>Chargement des données...</span>
+        </div>
+    </div>
+</div>

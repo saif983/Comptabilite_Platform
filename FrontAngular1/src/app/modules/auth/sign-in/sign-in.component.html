@@ -2,16 +2,16 @@
     <div class="md:flex md:items-center md:justify-end w-full sm:w-auto md:h-full md:w-1/2 py-8 px-4 sm:p-12 md:p-16 sm:rounded-2xl md:rounded-none sm:shadow md:shadow-none sm:bg-card">
         <div class="w-full max-w-80 sm:w-80 mx-auto sm:mx-0">
             <!-- Logo -->
-            <div class="w-12">
-                <img src="assets/images/logo/logo.svg">
+            <div class="flex justify-center mb-8">
+                <img src="assets/images/logo/CIN.png" alt="Comptinov Logo" class="h-24 w-40 object-contain">
             </div>
 
             <!-- Title -->
-            <div class="mt-8 text-4xl font-extrabold tracking-tight leading-tight">Connexion</div>
-            <div class="flex items-baseline mt-0.5 font-medium">
-                <div>Vous n'avez pas de compte?</div>
+            <div class="text-4xl font-bold tracking-tight leading-tight text-center text-gray-800">Connexion</div>
+            <div class="flex items-baseline mt-2 justify-center font-medium">
+                <div class="text-gray-600">Vous n'avez pas de compte?</div>
                 <a
-                    class="ml-1 text-primary-500 hover:underline"
+                    class="ml-1 text-green-600 hover:underline font-semibold"
                     [routerLink]="['/sign-up']">S'inscrire
                 </a>
             </div>
@@ -36,12 +36,13 @@
                     (ngSubmit)="signIn()">
 
                 <!-- Email field -->
-                <mat-form-field class="w-full">
-                        <mat-label>Adresse email</mat-label>
+                <mat-form-field class="w-full" appearance="outline">
+                    <mat-label>Adresse email</mat-label>
                     <input
                         id="email"
                         matInput
                         [formControlName]="'email'">
+                    <mat-icon matPrefix class="mr-2 text-green-600">email</mat-icon>
                     <mat-error *ngIf="signInForm.get('email').hasError('required')">
                             L'adresse email est requise
                     </mat-error>
@@ -51,14 +52,15 @@
                 </mat-form-field>
 
                 <!-- Password field -->
-                <mat-form-field class="w-full">
-                        <mat-label>Mot de passe</mat-label>
+                <mat-form-field class="w-full" appearance="outline">
+                    <mat-label>Mot de passe</mat-label>
                     <input
                         id="password"
                         matInput
                         type="password"
                         [formControlName]="'password'"
                         #passwordField>
+                    <mat-icon matPrefix class="mr-2 text-green-600">lock</mat-icon>
                     <button
                         mat-icon-button
                         type="button"
@@ -84,21 +86,20 @@
                         class="-ml-2"
                         [color]="'primary'"
                         [formControlName]="'rememberMe'">
-                            Se souvenir de moi
+                            <span class="text-gray-600">Se souvenir de moi</span>
                     </mat-checkbox>
                     <a
-                        class="text-md font-medium text-primary-500 hover:underline"
+                        class="text-md font-medium text-green-600 hover:underline"
                             (click)="forgetPassword()">Mot de passe oublié?
                     </a>
                 </div>
 
                 <!-- Submit button -->
                 <button
-                    class="fuse-mat-button-large w-full mt-6"
+                    class="w-full mt-6 py-3 px-8 rounded-lg font-semibold text-white bg-green-600 hover:bg-green-700 transition-all shadow-md"
                     mat-flat-button
-                        type="submit"
-                    [color]="'primary'"
-                        [disabled]="signInForm.disabled">
+                    type="submit"
+                    [disabled]="signInForm.disabled">
                     <span *ngIf="!signInForm.disabled">
                             Se connecter
                     </span>
@@ -111,21 +112,23 @@
                 <!-- Separator -->
                 <div class="flex items-center mt-8">
                     <div class="flex-auto mt-px border-t"></div>
-                        <div class="mx-2 text-secondary">Ou continuer avec</div>
+                        <div class="mx-2 text-gray-500">Ou continuer avec</div>
                     <div class="flex-auto mt-px border-t"></div>
                 </div>
 
                     <!-- Google sign-in button -->
                     <div class="flex justify-center mt-8">
                     <button
-                        class="flex-auto"
+                        class="flex items-center justify-center flex-auto py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all"
                         type="button"
-                            mat-stroked-button
-                            (click)="googleSignin($event.target)">
-                        <mat-icon
-                            class="icon-size-5"
-                                [svgIcon]="'feather:github'"></mat-icon>
-                            <span class="ml-2">Google</span>
+                        mat-stroked-button
+                        (click)="googleSignin($event.target)">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
+                                <path fill="#4285F4" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"/>
+                            </svg>
+                            <span class="text-gray-700">Google</span>
+                        </div>
                     </button>
                     </div>
                 </form>
@@ -133,7 +136,7 @@
 
             <!-- Forgot password form -->
             <div *ngIf="emailFP || codeFP || passwordFP">
-                <div class="mt-8 text-2xl font-semibold tracking-tight">Réinitialisation du mot de passe</div>
+                <div class="mt-8 text-2xl font-semibold tracking-tight text-gray-800 text-center">Réinitialisation du mot de passe</div>
                 
                 <form
                     class="mt-8"
@@ -141,12 +144,13 @@
                     #forgetPNgForm="ngForm">
 
                     <!-- Email field for password reset -->
-                    <mat-form-field class="w-full" *ngIf="emailFP">
+                    <mat-form-field class="w-full" appearance="outline" *ngIf="emailFP">
                         <mat-label>Adresse email</mat-label>
                         <input
                             id="emailP"
                             matInput
                             [formControlName]="'emailP'">
+                        <mat-icon matPrefix class="mr-2 text-green-600">email</mat-icon>
                         <mat-error *ngIf="forgetPForm.get('emailP').hasError('required')">
                             L'adresse email est requise
                         </mat-error>
@@ -156,19 +160,20 @@
                     </mat-form-field>
 
                     <!-- Code field for password reset -->
-                    <mat-form-field class="w-full" *ngIf="codeFP">
+                    <mat-form-field class="w-full" appearance="outline" *ngIf="codeFP">
                         <mat-label>Code de vérification</mat-label>
                         <input
                             id="codeP"
                             matInput
                             [formControlName]="'codeP'">
+                        <mat-icon matPrefix class="mr-2 text-green-600">confirmation_number</mat-icon>
                         <mat-error *ngIf="forgetPForm.get('codeP').hasError('required')">
                             Le code de vérification est requis
                         </mat-error>
                     </mat-form-field>
 
                     <!-- New password field -->
-                    <mat-form-field class="w-full" *ngIf="passwordFP">
+                    <mat-form-field class="w-full" appearance="outline" *ngIf="passwordFP">
                         <mat-label>Nouveau mot de passe</mat-label>
                         <input
                             id="passwordN"
@@ -176,17 +181,18 @@
                             type="password"
                             [formControlName]="'passwordN'"
                             #passwordFieldN>
-                    <button
+                        <mat-icon matPrefix class="mr-2 text-green-600">lock_reset</mat-icon>
+                        <button
                             mat-icon-button
-                        type="button"
+                            type="button"
                             (click)="passwordFieldN.type === 'password' ? passwordFieldN.type = 'text' : passwordFieldN.type = 'password'"
                             matSuffix>
                             <mat-icon
                                 class="icon-size-5"
                                 *ngIf="passwordFieldN.type === 'password'"
                                 [svgIcon]="'heroicons_solid:eye'"></mat-icon>
-                        <mat-icon
-                            class="icon-size-5"
+                            <mat-icon
+                                class="icon-size-5"
                                 *ngIf="passwordFieldN.type === 'text'"
                                 [svgIcon]="'heroicons_solid:eye-slash'"></mat-icon>
                         </button>
@@ -196,56 +202,48 @@
                     </mat-form-field>
 
                     <!-- Submit button -->
-                    <div class="flex items-center justify-end">
+                    <div class="flex items-center justify-end mt-4">
                         <button
-                            class="ml-4"
-                            mat-flat-button
-                            [color]="'warn'"
+                            class="mr-4 px-6 py-2 rounded-lg font-medium text-gray-700 border border-gray-300 hover:bg-gray-50 transition-all"
+                            mat-stroked-button
+                            type="button"
                             (click)="emailFP = false; codeFP = false; passwordFP = false;">
                             Annuler
-                    </button>
-                    <button
-                            class="ml-4"
+                        </button>
+                        <button
+                            class="px-6 py-2 rounded-lg font-medium text-white bg-green-600 hover:bg-green-700 transition-all shadow-md"
                             mat-flat-button
-                            [color]="'primary'"
+                            type="button"
                             (click)="changePassword()">
                             Continuer
-                    </button>
-                </div>
-            </form>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-    <div class="relative hidden md:flex flex-auto items-center justify-center w-1/2 h-full p-16 lg:px-28 overflow-hidden bg-gray-800 dark:border-l">
-        <!-- Background - @formatter:off -->
-        <!-- Rings -->
-        <svg class="absolute inset-0 pointer-events-none"
+    <div class="relative hidden md:flex flex-auto items-center justify-center w-1/2 h-full p-16 lg:px-28 overflow-hidden bg-gradient-to-r from-green-800 to-green-600">
+        <!-- Content -->
+        <div class="z-10 relative w-full max-w-2xl">
+            <div class="text-7xl font-bold leading-none text-white">
+                <div>Bienvenue dans</div>
+                <div>Comptinov</div>
+            </div>
+            <div class="mt-6 text-lg tracking-tight leading-6 text-green-100">
+                Notre application de gestion comptable vous aide à gérer vos finances et votre comptabilité de manière efficace et intuitive.
+            </div>
+            <div class="mt-8">
+                <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Dashboard Comptinov" class="rounded-xl shadow-2xl border-4 border-white opacity-90">
+            </div>
+        </div>
+        
+        <!-- Background patterns -->
+        <svg class="absolute inset-0 pointer-events-none opacity-20"
              viewBox="0 0 960 540" width="100%" height="100%" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
-            <g class="text-gray-700 opacity-25" fill="none" stroke="currentColor" stroke-width="100">
+            <g fill="none" stroke="currentColor" stroke-width="100" class="text-white">
                 <circle r="234" cx="196" cy="23"></circle>
                 <circle r="234" cx="790" cy="491"></circle>
             </g>
         </svg>
-        <!-- Dots -->
-        <svg class="absolute -top-16 -right-16 text-gray-700"
-             viewBox="0 0 220 192" width="220" height="192" fill="none">
-            <defs>
-                <pattern id="837c3e70-6c3a-44e6-8854-cc48c737b659" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-                    <rect x="0" y="0" width="4" height="4" fill="currentColor"></rect>
-                </pattern>
-            </defs>
-            <rect width="220" height="192" fill="url(#837c3e70-6c3a-44e6-8854-cc48c737b659)"></rect>
-        </svg>
-        <!-- @formatter:on -->
-        <!-- Content -->
-        <div class="z-10 relative w-full max-w-2xl">
-            <div class="text-7xl font-bold leading-none text-gray-100">
-                <div>Bienvenue dans</div>
-                <div>Comptinov</div>
-            </div>
-            <div class="mt-6 text-lg tracking-tight leading-6 text-gray-400">
-                Notre application de gestion comptable vous aide à gérer vos finances et votre comptabilité de manière efficace et intuitive.
-            </div>
-        </div>
     </div>
 </div>

@@ -1,8 +1,8 @@
 <div class="home-container">
 <!-- Navigation -->
-<nav class="bg-white shadow-md py-4 px-6 flex justify-between items-center sticky top-0 z-50">
-    <div class="flex items-center logo-container" style="justify-content: flex-start; min-width: 250px; min-height: 150px;">
-        <img src="assets/images/logo/CIN.png" alt="Comptinov Logo" class="logo-main">
+<nav class="bg-white shadow-md py-4 px-4 sm:px-6 flex flex-wrap justify-between items-center sticky top-0 z-50">
+    <div class="flex items-center logo-container">
+        <img src="assets/images/logo/CIN.png" alt="Comptinov Logo" class="logo-main w-32 h-16 sm:w-40 sm:h-20 md:w-48 md:h-24 object-contain">
     </div>
     
     <div class="hidden md:flex space-x-8 mx-auto">
@@ -13,7 +13,7 @@
         <a href="#contact" class="nav-link text-gray-600 font-medium hover:text-green-600">Contact</a>
     </div>
     
-    <div class="flex space-x-4">
+    <div class="hidden md:flex space-x-4">
         <a [routerLink]="['/sign-in']" class="btn-outline px-4 py-2 rounded-lg font-medium">
             <i class="fas fa-user-circle mr-2"></i>CONNEXION
         </a>
@@ -22,32 +22,52 @@
         </a>
     </div>
     
-    <button class="md:hidden text-gray-600">
+    <button class="md:hidden text-gray-600" (click)="toggleMobileMenu()">
         <i class="fas fa-bars text-2xl"></i>
     </button>
+    
+    <!-- Mobile Menu -->
+    <div class="mobile-menu w-full md:hidden" [ngClass]="{'hidden': !mobileMenuOpen}">
+        <div class="flex flex-col mt-4 space-y-4 pb-4">
+            <a href="#" class="nav-link text-gray-600 font-medium hover:text-green-600 py-2">Accueil</a>
+            <a href="#features" class="nav-link text-gray-600 font-medium hover:text-green-600 py-2">Fonctionnalités</a>
+            <a href="#testimonials" class="nav-link text-gray-600 font-medium hover:text-green-600 py-2">Témoignages</a>
+            <a href="#pricing" class="nav-link text-gray-600 font-medium hover:text-green-600 py-2">Tarifs</a>
+            <a href="#contact" class="nav-link text-gray-600 font-medium hover:text-green-600 py-2">Contact</a>
+            
+            <div class="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4 pt-2">
+                <a [routerLink]="['/sign-in']" class="btn-outline px-4 py-2 rounded-lg font-medium text-center">
+                    <i class="fas fa-user-circle mr-2"></i>CONNEXION
+                </a>
+                <a [routerLink]="['/sign-up']" class="btn-primary px-4 py-2 rounded-lg text-white font-medium text-center">
+                    <i class="fas fa-user-plus mr-2"></i>INSCRIPTION
+                </a>
+            </div>
+        </div>
+    </div>
 </nav>
 
 <!-- Hero Section -->
-<section class="hero-gradient text-white py-20 px-6">
-    <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-        <div class="hero-content">
+<section class="hero-gradient text-white py-12 sm:py-16 md:py-20 px-4 sm:px-6">
+    <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+        <div class="hero-content text-center md:text-left">
            
-            <h1 class="text-4xl md:text-5xl font-bold mb-6">Simplifiez votre comptabilité avec Comptinov</h1>
-            <p class="text-xl mb-8 opacity-90">La solution tout-en-un pour gérer votre comptabilité en toute simplicité. Automatisez vos tâches, gagnez du temps et concentrez-vous sur l'essentiel.</p>
-            <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6">Simplifiez votre comptabilité avec Comptinov</h1>
+            <p class="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 opacity-90">La solution tout-en-un pour gérer votre comptabilité en toute simplicité. Automatisez vos tâches, gagnez du temps et concentrez-vous sur l'essentiel.</p>
+            <div class="flex flex-col sm:flex-row justify-center md:justify-start space-y-4 sm:space-y-0 sm:space-x-4">
                 <a [routerLink]="['/sign-up']" class="btn-primary px-6 py-3 rounded-lg text-white font-medium text-center">Essai gratuit</a>
                 <a href="#features" class="bg-white text-green-600 px-6 py-3 rounded-lg font-medium text-center hover:bg-gray-100 transition">Voir les fonctionnalités</a>
             </div>
         </div>
         <div class="relative hero-image hidden md:block">
             <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Dashboard Comptinov" class="rounded-xl shadow-2xl border-4 border-white">
-            <div class="absolute -bottom-6 -left-6 bg-white p-4 rounded-lg shadow-lg">
+            <div class="absolute -bottom-6 -left-6 bg-white p-3 sm:p-4 rounded-lg shadow-lg">
                 <div class="flex items-center">
-                    <div class="bg-green-100 p-3 rounded-full mr-3">
+                    <div class="bg-green-100 p-2 sm:p-3 rounded-full mr-2 sm:mr-3">
                         <i class="fas fa-chart-line text-green-600"></i>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-500">Croissance mensuelle</p>
+                        <p class="text-xs sm:text-sm text-gray-500">Croissance mensuelle</p>
                         <p class="font-bold text-green-600">+15.2%</p>
                     </div>
                 </div>
@@ -57,154 +77,154 @@
 </section>
 
 <!-- Stats Section -->
-<section class="py-16 bg-white">
-    <div class="max-w-6xl mx-auto px-6">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div class="stat-card bg-green-50 p-6 rounded-xl text-center">
-                <div class="text-green-600 text-4xl font-bold mb-2">10K+</div>
-                <p class="text-gray-600">Entreprises satisfaites</p>
+<section class="py-10 sm:py-12 md:py-16 bg-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+            <div class="stat-card bg-green-50 p-4 sm:p-6 rounded-xl text-center transform transition-transform hover:scale-105">
+                <div class="text-green-600 text-3xl sm:text-4xl font-bold mb-1 sm:mb-2">10K+</div>
+                <p class="text-gray-600 text-sm sm:text-base">Entreprises satisfaites</p>
             </div>
-            <div class="stat-card bg-green-50 p-6 rounded-xl text-center">
-                <div class="text-green-600 text-4xl font-bold mb-2">95%</div>
-                <p class="text-gray-600">Temps économisé</p>
+            <div class="stat-card bg-green-50 p-4 sm:p-6 rounded-xl text-center transform transition-transform hover:scale-105">
+                <div class="text-green-600 text-3xl sm:text-4xl font-bold mb-1 sm:mb-2">95%</div>
+                <p class="text-gray-600 text-sm sm:text-base">Temps économisé</p>
             </div>
-            <div class="stat-card bg-green-50 p-6 rounded-xl text-center">
-                <div class="text-green-600 text-4xl font-bold mb-2">24/7</div>
-                <p class="text-gray-600">Support disponible</p>
+            <div class="stat-card bg-green-50 p-4 sm:p-6 rounded-xl text-center transform transition-transform hover:scale-105">
+                <div class="text-green-600 text-3xl sm:text-4xl font-bold mb-1 sm:mb-2">24/7</div>
+                <p class="text-gray-600 text-sm sm:text-base">Support disponible</p>
             </div>
-            <div class="stat-card bg-green-50 p-6 rounded-xl text-center">
-                <div class="text-green-600 text-4xl font-bold mb-2">30+</div>
-                <p class="text-gray-600">Outils intégrés</p>
+            <div class="stat-card bg-green-50 p-4 sm:p-6 rounded-xl text-center transform transition-transform hover:scale-105">
+                <div class="text-green-600 text-3xl sm:text-4xl font-bold mb-1 sm:mb-2">30+</div>
+                <p class="text-gray-600 text-sm sm:text-base">Outils intégrés</p>
             </div>
         </div>
     </div>
 </section>
 
 <!-- Features Section -->
-<section id="features" class="py-20 bg-gray-50">
-    <div class="max-w-6xl mx-auto px-6">
-        <div class="text-center mb-16">
-            <h2 class="text-3xl font-bold text-gray-800 mb-4">Fonctionnalités puissantes</h2>
-            <p class="text-xl text-gray-600 max-w-2xl mx-auto">Découvrez comment Comptinov peut transformer votre gestion comptable</p>
+<section id="features" class="py-12 sm:py-16 md:py-20 bg-gray-50">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <div class="text-center mb-10 sm:mb-16">
+            <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-3 sm:mb-4">Fonctionnalités puissantes</h2>
+            <p class="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto">Découvrez comment Comptinov peut transformer votre gestion comptable</p>
         </div>
         
-        <div class="features-container">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             <!-- Gestion des Factures -->
-            <div class="feature-card-interactive" data-feature="factures">
+            <div class="feature-card-interactive bg-white rounded-xl shadow-md p-5 sm:p-6" data-feature="factures">
                 <div class="feature-icon">
                     <i class="fas fa-file-invoice-dollar"></i>
                 </div>
                 <div class="feature-content">
-                    <h3>Gestion des Factures</h3>
-                    <p>Créez, personnalisez et suivez vos factures en quelques clics.</p>
-                    <ul class="feature-details">
+                    <h3 class="text-xl font-bold mb-2">Gestion des Factures</h3>
+                    <p class="text-gray-600 mb-4">Créez, personnalisez et suivez vos factures en quelques clics.</p>
+                    <ul class="feature-details mb-4">
                         <li>Création de factures professionnelles</li>
                         <li>Importation de factures PDF</li>
                         <li>Suivi des paiements</li>
                         <li>Rappels automatiques pour les factures impayées</li>
                     </ul>
                     <div class="feature-cta">
-                        <a [routerLink]="['/sign-up']" class="btn-feature">Essayer maintenant</a>
+                        <a [routerLink]="['/sign-up']" class="btn-feature inline-block">Essayer maintenant</a>
                     </div>
                 </div>
             </div>
             
             <!-- Gestion d'Entreprises -->
-            <div class="feature-card-interactive" data-feature="entreprises">
+            <div class="feature-card-interactive bg-white rounded-xl shadow-md p-5 sm:p-6" data-feature="entreprises">
                 <div class="feature-icon">
                     <i class="fas fa-building"></i>
                 </div>
                 <div class="feature-content">
-                    <h3>Gestion Multi-Entreprises</h3>
-                    <p>Gérez plusieurs entreprises avec un seul compte.</p>
-                    <ul class="feature-details">
+                    <h3 class="text-xl font-bold mb-2">Gestion Multi-Entreprises</h3>
+                    <p class="text-gray-600 mb-4">Gérez plusieurs entreprises avec un seul compte.</p>
+                    <ul class="feature-details mb-4">
                         <li>Création de multiples entreprises</li>
                         <li>Données comptables séparées par entreprise</li>
                         <li>Tableaux de bord spécifiques à chaque entreprise</li>
                         <li>Accès rapide à toutes vos entreprises</li>
                     </ul>
                     <div class="feature-cta">
-                        <a [routerLink]="['/sign-up']" class="btn-feature">Essayer maintenant</a>
+                        <a [routerLink]="['/sign-up']" class="btn-feature inline-block">Essayer maintenant</a>
                     </div>
                 </div>
             </div>
             
             <!-- Tableau de Bord Financier -->
-            <div class="feature-card-interactive" data-feature="dashboard">
+            <div class="feature-card-interactive bg-white rounded-xl shadow-md p-5 sm:p-6" data-feature="dashboard">
                 <div class="feature-icon">
                     <i class="fas fa-chart-line"></i>
                 </div>
                 <div class="feature-content">
-                    <h3>Tableaux de Bord Financiers</h3>
-                    <p>Suivez vos résultats financiers en temps réel avec des graphiques clairs et pertinents.</p>
-                    <ul class="feature-details">
+                    <h3 class="text-xl font-bold mb-2">Tableaux de Bord Financiers</h3>
+                    <p class="text-gray-600 mb-4">Suivez vos résultats financiers en temps réel avec des graphiques clairs.</p>
+                    <ul class="feature-details mb-4">
                         <li>Visualisation intuitive des flux de trésorerie</li>
                         <li>Comparaison des revenus et dépenses</li>
                         <li>Analyse des tendances financières</li>
                         <li>Alertes pour les anomalies financières</li>
                     </ul>
                     <div class="feature-cta">
-                        <a [routerLink]="['/sign-up']" class="btn-feature">Essayer maintenant</a>
+                        <a [routerLink]="['/sign-up']" class="btn-feature inline-block">Essayer maintenant</a>
                     </div>
                 </div>
             </div>
             
             <!-- Bilan Comptable -->
-            <div class="feature-card-interactive" data-feature="bilan">
+            <div class="feature-card-interactive bg-white rounded-xl shadow-md p-5 sm:p-6" data-feature="bilan">
                 <div class="feature-icon">
                     <i class="fas fa-balance-scale"></i>
                 </div>
                 <div class="feature-content">
-                    <h3>Bilan Comptable Automatisé</h3>
-                    <p>Générez des bilans comptables précis et conformes aux normes comptables.</p>
-                    <ul class="feature-details">
+                    <h3 class="text-xl font-bold mb-2">Bilan Comptable Automatisé</h3>
+                    <p class="text-gray-600 mb-4">Générez des bilans comptables précis et conformes aux normes.</p>
+                    <ul class="feature-details mb-4">
                         <li>Calcul automatique des soldes</li>
                         <li>Bilan actif/passif détaillé</li>
                         <li>Compte de résultat</li>
                         <li>Exportation des documents au format standard</li>
                     </ul>
                     <div class="feature-cta">
-                        <a [routerLink]="['/sign-up']" class="btn-feature">Essayer maintenant</a>
+                        <a [routerLink]="['/sign-up']" class="btn-feature inline-block">Essayer maintenant</a>
                     </div>
                 </div>
             </div>
             
             <!-- Gestion des Produits et Services -->
-            <div class="feature-card-interactive" data-feature="produits">
+            <div class="feature-card-interactive bg-white rounded-xl shadow-md p-5 sm:p-6" data-feature="produits">
                 <div class="feature-icon">
                     <i class="fas fa-box"></i>
                 </div>
                 <div class="feature-content">
-                    <h3>Produits et Services</h3>
-                    <p>Gérez votre catalogue de produits et services pour une facturation plus rapide.</p>
-                    <ul class="feature-details">
+                    <h3 class="text-xl font-bold mb-2">Produits et Services</h3>
+                    <p class="text-gray-600 mb-4">Gérez votre catalogue de produits et services pour une facturation rapide.</p>
+                    <ul class="feature-details mb-4">
                         <li>Création et gestion de votre catalogue</li>
                         <li>Tarifs et descriptions personnalisables</li>
                         <li>Ajout rapide aux factures</li>
                         <li>Suivi des stocks (version Pro)</li>
                     </ul>
                     <div class="feature-cta">
-                        <a [routerLink]="['/sign-up']" class="btn-feature">Essayer maintenant</a>
+                        <a [routerLink]="['/sign-up']" class="btn-feature inline-block">Essayer maintenant</a>
                     </div>
                 </div>
             </div>
             
             <!-- Sauvegarde et Sécurité -->
-            <div class="feature-card-interactive" data-feature="securite">
+            <div class="feature-card-interactive bg-white rounded-xl shadow-md p-5 sm:p-6" data-feature="securite">
                 <div class="feature-icon">
                     <i class="fas fa-shield-alt"></i>
                 </div>
                 <div class="feature-content">
-                    <h3>Sauvegarde et Sécurité</h3>
-                    <p>Vos données sont sécurisées et sauvegardées automatiquement.</p>
-                    <ul class="feature-details">
+                    <h3 class="text-xl font-bold mb-2">Sauvegarde et Sécurité</h3>
+                    <p class="text-gray-600 mb-4">Vos données sont sécurisées et sauvegardées automatiquement.</p>
+                    <ul class="feature-details mb-4">
                         <li>Sauvegardes automatiques régulières</li>
                         <li>Cryptage des données sensibles</li>
                         <li>Accès sécurisé à votre compte</li>
                         <li>Contrôle total sur vos données</li>
                     </ul>
                     <div class="feature-cta">
-                        <a [routerLink]="['/sign-up']" class="btn-feature">Essayer maintenant</a>
+                        <a [routerLink]="['/sign-up']" class="btn-feature inline-block">Essayer maintenant</a>
                     </div>
                 </div>
             </div>
@@ -320,7 +340,7 @@
                         <i class="fas fa-star"></i>
                     </div>
                 </div>
-                <p class="text-gray-700 mb-6">"En tant qu'indépendant en Tunisie, j'avais besoin d'une solution simple et efficace. Comptinov m'a permis de gagner du temps et d’avoir une meilleure visibilité sur mes finances."</p>
+                <p class="text-gray-700 mb-6">"En tant qu'indépendant en Tunisie, j'avais besoin d'une solution simple et efficace. Comptinov m'a permis de gagner du temps et d'avoir une meilleure visibilité sur mes finances."</p>
                 <div class="flex items-center">
                     <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Yassine K." class="w-12 h-12 rounded-full mr-4">
                     <div>
@@ -340,7 +360,7 @@
                         <i class="fas fa-star-half-alt"></i>
                     </div>
                 </div>
-                <p class="text-gray-700 mb-6">"Nous utilisons Comptinov dans notre entreprise de services à Monastir. Les tableaux de bord sont clairs, et notre comptable apprécie particulièrement l’export vers Excel."</p>
+                <p class="text-gray-700 mb-6">"Nous utilisons Comptinov dans notre entreprise de services à Monastir. Les tableaux de bord sont clairs, et notre comptable apprécie particulièrement l'export vers Excel."</p>
                 <div class="flex items-center">
                     <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Nesrine H." class="w-12 h-12 rounded-full mr-4">
                     <div>
