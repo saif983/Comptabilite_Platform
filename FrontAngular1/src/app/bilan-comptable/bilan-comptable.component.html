@@ -3,35 +3,42 @@
   
   <mat-card class="form-card">
     <mat-card-header>
-      <mat-card-title>Générer un bilan comptable</mat-card-title>
+      <mat-card-title>
+        <mat-icon>assessment</mat-icon>
+        Générer un bilan comptable
+      </mat-card-title>
     </mat-card-header>
     
     <mat-card-content>
       <div *ngIf="error" class="error-message">
-        {{ error }}
+        <mat-icon>error</mat-icon>
+        <span>{{ error }}</span>
       </div>
       
-      <div *ngIf="debug" class="debug-info">
-        <p>Debug: {{ debug }}</p>
+      <div *ngIf="debug" class="message-info">
+        <mat-icon>info</mat-icon>
+        <span>Il faut sélectionner une entreprise par défaut dans la liste des entreprises</span>
       </div>
       
       <form (ngSubmit)="generateBilan()">
         <div class="form-row">
-          <mat-form-field appearance="fill" class="full-width">
+          <mat-form-field appearance="outline" class="full-width">
             <mat-label>Entreprise</mat-label>
             <mat-select [(ngModel)]="selectedEnterpriseId" name="enterprise" required>
               <mat-option *ngFor="let enterprise of enterprises" [value]="enterprise.id">
                 {{ enterprise.nom }}
               </mat-option>
             </mat-select>
+            <mat-hint>Sélectionnez l'entreprise pour laquelle générer le bilan</mat-hint>
           </mat-form-field>
         </div>
         
         <div class="form-row">
-          <mat-form-field appearance="fill" class="full-width">
+          <mat-form-field appearance="outline" class="full-width">
             <mat-label>Capital (optionnel)</mat-label>
             <input matInput type="number" [(ngModel)]="capital" name="capital">
             <span matSuffix>TND</span>
+            <mat-hint>Laissez vide pour utiliser le capital par défaut</mat-hint>
           </mat-form-field>
         </div>
         
@@ -51,19 +58,29 @@
   <div *ngIf="bilanData" class="bilan-result">
     <mat-card>
       <mat-card-header class="bilan-header">
-        <mat-card-title>{{ bilanData.title || 'Bilan Comptable' }}</mat-card-title>
+        <div>
+          <mat-card-title>{{ bilanData.title || 'Bilan Comptable' }}</mat-card-title>
+          <mat-card-subtitle *ngIf="bilanData.enterprise" class="enterprise-subtitle">
+            {{ bilanData.enterprise.nom }}
+          </mat-card-subtitle>
+        </div>
         <div class="action-buttons">
-          <button mat-raised-button color="primary" (click)="exportToExcel()" matTooltip="Exporter vers Excel">
+          <button mat-raised-button (click)="exportToExcel()" matTooltip="Exporter vers Excel">
             <mat-icon>description</mat-icon> Exporter Excel
           </button>
-          <button mat-raised-button color="accent" (click)="printBilan()" matTooltip="Imprimer le bilan">
+          <button mat-raised-button (click)="printBilan()" matTooltip="Imprimer le bilan">
             <mat-icon>print</mat-icon> Imprimer
           </button>
         </div>
       </mat-card-header>
       
       <mat-card-content id="bilan-print-section">
-        <h2 class="bilan-title">{{ bilanData.title || 'Bilan Comptable' }}</h2>
+        <div class="bilan-header-print">
+          <h2 class="bilan-title">{{ bilanData.title || 'Bilan Comptable' }}</h2>
+          <p *ngIf="bilanData.enterprise" class="enterprise-name">
+            {{ bilanData.enterprise.nom }}
+          </p>
+        </div>
         
         <div class="bilan-tables">
           <!-- Actif -->
@@ -72,14 +89,15 @@
             <table class="modern-table">
               <thead>
                 <tr>
-                  <th colspan="2">Postes</th>
-                  <th>Montant</th>
+                  <th class="slim-col"></th>
+                  <th>Postes</th>
+                  <th class="amount-col">Montant</th>
                 </tr>
               </thead>
               <tbody>
                 <!-- Immobilisations -->
                 <tr class="section-header">
-                  <td colspan="3">Immobilisations</td>
+                  <td colspan="3">IMMOBILISATIONS</td>
                 </tr>
                 <tr *ngFor="let item of bilanData.actif?.immobilisations">
                   <td></td>
@@ -94,7 +112,7 @@
                 
                 <!-- Actif circulant -->
                 <tr class="section-header">
-                  <td colspan="3">Actif circulant</td>
+                  <td colspan="3">ACTIF CIRCULANT</td>
                 </tr>
                 <tr *ngFor="let item of bilanData.actif?.actif_circulant">
                   <td></td>
@@ -122,14 +140,15 @@
             <table class="modern-table">
               <thead>
                 <tr>
-                  <th colspan="2">Postes</th>
-                  <th>Montant</th>
+                  <th class="slim-col"></th>
+                  <th>Postes</th>
+                  <th class="amount-col">Montant</th>
                 </tr>
               </thead>
               <tbody>
                 <!-- Capitaux propres -->
                 <tr class="section-header">
-                  <td colspan="3">Capitaux propres</td>
+                  <td colspan="3">CAPITAUX PROPRES</td>
                 </tr>
                 <tr *ngFor="let item of bilanData.passif?.capitaux_propres">
                   <td></td>
@@ -144,7 +163,7 @@
                 
                 <!-- Dettes -->
                 <tr class="section-header">
-                  <td colspan="3">Dettes</td>
+                  <td colspan="3">DETTES</td>
                 </tr>
                 <tr *ngFor="let item of bilanData.passif?.dettes">
                   <td></td>

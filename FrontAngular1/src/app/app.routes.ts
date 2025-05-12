@@ -12,13 +12,14 @@ import { EntrepriseListComponent } from './entreprise/entreprise-list.component'
 import { EntrepriseFormComponent } from './entreprise/entreprise-form.component';
 import { EntrepriseDetailComponent } from './entreprise/entreprise-detail.component';
 import { AbonnementComponent } from './abonnement/abonnement.component';
+import { HomeComponent } from './home/home.component';
 
 // @formatter:off
 /* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 export const appRoutes: Route[] = [
-    // Redirect empty path to '/dashboards/project'
-    { path: '', pathMatch: 'full', redirectTo: 'sign-in' },
+    // Redirect empty path to '/'
+    { path: '', pathMatch: 'full', component: HomeComponent },
 
 
     {

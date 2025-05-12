@@ -18,8 +18,10 @@ body fuse-splash-screen {
 }
 
 body fuse-splash-screen img {
-    width: 120px;
-    max-width: 120px;
+    content: url('/assets/images/logo/CIN.png');
+    width: 250px !important;
+    height: 150px !important;
+    object-fit: contain !important;
 }
 
 body fuse-splash-screen .spinner {

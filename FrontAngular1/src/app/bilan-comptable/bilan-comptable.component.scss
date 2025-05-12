@@ -1,3 +1,13 @@
+// Variables
+$primary-color: #2e7d32; // Vert foncé
+$secondary-color: #64b5f6; // Bleu clair
+$accent-color: #ff8f00; // Orange/Ambre
+$text-dark: #333;
+$text-light: #666;
+$border-color: #e0e0e0;
+$background-light: #f9f9f9;
+$shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
 .bilan-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -6,39 +16,56 @@
 }
 
 .main-title {
-  color: #3f51b5;
+  color: $primary-color;
   font-size: 28px;
   text-align: center;
   margin-bottom: 25px;
   font-weight: 500;
+  position: relative;
+  
+  &:after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 3px;
+    background: $primary-color;
+    margin: 12px auto 0;
+    border-radius: 2px;
+  }
 }
 
 .form-card {
   margin-bottom: 30px;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: $shadow;
+  transition: all 0.3s ease;
+  border: 1px solid $border-color;
+  
+  &:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+  }
   
   mat-card-header {
-    background-color: #f5f7fa;
-    padding: 15px 20px;
-    border-bottom: 1px solid #eaedf3;
+    background-color: $primary-color;
+    padding: 20px;
     
     mat-card-title {
       font-size: 18px;
       font-weight: 500;
       margin: 0;
-      color: #333;
+      color: white;
     }
   }
   
   mat-card-content {
-    padding: 20px;
+    padding: 24px;
   }
 }
 
 .form-row {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .full-width {
@@ -47,8 +74,15 @@
 
 .submit-button {
   width: 100%;
-  height: 46px;
+  height: 48px;
   font-size: 16px;
+  border-radius: 8px;
+  background-color: $primary-color;
+  transition: background-color 0.3s ease;
+  
+  &:hover {
+    background-color: darken($primary-color, 8%);
+  }
   
   mat-icon {
     margin-right: 8px;
@@ -58,22 +92,25 @@
 .error-message {
   background-color: #ffebee;
   color: #d32f2f;
-  padding: 12px;
-  border-radius: 4px;
+  padding: 14px;
+  border-radius: 8px;
   margin-bottom: 20px;
   display: flex;
   align-items: center;
   font-size: 14px;
+  border-left: 4px solid #d32f2f;
 }
 
-.debug-info {
-  background-color: #fff3cd;
-  color: #856404;
-  padding: 12px;
-  border-radius: 4px;
+.message-info {
+  background-color: #e8f5e9;
+  color: $primary-color;
+  padding: 14px;
+  border-radius: 8px;
   margin-bottom: 20px;
-  font-family: monospace;
-  font-size: 12px;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  border-left: 4px solid $primary-color;
 }
 
 .loading-spinner {
@@ -85,7 +122,7 @@
   
   p {
     margin-top: 16px;
-    color: #3f51b5;
+    color: $primary-color;
     font-size: 16px;
   }
 }
@@ -94,9 +131,10 @@
   margin-top: 40px;
   
   mat-card {
-    border-radius: 8px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    border-radius: 12px;
+    box-shadow: $shadow;
     overflow: hidden;
+    border: 1px solid $border-color;
   }
 }
 
@@ -104,28 +142,54 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #f5f7fa;
-  padding: 16px;
-  border-bottom: 1px solid #eaedf3;
+  background-color: $primary-color;
+  padding: 20px;
   
   mat-card-title {
     margin: 0;
     font-size: 20px;
     font-weight: 500;
+    color: white;
   }
   
   .action-buttons {
     display: flex;
     gap: 12px;
+    
+    button {
+      border-radius: 8px;
+      padding: 0 16px;
+      
+      &:first-child {
+        background-color: white;
+        color: $primary-color;
+      }
+      
+      &:last-child {
+        background-color: rgba(255, 255, 255, 0.2);
+        color: white;
+      }
+    }
   }
 }
 
 .bilan-title {
   text-align: center;
   font-size: 24px;
-  color: #3f51b5;
-  margin-top: 5px;
-  margin-bottom: 25px;
+  color: $primary-color;
+  margin-top: 20px;
+  margin-bottom: 30px;
+  font-weight: 500;
+  
+  &:after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: $primary-color;
+    margin: 12px auto 0;
+    border-radius: 2px;
+  }
 }
 
 .bilan-tables {
@@ -143,90 +207,141 @@
   min-width: 300px;
   
   .table-title {
-    font-size: 20px;
-    margin-bottom: 15px;
-    padding-bottom: 5px;
-    border-bottom: 2px solid;
+    font-size: 22px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
     font-weight: 500;
+    text-align: center;
+    position: relative;
+    
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      border-radius: 1.5px;
+    }
     
     &.actif-title {
-      color: #3949ab;
-      border-color: #3949ab;
+      color: $secondary-color;
+      
+      &:after {
+        background-color: $secondary-color;
+      }
     }
     
     &.passif-title {
-      color: #5e35b1;
-      border-color: #5e35b1;
+      color: $accent-color;
+      
+      &:after {
+        background-color: $accent-color;
+      }
     }
   }
 }
 
 .modern-table {
   width: 100%;
-  border-collapse: collapse;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  border-radius: 8px;
+  border-collapse: separate;
+  border-spacing: 0;
+  box-shadow: $shadow;
+  border-radius: 12px;
   overflow: hidden;
+  margin-bottom: 20px;
   
   th, td {
-    padding: 12px 16px;
+    padding: 14px 18px;
     border: none;
     text-align: left;
   }
   
   th {
     background-color: #f5f7fa;
-    color: #3f51b5;
     font-weight: 500;
     font-size: 15px;
     white-space: nowrap;
+    
+    &:first-child {
+      border-top-left-radius: 12px;
+    }
+    
+    &:last-child {
+      border-top-right-radius: 12px;
+    }
   }
   
   tbody tr {
-    border-bottom: 1px solid #eaedf3;
+    border-bottom: 1px solid $border-color;
+    transition: background-color 0.2s ease;
     
     &:hover {
-      background-color: #f8f9fc;
+      background-color: rgba(0, 0, 0, 0.02);
+    }
+    
+    &:last-child {
+      border-bottom: none;
     }
   }
   
   .section-header {
-    background-color: #eceef2;
-    font-weight: 500;
-    color: #37474f;
+    background-color: #f5f7fa;
+    font-weight: 600;
+    color: $text-dark;
+    text-transform: uppercase;
+    font-size: 14px;
+    letter-spacing: 0.5px;
     
     td {
-      padding: 10px 16px;
-      font-size: 14px;
-      text-transform: uppercase;
+      padding: 12px 18px;
     }
   }
   
   .subtotal-row {
     background-color: #f5f7fa;
     font-weight: 500;
+    
+    td {
+      border-top: 1px solid darken($border-color, 5%);
+      border-bottom: 1px solid darken($border-color, 5%);
+      color: $text-dark;
+    }
   }
   
   .total-row {
-    background-color: #3f51b5;
-    color: white;
-    font-weight: 500;
-    font-size: 16px;
+    td {
+      padding: 16px 18px;
+      font-weight: 600;
+      font-size: 16px;
+      color: white;
+    }
+    
+    &:first-child td {
+      background-color: $secondary-color;
+    }
+    
+    &:last-child td {
+      background-color: $accent-color;
+    }
   }
   
   .amount {
     text-align: right;
     font-family: 'Roboto Mono', monospace;
+    font-weight: 500;
   }
 }
 
 .bilan-footer {
-  margin-top: 30px;
+  margin-top: 40px;
   text-align: right;
-  color: #757575;
-  font-size: 12px;
-  padding-top: 10px;
-  border-top: 1px solid #eaedf3;
+  color: $text-light;
+  font-size: 13px;
+  padding-top: 16px;
+  border-top: 1px solid $border-color;
+  font-style: italic;
 }
 
 /* Styles pour l'impression */
@@ -244,36 +359,98 @@
     left: 0;
     top: 0;
     width: 100%;
-    padding: 15px;
+    padding: 20px;
   }
   
   .action-buttons {
     display: none !important;
   }
   
-  .bilan-tables {
-    display: block;
-  }
-  
-  .bilan-table {
-    margin-bottom: 30px;
-    page-break-inside: avoid;
-  }
-  
   .modern-table {
     box-shadow: none;
-    
-    th, .section-header, .subtotal-row {
-      background-color: #f9f9f9 !important;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
-    }
-    
-    .total-row {
-      background-color: #3f51b5 !important;
-      color: white !important;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
-    }
+    border: 1px solid #ddd;
+  }
+  
+  .total-row td {
+    background-color: #f5f5f5 !important;
+    color: #333 !important;
+    border-top: 2px solid #333;
+  }
+}
+
+// Styles pour les icônes et les sous-titres
+mat-card-title {
+  display: flex;
+  align-items: center;
+  
+  mat-icon {
+    margin-right: 10px;
+  }
+}
+
+.error-message, .message-info {
+  display: flex;
+  align-items: center;
+  
+  mat-icon {
+    margin-right: 10px;
+    font-size: 20px;
+  }
+}
+
+.enterprise-subtitle {
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 5px;
+}
+
+.bilan-header-print {
+  margin-bottom: 30px;
+}
+
+.enterprise-name {
+  text-align: center;
+  font-size: 18px;
+  color: $text-dark;
+  margin-top: -15px;
+  margin-bottom: 30px;
+}
+
+// Styles pour les colonnes des tableaux
+.slim-col {
+  width: 20px;
+}
+
+.amount-col {
+  width: 160px;
+}
+
+// Amélioration des formulaires
+mat-form-field.mat-form-field-appearance-outline {
+  .mat-form-field-wrapper {
+    margin-bottom: 10px;
+  }
+  
+  .mat-form-field-outline {
+    color: rgba($primary-color, 0.2);
+  }
+  
+  &.mat-focused .mat-form-field-outline-thick {
+    color: $primary-color;
+  }
+}
+
+// Animation lors du chargement des résultats
+.bilan-result {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

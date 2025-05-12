@@ -1,0 +1,924 @@
+// Variables
+$primary-green: #2e7d32;
+$light-green: #81c784;
+$dark-green: #1b5e20;
+$accent-green: #4caf50;
+$transition-bounce: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+$transition-smooth: all 0.3s ease;
+
+// Variables pour la section abonnements
+$primary-color: #5c6bc0;
+$secondary-color: #ff9800;
+$accent-color: #4caf50;
+$box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+$border-radius: 12px;
+$transition: all 0.3s ease;
+
+// Global Styles pour le composant
+:host {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  display: block;
+  overflow-x: hidden;
+  width: 100%;
+  min-height: 100vh; /* Garantir que le contenu prend au moins toute la hauteur de la fenêtre */
+}
+
+.home-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+a {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+// Hero Gradient Background
+.hero-gradient {
+  background: linear-gradient(135deg, rgba($primary-green, 0.95) 0%, rgba($light-green, 0.95) 100%);
+  position: relative;
+  overflow: hidden;
+  animation: fadeIn 0.8s ease-in-out;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+    z-index: 0;
+    opacity: 0.3;
+  }
+  
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    padding-top: 2rem;
+  }
+  
+  h1 {
+    animation: slideInUp 1s ease-out;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  p {
+    animation: slideInUp 1.2s ease-out;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  
+  .flex {
+    animation: slideInUp 1.4s ease-out;
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background: linear-gradient(to bottom right, transparent 49%, white 50%);
+  }
+}
+
+// Buttons
+.btn-primary {
+  background-color: $primary-green;
+  color: white;
+  transition: all 0.3s ease;
+  display: inline-block;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    background-color: $dark-green;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.btn-outline {
+  border: 2px solid $primary-green;
+  color: $primary-green;
+  background: transparent;
+  transition: all 0.3s ease;
+  display: inline-block;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba($primary-green, 0.1), rgba($primary-green, 0.2));
+    transition: all 0.4s ease;
+    z-index: -1;
+  }
+
+  &:hover {
+    background-color: rgba($primary-green, 0.05);
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: darken($primary-green, 10%);
+    
+    &::before {
+      left: 0;
+    }
+  }
+  
+  &:active {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// Features Cards
+.feature-card {
+  transition: all 0.5s ease;
+  border-top: 4px solid $primary-green;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(40px);
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    
+    i {
+      transform: scale(1.2);
+      color: $accent-green;
+    }
+  }
+  
+  i {
+    transition: all 0.3s ease;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  h3 {
+    margin-bottom: 0.75rem;
+    color: $dark-green;
+  }
+}
+
+// Call to Action Section
+.bg-green-100 {
+  transition: all 0.8s ease;
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+// Responsive grid
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+}
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Correction pour l'affichage à pleine page
+body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+.nav-link {
+  position: relative;
+  
+  &:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -4px;
+    left: 0;
+    background-color: $primary-green;
+    transition: width 0.3s ease;
+  }
+  
+  &:hover:after {
+    width: 100%;
+  }
+}
+
+// Assurer que chaque section occupe la bonne largeur
+section {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+// Assurer que les images ne dépassent pas de leur conteneur
+img {
+  max-width: 100%;
+}
+
+// Améliorer la réactivité sur les petits écrans
+@media (max-width: 768px) {
+  .hero-gradient {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+  
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Styles pour la section d'abonnements
+.pricing-table {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin: 3rem auto;
+  padding: 0;
+  max-width: 1200px;
+}
+
+.pricing-card {
+  background: #fff;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+  width: 300px;
+  text-align: center;
+  transition: $transition;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #eee;
+  
+  &:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+  }
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 8px;
+  }
+  
+  &.free::before {
+    background: linear-gradient(90deg, $accent-color, lighten($accent-color, 15%));
+  }
+  
+  &.monthly::before {
+    background: linear-gradient(90deg, $primary-color, lighten($primary-color, 15%));
+  }
+  
+  &.yearly::before {
+    background: linear-gradient(90deg, $secondary-color, lighten($secondary-color, 15%));
+  }
+}
+
+.pricing-header {
+  padding: 2rem 1.5rem 1rem;
+  background: #fafafa;
+  margin-bottom: 1.5rem;
+  position: relative;
+  border-radius: $border-radius $border-radius 0 0;
+}
+
+.price-circle {
+  background: #fff;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.8rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 2;
+  color: #424242;
+  transition: $transition;
+  border: 2px solid transparent;
+  
+  .free & {
+    border-color: $accent-color;
+  }
+  
+  .monthly & {
+    border-color: $primary-color;
+  }
+  
+  .yearly & {
+    border-color: $secondary-color;
+  }
+}
+
+.plan-name {
+  margin-top: 1.5rem;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  
+  .free & {
+    color: $accent-color;
+  }
+  
+  .monthly & {
+    color: $primary-color;
+  }
+  
+  .yearly & {
+    color: $secondary-color;
+  }
+}
+
+.features {
+  list-style: none;
+  padding: 0 1.5rem;
+  margin: 2rem 0;
+  text-align: left;
+  min-height: 280px;
+  
+  li {
+    padding: 0.7rem 0;
+    font-size: 1rem;
+    display: flex;
+    align-items: baseline;
+    color: #616161;
+  }
+}
+
+.pricing-card .btn {
+  background: #fff;
+  border-radius: 50px;
+  padding: 0.8rem 1.5rem;
+  cursor: pointer;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: $transition;
+  width: 80%;
+  margin: 1rem auto 2rem;
+  display: block;
+  font-size: 0.9rem;
+  text-decoration: none;
+  
+  &:hover {
+    transform: translateY(-3px);
+  }
+  
+  .free & {
+    border: 2px solid $accent-color;
+    color: $accent-color;
+    
+    &:hover {
+      background: $accent-color;
+      color: white;
+    }
+  }
+  
+  .monthly & {
+    border: 2px solid $primary-color;
+    color: $primary-color;
+    
+    &:hover {
+      background: $primary-color;
+      color: white;
+    }
+  }
+  
+  .yearly & {
+    border: 2px solid $secondary-color;
+    color: $secondary-color;
+    
+    &:hover {
+      background: $secondary-color;
+      color: white;
+    }
+  }
+}
+
+// Media queries pour la section d'abonnements
+@media (max-width: 768px) {
+  .pricing-table {
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .pricing-card {
+    width: 100%;
+    max-width: 350px;
+  }
+}
+
+// Styles pour les cartes de fonctionnalités interactives
+.features-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+/* Style renforcé pour les cartes */
+.feature-card-interactive {
+  background: white !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1) !important;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  border-top: 5px solid $primary-green !important;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  min-height: 320px !important;
+  margin-bottom: 2rem !important;
+  padding: 20px !important;
+  
+  &:hover {
+    transform: translateY(-15px) !important;
+    box-shadow: 0 15px 35px rgba(46, 125, 50, 0.15) !important;
+    
+    .feature-icon {
+      transform: scale(1.1) translateY(-5px) !important;
+      background: linear-gradient(135deg, $primary-green, $light-green) !important;
+      color: white !important;
+    }
+  }
+  
+  &[data-feature="factures"] {
+    border-top-color: #4caf50;
+    .feature-icon { color: #4caf50; }
+    &:hover .feature-icon { background: linear-gradient(135deg, #4caf50, #81c784); }
+  }
+  
+  &[data-feature="entreprises"] {
+    border-top-color: #2196f3;
+    .feature-icon { color: #2196f3; }
+    &:hover .feature-icon { background: linear-gradient(135deg, #2196f3, #64b5f6); }
+  }
+  
+  &[data-feature="dashboard"] {
+    border-top-color: #ff9800;
+    .feature-icon { color: #ff9800; }
+    &:hover .feature-icon { background: linear-gradient(135deg, #ff9800, #ffb74d); }
+  }
+  
+  &[data-feature="bilan"] {
+    border-top-color: #9c27b0;
+    .feature-icon { color: #9c27b0; }
+    &:hover .feature-icon { background: linear-gradient(135deg, #9c27b0, #ce93d8); }
+  }
+  
+  &[data-feature="produits"] {
+    border-top-color: #f44336;
+    .feature-icon { color: #f44336; }
+    &:hover .feature-icon { background: linear-gradient(135deg, #f44336, #e57373); }
+  }
+  
+  &[data-feature="securite"] {
+    border-top-color: #607d8b;
+    .feature-icon { color: #607d8b; }
+    &:hover .feature-icon { background: linear-gradient(135deg, #607d8b, #90a4ae); }
+  }
+}
+
+.feature-icon {
+  width: 70px;
+  height: 70px;
+  background: #f5f5f5;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1.5rem auto 1rem;
+  transition: all 0.4s ease;
+  
+  i {
+    font-size: 28px;
+    transition: all 0.3s ease;
+  }
+}
+
+.feature-content {
+  padding: 1rem 1.5rem 2rem;
+  text-align: center;
+  
+  h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.7rem;
+    color: #333;
+  }
+  
+  p {
+    color: #666;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.feature-details {
+  list-style: none;
+  padding: 0;
+  text-align: left;
+  max-height: 200px;
+  overflow: hidden;
+  opacity: 1;
+  transition: all 0.5s ease;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  
+  li {
+    padding: 0.4rem 0;
+    margin-bottom: 0.3rem;
+    position: relative;
+    padding-left: 1.5rem;
+    font-size: 0.95rem;
+    color: #555;
+    
+    &:before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      top: 0.4rem;
+      color: $primary-green;
+      font-weight: bold;
+    }
+  }
+}
+
+.feature-cta {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.4s ease;
+  margin-top: 1rem;
+  
+  .btn-feature {
+    display: inline-block;
+    padding: 0.6rem 1.5rem;
+    background: $primary-green;
+    color: white;
+    font-weight: 600;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    
+    &:hover {
+      background: $dark-green;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+      transform: translateY(-3px);
+    }
+  }
+}
+
+// Media query pour les tablettes et mobiles
+@media (max-width: 768px) {
+  .features-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .feature-card-interactive {
+    &:hover {
+      transform: translateY(-10px);
+    }
+    
+    // Sur mobile, toujours afficher les détails
+    .feature-details {
+      max-height: 200px;
+      opacity: 1;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .feature-cta {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* Style important pour les fonctionnalités */
+#features {
+  position: relative;
+  z-index: 2;
+  
+  .features-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+}
+
+// Styles pour le logo et la barre de navigation
+nav {
+  height: auto !important;
+  min-height: 170px !important;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  border-bottom: 1px solid #f0f0f0;
+  
+  .logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-right: 2rem;
+    min-width: 250px;
+    min-height: 150px;
+    
+    .logo-main {
+      height: 150px;
+      width: 250px;
+      object-fit: contain;
+      transition: transform 0.3s ease;
+    }
+    
+    .logo-text {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      margin-top: -5px;
+      text-align: center;
+    }
+  }
+  
+  .nav-link {
+    position: relative;
+    font-size: 0.95rem;
+    padding: 0.5rem 0;
+    
+    &:after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: 0;
+      left: 0;
+      background-color: $primary-green;
+      transition: width 0.3s ease;
+    }
+    
+    &:hover:after, &.active:after {
+      width: 100%;
+    }
+    
+    &.active {
+      color: $primary-green;
+      font-weight: 600;
+    }
+  }
+  
+  .btn-outline, .btn-primary {
+    padding: 0.6rem 1.2rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    i {
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+  }
+  
+  .btn-outline {
+    border: 1px solid $primary-green;
+    color: $primary-green;
+    
+    &:hover {
+      background-color: rgba($primary-green, 0.05);
+      
+      i {
+        transform: translateX(-2px);
+      }
+    }
+  }
+  
+  .btn-primary {
+    background-color: $primary-green;
+    border: 1px solid $primary-green;
+    
+    &:hover {
+      background-color: darken($primary-green, 5%);
+      
+      i {
+        transform: translateX(-2px);
+      }
+    }
+  }
+}
+
+@media (max-width: 992px) {
+  nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    
+    .logo-container {
+      margin-bottom: 1rem;
+      justify-content: center;
+      width: 100%;
+      text-align: center;
+    }
+    
+    .hidden.md\:flex {
+      order: 3;
+      margin-top: 1rem;
+      width: 100%;
+      justify-content: center;
+    }
+    
+    .flex.space-x-4 {
+      margin-top: 1rem;
+    }
+  }
+}
+
+// Style pour que le logo du footer reste adapté
+.logo-footer-container .logo-footer {
+  height: 150px !important;
+  width: 250px !important;
+}
+
+// Style global pour le logo CIN.png (conserver la taille pour les autres emplacements)
+img[src*="CIN.png"] {
+  height: 150px !important;
+  width: 250px !important;
+  object-fit: contain !important;
+  display: block;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+// Styles pour le footer
+footer {
+  .grid {
+    align-items: flex-start;
+  }
+  
+  .logo-footer-container {
+    margin-bottom: 1.5rem;
+    justify-content: flex-start;
+  }
+  
+  @media (max-width: 768px) {
+    .logo-footer-container {
+      justify-content: center;
+    }
+  }
+}
+
+// Styles pour les boutons CTA dans la section hero
+.hero-gradient {
+  .btn-primary, .bg-white {
+    padding: 0.8rem 1.5rem;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+  }
+}
+
+// Styles globaux pour tous les boutons
+a[class*="btn-"] {
+  position: relative;
+  overflow: hidden;
+  transition: $transition-bounce;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: scaleX(0);
+    transform-origin: right center;
+    transition: transform 0.4s ease;
+  }
+  
+  &:hover::after {
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
+}
+
+// Style pour les avatars et autres images qui ne sont pas le logo
+img:not([src*="CIN.png"]) {
+  max-width: 100%;
+  height: auto;
+}
+
+// Styles pour les autres logos et conteneurs
+.logo-hero-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+  perspective: 1000px;
+}
+
+.logo-hero {
+  height: 150px;
+  width: 250px;
+  object-fit: contain;
+  animation: floatLogo 6s ease-in-out infinite;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.15));
+}
+
+.logo-footer-container {
+  display: flex;
+  justify-content: flex-start;
+  perspective: 1000px;
+}
+
+.logo-footer {
+  opacity: 0.9;
+  transition: all 0.4s ease;
+  filter: brightness(1.1) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+  
+  &:hover {
+    opacity: 1;
+    transform: scale(1.05);
+    filter: brightness(1.2);
+  }
+}
+
+@keyframes floatLogo {
+  0% {
+    transform: translateY(0) rotate(0);
+  }
+  50% {
+    transform: translateY(-15px) rotate(5deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+}
+
+// Style pour les cartes de témoignages
+.testimonial-card img {
+  width: auto;
+  height: auto;
+  max-width: 60px;
+  max-height: 60px;
+  border-radius: 50%;
+}

@@ -10,7 +10,8 @@ const generatePalette = require(path.resolve(__dirname, ('src/@fuse/tailwind/uti
  * Tailwind-like color palettes automatically
  */
 const customPalettes = {
-    brand: generatePalette('#2196F3')
+    brand: generatePalette('#2196F3'),
+    comptinov: generatePalette('#2e7d32')  // Ajouter une palette pour Comptinov
 };
 
 /**
@@ -57,6 +58,16 @@ const themes = {
     },
     'amber' : {
         primary: colors.amber
+    },
+    'comptinov': {
+        primary: {
+            ...colors.green,
+            DEFAULT: colors.green[600]
+        },
+        accent: {
+            ...colors.lime,
+            DEFAULT: colors.lime[200]
+        }
     }
 };
 
