@@ -13,12 +13,39 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { MatBadgeModule } from '@angular/material/badge';
-import { EntrepriseService, EntrepriseModel } from '../core/services/entreprise.service';
-import { HistoriqueService, HistoriqueModel, HistoriqueResponse, HistoriqueStats } from '../core/services/historique.service';
+import { EntrepriseService, EntrepriseModel } from '../core/services';
+import { HistoriqueService } from '../core/services';
 import { fuseAnimations } from '@fuse/animations';
 import { Subject, takeUntil } from 'rxjs';
 import { UserService } from 'app/core/user/user.service';
 import { factureRoutes } from '../facture/facture.routes';
+
+// Interfaces pour l'historique (définies localement puisqu'elles ne sont plus exportées par le service)
+interface HistoriqueModel {
+  id: number;
+  entrepriseId: number;
+  userId: number;
+  nomUtilisateur?: string;
+  module?: string;
+  typeAction?: string;
+  description?: string;
+  dateAction: Date;
+}
+
+interface HistoriqueResponse {
+  totalItems: number;
+  totalPages: number;
+  currentPage: number;
+  pageSize: number;
+  items: HistoriqueModel[];
+}
+
+interface HistoriqueStats {
+  totalActions: number;
+  actionsRecentes: number;
+  actionsParModule: { module: string; count: number }[];
+  actionsParType: { type: string; count: number }[];
+}
 
 @Component({
   selector: 'app-entreprise-detail',
@@ -272,7 +299,7 @@ import { factureRoutes } from '../facture/facture.routes';
                       <!-- Utilisateur Column -->
                       <ng-container matColumnDef="utilisateur">
                         <th mat-header-cell *matHeaderCellDef>Utilisateur</th>
-                        <td mat-cell *matCellDef="let item">{{ item.nomUtilisateur }}</td>
+                        <td mat-cell *matCellDef="let item">{{ item.nomUtilisateur || 'N/A' }}</td>
                       </ng-container>
                       
                       <!-- Module Column -->
@@ -281,14 +308,14 @@ import { factureRoutes } from '../facture/facture.routes';
                         <td mat-cell *matCellDef="let item">
                           <span [ngClass]="{
                             'px-2 py-1 rounded-full text-xs font-medium': true,
-                            'bg-blue-100 text-blue-800': item.module === 'Facture',
-                            'bg-green-100 text-green-800': item.module === 'Paiement',
-                            'bg-purple-100 text-purple-800': item.module === 'Devis',
-                            'bg-orange-100 text-orange-800': item.module === 'ProduitService',
-                            'bg-red-100 text-red-800': item.module === 'Depense',
-                            'bg-gray-100 text-gray-800': !['Facture', 'Paiement', 'Devis', 'ProduitService', 'Depense'].includes(item.module)
+                            'bg-blue-100 text-blue-800': item.module?.toLowerCase() === 'facture',
+                            'bg-green-100 text-green-800': item.module?.toLowerCase() === 'paiement',
+                            'bg-purple-100 text-purple-800': item.module?.toLowerCase() === 'devis',
+                            'bg-orange-100 text-orange-800': item.module?.toLowerCase() === 'produitservice',
+                            'bg-red-100 text-red-800': item.module?.toLowerCase() === 'depense',
+                            'bg-gray-100 text-gray-800': !['facture', 'paiement', 'devis', 'produitservice', 'depense'].includes(item.module?.toLowerCase())
                           }">
-                            {{ item.module }}
+                            {{ item.module || 'N/A' }}
                           </span>
                         </td>
                       </ng-container>
@@ -299,13 +326,13 @@ import { factureRoutes } from '../facture/facture.routes';
                         <td mat-cell *matCellDef="let item">
                           <span [ngClass]="{
                             'px-2 py-1 rounded-full text-xs font-medium': true,
-                            'bg-green-100 text-green-800': item.typeAction === 'create',
-                            'bg-blue-100 text-blue-800': item.typeAction === 'update',
-                            'bg-red-100 text-red-800': item.typeAction === 'delete',
-                            'bg-purple-100 text-purple-800': item.typeAction === 'import',
-                            'bg-gray-100 text-gray-800': !['create', 'update', 'delete', 'import'].includes(item.typeAction)
+                            'bg-green-100 text-green-800': item.typeAction?.toLowerCase() === 'create',
+                            'bg-blue-100 text-blue-800': item.typeAction?.toLowerCase() === 'update',
+                            'bg-red-100 text-red-800': item.typeAction?.toLowerCase() === 'delete',
+                            'bg-purple-100 text-purple-800': item.typeAction?.toLowerCase() === 'import',
+                            'bg-gray-100 text-gray-800': !['create', 'update', 'delete', 'import'].includes(item.typeAction?.toLowerCase())
                           }">
-                            {{ item.typeAction }}
+                            {{ item.typeAction || 'N/A' }}
                           </span>
                         </td>
                       </ng-container>
@@ -313,7 +340,7 @@ import { factureRoutes } from '../facture/facture.routes';
                       <!-- Description Column -->
                       <ng-container matColumnDef="description">
                         <th mat-header-cell *matHeaderCellDef>Description</th>
-                        <td mat-cell *matCellDef="let item">{{ item.description }}</td>
+                        <td mat-cell *matCellDef="let item">{{ item.description || 'Aucune description' }}</td>
                       </ng-container>
                       
                       <tr mat-header-row *matHeaderRowDef="historiqueColumns"></tr>
@@ -466,6 +493,7 @@ export class EntrepriseDetailComponent implements OnInit, OnDestroy {
         this.entrepriseId = +params['id'];
         this.loadEntreprise();
         this.checkIfDefault();
+        this.loadHistorique(); // Charger l'historique au démarrage
       }
     });
   }
@@ -597,28 +625,91 @@ export class EntrepriseDetailComponent implements OnInit, OnDestroy {
   // Méthode pour charger l'historique de l'entreprise
   loadHistorique(page: number = 1, pageSize: number = 10) {
     this.isLoadingHistorique = true;
+    console.log(`Chargement de l'historique pour l'entreprise ID ${this.entrepriseId}, page ${page}, taille ${pageSize}`);
+    
+    // Initialiser les valeurs par défaut au cas où les appels API échouent
+    this.historiqueStats = this.historiqueStats || {
+      totalActions: 0,
+      actionsRecentes: 0,
+      actionsParModule: [],
+      actionsParType: []
+    };
+    
+    this.historique = this.historique || {
+      totalItems: 0,
+      totalPages: 1,
+      currentPage: 1,
+      pageSize: pageSize,
+      items: []
+    };
     
     // Charger les statistiques
-    this.historiqueService.getStatistiques(this.entrepriseId).subscribe(
-      (stats) => {
-        this.historiqueStats = stats;
+    this.historiqueService.getStatistiques(this.entrepriseId).subscribe({
+      next: (stats) => {
+        if (stats) {
+          console.log('Statistiques reçues:', stats);
+          this.historiqueStats = stats;
+        } else {
+          console.warn('Aucune statistique reçue');
+        }
       },
-      (error) => {
+      error: (error) => {
         console.error('Erreur lors du chargement des statistiques:', error);
+        this.snackBar.open('Erreur lors du chargement des statistiques d\'historique', 'Fermer', {
+          duration: 3000
+        });
+        // Terminer le chargement si getHistoriques a déjà échoué
+        if (!this.historique || !this.historique.items) {
+          this.isLoadingHistorique = false;
+        }
       }
-    );
+    });
     
-    // Charger les données d'historique avec pagination
-    this.historiqueService.getHistoriqueEntreprise(this.entrepriseId, page, pageSize).subscribe(
-      (response) => {
-        this.historique = response;
+    // Utiliser getHistoriques 
+    this.historiqueService.getHistoriques().subscribe({
+      next: (historiques) => {
+        console.log('Données d\'historique reçues:', historiques);
+        
+        if (historiques && Array.isArray(historiques)) {
+          // Filtrer les historiques pour ne garder que ceux de l'entreprise actuelle
+          const entrepriseHistoriques = historiques.filter(h => h.entrepriseId === this.entrepriseId);
+          console.log(`Filtré ${entrepriseHistoriques.length} historiques pour l'entreprise ${this.entrepriseId}`);
+          
+          // Créer une réponse paginée simulée
+          this.historique = {
+            totalItems: entrepriseHistoriques.length,
+            totalPages: Math.ceil(entrepriseHistoriques.length / pageSize) || 1,
+            currentPage: page,
+            pageSize: pageSize,
+            items: entrepriseHistoriques.slice((page - 1) * pageSize, page * pageSize)
+          };
+          
+          console.log('Objet historique créé:', this.historique);
+        } else {
+          console.warn('Les données d\'historique ne sont pas au format attendu:', historiques);
+          // Initialiser avec un tableau vide
+          this.historique = {
+            totalItems: 0,
+            totalPages: 1,
+            currentPage: page,
+            pageSize: pageSize,
+            items: []
+          };
+        }
         this.isLoadingHistorique = false;
       },
-      (error) => {
+      error: (error) => {
         this.isLoadingHistorique = false;
         console.error('Erreur lors du chargement de l\'historique:', error);
+        this.snackBar.open('Erreur lors du chargement de l\'historique', 'Fermer', {
+          duration: 3000
+        });
+      },
+      complete: () => {
+        this.isLoadingHistorique = false;
+        console.log('Chargement de l\'historique terminé');
       }
-    );
+    });
   }
   
   // Gestion de la pagination
@@ -626,5 +717,11 @@ export class EntrepriseDetailComponent implements OnInit, OnDestroy {
     const page = event.pageIndex + 1;
     const pageSize = event.pageSize;
     this.loadHistorique(page, pageSize);
+  }
+  
+  // Recharger l'historique manuellement
+  reloadHistorique() {
+    console.log('Rechargement de l\'historique');
+    this.loadHistorique(1, this.historique?.pageSize || 10);
   }
 } 

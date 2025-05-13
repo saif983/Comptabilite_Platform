@@ -23,6 +23,46 @@ namespace ComptabiliteAPI.Controllers
             _context = context;
             _logger = logger;
         }
+      private async Task EnregistrerHistoriqueAsync(int entrepriseId, string description, string typeAction, string module, int? entiteId = null, string donneesAdditionnelles = null)
+        {
+            try
+            {
+                // Récupération de l'identifiant de l'utilisateur authentifié
+                var utilisateurClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (utilisateurClaim == null)
+                {
+                    _logger.LogWarning("Utilisateur non authentifié. Impossible d'enregistrer l'historique.");
+                    return;
+                }
+
+                if (!int.TryParse(utilisateurClaim.Value, out int utilisateurId))
+                {
+                    _logger.LogWarning($"Impossible de parser l'ID utilisateur : {utilisateurClaim.Value}");
+                    return;
+                }
+
+                // Création de l'entrée d'historique
+                var historique = new Historique
+                {
+                    UtilisateurId = utilisateurId,
+                    EntrepriseId = entrepriseId,
+                    Description = description,
+                    TypeAction = typeAction,
+                    Module = module,
+                    EntiteId = entiteId,
+                    DonneesAdditionnelles = "{}" ,
+                    DateAction = DateTime.UtcNow
+                };
+
+                _context.Historiques.Add(historique);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erreur lors de l'enregistrement de l'historique");
+            }
+        }
+
 
         // Méthode utilitaire pour gérer les erreurs de conversion décimale
         private decimal SafeDecimal(object value, decimal defaultValue = 0)
@@ -105,6 +145,13 @@ namespace ComptabiliteAPI.Controllers
 
                 _context.Factures.Add(facture);
                 await _context.SaveChangesAsync();
+                await EnregistrerHistoriqueAsync(
+                entrepriseId: facture.EntrepriseId,
+                description: $"Création de la facture N° {facture.NumFacture}",
+                typeAction: "create",
+                module: "facture",
+                entiteId: facture.Id
+            );
 
                 decimal montantTotal = 0;
                 decimal tht = 0;
@@ -550,8 +597,16 @@ namespace ComptabiliteAPI.Controllers
                 {
                     _logger.LogWarning($"Avertissements durant l'importation: {errors}");
                 }
-
-                _logger.LogInformation($"Importation réussie. Sortie: {output}");
+                  // Journaliser l’historique de l’import
+            await EnregistrerHistoriqueAsync(
+                entrepriseId: defaultEntrepriseId.Value,
+                description: $"Importation de facture depuis PDF : {file.FileName}",
+                typeAction: "import",
+                module: "facture",
+                entiteId: null,
+                donneesAdditionnelles: "{}"
+            );
+                    _logger.LogInformation($"Importation réussie. Sortie: {output}");
                 return Ok(new { message = "📄 Importation réussie", output, warnings = !string.IsNullOrEmpty(errors) ? errors : null });
             }
             catch (Exception ex)

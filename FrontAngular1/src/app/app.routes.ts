@@ -36,7 +36,7 @@ export const appRoutes: Route[] = [
         resolve: {
             initialData: initialDataResolver,
         },
-        children: [{ path: 'profileE', component: ProfileComponent }, { path: 'abonnement', component: AbonnementComponent }, { path: 'bilan-comptable', loadComponent: () => import('app/bilan-comptable/bilan-comptable.component').then(c => c.BilanComptableComponent) }, { path: 'dashboard', loadComponent: () => import('app/modules/dashboard/dashboard.component').then(c => c.DashboardComponent) }],
+        children: [{ path: 'profileE', component: ProfileComponent }, { path: 'abonnement', component: AbonnementComponent }, { path: 'bilan-comptable', loadComponent: () => import('app/bilan-comptable/bilan-comptable.component').then(c => c.BilanComptableComponent) }, { path: 'dashboard', loadComponent: () => import('app/dashboard/dashboard.component').then(c => c.DashboardComponent) }],
     },
 
     {
@@ -174,7 +174,11 @@ export const appRoutes: Route[] = [
         },
         children: [
             // Dashboards
-            { path: 'dashboards', redirectTo: 'pages/profile' },
+            { path: 'dashboards', redirectTo: 'dashboard' },
+            {
+                path: 'dashboard',
+                loadChildren: () => import('app/dashboard/dashboard.routes'),
+            },
 
             // App
             {

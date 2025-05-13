@@ -23,6 +23,15 @@ app-home {
   min-height: 100vh;
 }
 
+/* Style pour le tableau de bord qui prend toute la page */
+app-dashboard {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  position: relative;
+}
+
 /* Style global pour tous les logos CIN.png dans l'application */
 img[src*="CIN.png"] {
   height: 150px !important;

@@ -94,6 +94,10 @@
               "target": "Package",
               "version": "[7.1.2, )"
             },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[8.0.7, )"
+            },
             "MimeKit": {
               "target": "Package",
               "version": "[4.11.0, )"

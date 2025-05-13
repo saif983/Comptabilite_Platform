@@ -119,6 +119,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
         icon    : 'heroicons_outline:home',
         children: [
             {
+                id   : 'employe.dashboard',
+                title: 'Dashboard',
+                type : 'basic' as 'basic',
+                icon : 'heroicons_outline:chart-bar',
+                link : '/dashboard',
+            },
+            {
                 id   : 'employe.profile',
                 title: 'Profile',
                 type : 'basic' as 'basic',
@@ -166,6 +173,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
         type    : 'group' as 'group',
         icon    : 'heroicons_outline:home',
         children: [
+            {
+                id   : 'admin.dashboard',
+                title: 'Dashboard',
+                type : 'basic' as 'basic',
+                icon : 'heroicons_outline:chart-bar',
+                link : '/dashboard',
+            },
             {
                 id   : 'admin.employe',
                 title: 'Employe',

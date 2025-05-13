@@ -22,7 +22,7 @@ namespace ComptabiliteAPI.Models
         public Entreprise Entreprise { get; set; }
         
         // Date et heure de l'action
-        public DateTime DateAction { get; set; } = DateTime.Now;
+        public DateTime DateAction { get; set; } =  DateTime.UtcNow;
         
         // Description de l'action effectuée
         [Required]
